@@ -104,6 +104,20 @@ def sphere_light(nx, ny):
     return max(0.0, nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2])
 
 
+def silhouette_outline(img, ramp, union):
+    """Outline only where this layer meets empty space (not where it overlaps other layers)."""
+    src = img.im.copy().load()
+    dark, soft = hexc(ramp[0]), hexc(ramp[1])
+    for y in range(img.h):
+        for x in range(img.w):
+            if src[x, y][3] or union[y][x]:
+                continue
+            if (x > 0 and src[x - 1, y][3]) or (y > 0 and src[x, y - 1][3]):
+                img.px[x, y] = dark
+            elif (x + 1 < img.w and src[x + 1, y][3]) or (y + 1 < img.h and src[x, y + 1][3]):
+                img.px[x, y] = soft
+
+
 def outline(img, ramp, lit_soft=True):
     """Coloured outline: darkest tone on the shadow side, a softer tone on the lit top-left."""
     src = img.im.copy().load()
@@ -125,8 +139,10 @@ def outline(img, ramp, lit_soft=True):
 # ------------------------------------------------------------------ foliage
 
 
-def foliage(img, ellipses, ramp, seed, cluster_r=(4.0, 6.8), density=1.0, flowers=None, berries=False):
-    """Fill a crown silhouette (union of ellipses) with many individually lit leaf clusters."""
+def foliage(img, ellipses, ramp, seed, cluster_r=(4.0, 6.8), density=1.0, flowers=None, berries=False, bounds=None):
+    """Fill a crown silhouette (union of ellipses) with many individually lit leaf clusters.
+
+    bounds=(cx, cy, rx, ry) lights the clusters as part of a larger crown (for layered trees)."""
     rnd = random.Random(seed)
     n = len(ramp)
     x0 = min(cx - rx for cx, cy, rx, ry in ellipses)
@@ -135,6 +151,8 @@ def foliage(img, ellipses, ramp, seed, cluster_r=(4.0, 6.8), density=1.0, flower
     y1 = max(cy + ry for cx, cy, rx, ry in ellipses)
     gcx, gcy = (x0 + x1) / 2, (y0 + y1) / 2
     grx, gry = (x1 - x0) / 2, (y1 - y0) / 2
+    if bounds:
+        gcx, gcy, grx, gry = bounds
 
     def inside(x, y):
         return any(((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1 for cx, cy, rx, ry in ellipses)
@@ -264,53 +282,99 @@ def trunk(img, base_x, base_y, top_y, width, ramp, seed, lean=0.0, roots=3, birc
 # ------------------------------------------------------------------ trees
 
 
+TREE_KINDS = {
+    # canvas w, h, trunk height (fraction of h), trunk width, limb depth, branch spread (deg),
+    # first limb length (fraction of h), length decay, clump radius range, ramp
+    "oak": dict(w=86, h=106, trunk=0.36, tw=10, depth=3, spread=(18, 40), len0=0.2, decay=0.74, r=(9, 13), ramp="oak"),
+    "birch": dict(w=56, h=104, trunk=0.3, tw=6, depth=3, spread=(8, 22), len0=0.25, decay=0.8, r=(6.5, 9), ramp="birch"),
+    "blossom": dict(w=84, h=90, trunk=0.36, tw=8, depth=3, spread=(28, 54), len0=0.2, decay=0.72, r=(8.5, 12), ramp="blossom"),
+    "sapling": dict(w=36, h=50, trunk=0.36, tw=4, depth=2, spread=(20, 40), len0=0.2, decay=0.72, r=(5.5, 7.5), ramp="oak"),
+}
+
+
 def tree(kind, seed, scale=1.0):
-    """Returns (trunk_img, crown_img, (anchor_x, anchor_y), sway). Crown sways, trunk does not."""
-    rnd = random.Random(seed)
+    """Returns (trunk_img, [(crown_layer_img, sway)], (anchor_x, anchor_y)).
+
+    A branch skeleton is grown first; leaf clumps sit on the branch tips, so every crown has its
+    own irregular silhouette with limbs showing between clumps. Each first-level limb's clumps
+    are a separate layer so they can sway independently.
+    """
     if kind == "pine":
         return pine(seed, scale)
-    w, h = {"sapling": (30, 40), "birch": (48, 84), "blossom": (66, 78)}.get(kind, (74, 90))
-    w, h = int(w * scale), int(h * scale)
-    tr, cr = Img(w, h), Img(w, h)
-    ax, ay = w // 2, h - 4
-    crown_h = h * (0.62 if kind != "birch" else 0.6)
-    ccx, ccy = ax + rnd.uniform(-2, 2), crown_h * 0.55 + 2
-    rx, ry = (w / 2 - 4) * (0.7 if kind == "birch" else 1.0), crown_h / 2 - 1
-    ramp = RAMPS["blossom" if kind == "blossom" else "birch" if kind == "birch" else "oak"]
+    rnd = random.Random(seed)
+    k = TREE_KINDS[kind]
+    w, h = int(k["w"] * scale), int(k["h"] * scale)
+    ramp = RAMPS[k["ramp"]]
     bramp = RAMPS["birchbark" if kind == "birch" else "bark"]
-    twidth = max(3, round({"sapling": 4, "birch": 6, "blossom": 8}.get(kind, 10) * scale))
-    trunk(tr, ax, ay, ccy + ry * 0.2, twidth, bramp, seed, lean=rnd.uniform(-0.3, 0.3),
-          roots=0 if kind == "sapling" else 3, birch=kind == "birch")
-    # limbs reaching into the crown (visible through gaps between leaf clusters)
-    for k in range(4 if kind != "sapling" else 2):
-        side = -1 if k % 2 == 0 else 1
-        sy = ccy + ry * rnd.uniform(0.05, 0.4)
-        branch(cr, ax, sy, ax + side * rx * rnd.uniform(0.4, 0.75), sy - ry * rnd.uniform(0.3, 0.7),
-               twidth * 0.28, 0.6, bramp, seed + 100 + k)
-    ellipses = [(ccx, ccy, rx, ry)]
-    lobes = 5 if kind != "sapling" else 3
-    for k in range(lobes):
-        a = -math.pi / 2 + (k - (lobes - 1) / 2) * (math.pi * 1.1 / lobes) + rnd.uniform(-0.2, 0.2)
-        ellipses.append((ccx + math.cos(a) * rx * 0.55, ccy + math.sin(a) * ry * 0.5 + ry * 0.1,
-                         rx * rnd.uniform(0.45, 0.6), ry * rnd.uniform(0.45, 0.6)))
-    for side in (-1, 1):
-        ellipses.append((ccx + side * rx * 0.62, ccy + ry * 0.3, rx * 0.42, ry * 0.42))
-    foliage_canvas = Img(w, h)
-    foliage(foliage_canvas, ellipses, ramp, seed + 5, density=1.1,
-            flowers=None)
-    # keep limbs visible only where the canopy is in deep shade
-    for y in range(h):
-        for x in range(w):
-            c = foliage_canvas.px[x, y]
-            if not c[3]:
-                continue
-            under = cr.px[x, y]
-            if under[3] and y > ccy and c[:3] == hexc(ramp[1])[:3]:
-                continue
-            cr.px[x, y] = c
-    outline(cr, ramp)
+    tr = Img(w, h)
+    ax, ay = w // 2, h - 4
+    tw = max(3, round(k["tw"] * scale))
+    lean = rnd.uniform(-0.25, 0.25)
+    top = (ax + lean * 8 * scale, ay - h * k["trunk"])
+    trunk(tr, ax, ay, top[1], tw, bramp, seed, lean=lean, roots=0 if kind == "sapling" else 3, birch=kind == "birch")
+
+    clumps = []  # (cx, cy, rx, ry, group)
+
+    def grow(x, y, ang, length, width, depth, group):
+        ex, ey = x + math.cos(ang) * length, y + math.sin(ang) * length
+        branch(tr, x, y, ex, ey, width, max(0.6, width * 0.6), bramp, seed + len(clumps) * 13 + depth)
+        if depth == 0:
+            r = rnd.uniform(*k["r"]) * scale
+            ry = r * (rnd.uniform(1.0, 1.25) if kind == "birch" else rnd.uniform(0.72, 0.9))
+            droop = r * 0.3 if kind == "birch" else 0
+            clumps.append((ex, ey + droop, r, ry, group))
+            return
+        if depth < k["depth"]:  # a smaller clump along the limb fills the crown interior
+            clumps.append(((x + ex) / 2, (y + ey) / 2 - 2, k["r"][0] * scale * 0.8, k["r"][0] * scale * 0.65, group))
+        children = 3 if rnd.random() < 0.3 else 2
+        for c in range(children):
+            off = math.radians(rnd.uniform(*k["spread"])) * (1 if c % 2 else -1)
+            grow(ex, ey, ang + off * (0.6 if c == 2 else 1), length * k["decay"] * rnd.uniform(0.82, 1.12),
+                 width * 0.62, depth - 1, group)
+
+    limbs = 3 if kind in ("oak", "blossom") else 2
+    for g in range(limbs):
+        base_ang = -math.pi / 2 + (g - (limbs - 1) / 2) * math.radians(k["spread"][1] * 0.9) + rnd.uniform(-0.15, 0.15)
+        grow(top[0], top[1] + rnd.uniform(0, 3), base_ang, h * k["len0"] * rnd.uniform(0.85, 1.1),
+             tw * 0.42, k["depth"] - 1, g)
+    # core mass in the middle of the canopy (behind the limb clumps) so the crown reads as one tree
+    tips = [c for c in clumps if c[4] != -1]
+    mcx = sum(c[0] for c in tips) / len(tips)
+    mcy = sum(c[1] for c in tips) / len(tips)
+    spanx = (max(c[0] for c in tips) - min(c[0] for c in tips)) / 2
+    spany = (max(c[1] for c in tips) - min(c[1] for c in tips)) / 2
+    clumps.append((mcx, mcy + spany * 0.15, max(spanx * 0.6, k["r"][1] * scale), max(spany * 0.65, k["r"][1] * scale * 0.8), -1))
+
+    # keep every clump inside the canvas
+    fixed = []
+    for cx, cy, rx, ry, g in clumps:
+        cx = min(max(cx, rx + 2), w - rx - 2)
+        cy = max(cy, ry + 2)
+        fixed.append((cx, cy, rx, ry, g))
+    clumps = fixed
+    x0 = min(c[0] - c[2] for c in clumps)
+    x1 = max(c[0] + c[2] for c in clumps)
+    y0 = min(c[1] - c[3] for c in clumps)
+    y1 = max(c[1] + c[3] for c in clumps)
+    bounds = ((x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2)
+
+    groups = sorted({c[4] for c in clumps}, key=lambda g: (g != -1, sum(c[1] for c in clumps if c[4] == g)
+                                                           / max(1, sum(1 for c in clumps if c[4] == g))))
+    layers, imgs = [], []
+    for g in groups:
+        ell = [(cx, cy, rx, ry) for cx, cy, rx, ry, gg in clumps if gg == g]
+        img = Img(w, h)
+        foliage(img, ell, ramp, seed + 50 + g * 7, density=1.15, bounds=bounds)
+        imgs.append((g, ell, img))
+    union = [[any(im.px[x, y][3] for _, _, im in imgs) for x in range(w)] for y in range(h)]
+    for g, ell, img in imgs:
+        silhouette_outline(img, ramp, union)
+        mean_y = sum(e[1] for e in ell) / len(ell)
+        height = 1 - (mean_y - y0) / max(y1 - y0, 1)  # higher clumps sway more
+        sway = 0.45 if g == -1 else 0.75 + height * 0.6
+        layers.append((img.im, sway * (1.25 if kind == "sapling" else 1.0)))
     outline(tr, bramp, lit_soft=False)
-    return tr.im, cr.im, (ax, ay), 0.8 if kind != "sapling" else 1.2
+    return tr.im, layers, (ax, ay)
 
 
 def pine(seed, scale=1.0):
@@ -347,7 +411,7 @@ def pine(seed, scale=1.0):
             cr.set(x, y, hexc(ramp[-1]))
     outline(cr, ramp)
     outline(tr, RAMPS["bark"], lit_soft=False)
-    return tr.im, cr.im, (ax, ay), 0.4
+    return tr.im, [(cr.im, 0.4)], (ax, ay)
 
 
 # ------------------------------------------------------------------ bushes and rocks

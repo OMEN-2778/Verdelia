@@ -54,7 +54,7 @@ y_sort_enabled = true
 
 [node name="Player" type="Node2D" parent="Props"]
 script = ExtResource("walker")
-waypoints = PackedVector2Array(221, 196, 221, 176, 150, 120, 104, 90, 150, 120, 221, 176)
+waypoints = PackedVector2Array(220, 214, 216, 178, 168, 124, 128, 102, 98, 86, 128, 102, 168, 124, 216, 178)
 
 [node name="Shadow" type="Sprite2D" parent="Props/Player"]
 position = Vector2(0, 0)

@@ -43,8 +43,12 @@ MAGE_FEET = ["...kk..kk...", "..kk....kk..", "...kkkkk....", "....kkkk...."]
 BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 CLIFF_TOP, FACE = 40, 30  # upper meadow above y=40, cliff face below it
 CAVE = (86, CLIFF_TOP + FACE)  # bottom-centre of the ruin cave mouth
-PLOT = (150, 104, 292, 168)  # tilled farm plot (x0, y0, x1, y1)
-PATH = [(CAVE[0], CAVE[1] - 2), (110, 96), (150, 112), (221, 168), (221, 250)]
+PLOT = (222, 136, 72, 31)  # tilled farm plot: centre x, centre y, half width, half height
+# path control points (smoothed with Catmull-Rom): cave -> plot, plot -> bottom edge
+PATHS = [
+    [(CAVE[0], CAVE[1] - 3), (CAVE[0] + 6, 82), (104, 94), (124, 101), (150, 112), (166, 120)],
+    [(214, 160), (219, 176), (228, 194), (220, 214), (213, 232), (219, 252)],
+]
 
 rnd = random.Random(2778)
 
@@ -182,53 +186,108 @@ def build_mage():
     return sheet
 
 
-def seg_dist(px, py, ax, ay, bx, by):
-    vx, vy = bx - ax, by - ay
-    t = max(0.0, min(1.0, ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy)))
-    return math.hypot(px - (ax + vx * t), py - (ay + vy * t))
+def catmull(points, step=1.5):
+    pts = [points[0]] + points + [points[-1]]
+    out = []
+    for i in range(1, len(pts) - 2):
+        p0, p1, p2, p3 = pts[i - 1], pts[i], pts[i + 1], pts[i + 2]
+        n = max(2, int(math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step))
+        for k in range(n):
+            t = k / n
+            t2, t3 = t * t, t * t * t
+            out.append(tuple(0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2
+                                    + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3) for j in (0, 1)))
+    out.append(points[-1])
+    return out
 
 
-def dirt_field(x, y):
-    """1 inside the path or plot, fading to 0 over a few pixels outside."""
-    d = min(seg_dist(x, y, *PATH[i], *PATH[i + 1]) - 7 for i in range(len(PATH) - 1))
-    x0, y0, x1, y1 = PLOT
-    dx, dy = max(x0 - 6 - x, 0, x - x1 - 6), max(y0 - 6 - y, 0, y - y1 - 6)
-    d = min(d, math.hypot(dx, dy))
-    return max(0.0, min(1.0, 1 - d / 7))
+def build_fields():
+    """Per-pixel fields: path (1 inside, soft falloff), path centreline wear, plot shape value."""
+    path_f = [[0.0] * W for _ in range(H)]
+    wear = [[0.0] * W for _ in range(H)]
+    wn = make_noise(600, 4, 22)
+    k = 0
+    for ctrl in PATHS:
+        for px, py in catmull(ctrl):
+            k += 1
+            half = 4.2 + 3.4 * wn(k * 1.5 % 590, 1)  # width wanders along the path
+            R = int(half + 8)
+            for y in range(int(py) - R, int(py) + R + 1):
+                if not 0 <= y < H:
+                    continue
+                for x in range(int(px) - R, int(px) + R + 1):
+                    if not 0 <= x < W:
+                        continue
+                    d = math.hypot(x + 0.5 - px, y + 0.5 - py)
+                    f = max(0.0, min(1.0, 1 - (d - half) / 6))
+                    if f > path_f[y][x]:
+                        path_f[y][x] = f
+                    c = max(0.0, 1 - d / half)
+                    if c > wear[y][x]:
+                        wear[y][x] = c
+    pcx, pcy, pa, pb = PLOT
+    pn = make_noise(W, H, 9)
+    plot_v = [[9.0] * W for _ in range(H)]
+    for y in range(int(pcy - pb - 12), int(pcy + pb + 13)):
+        for x in range(int(pcx - pa - 12), int(pcx + pa + 13)):
+            if 0 <= x < W and 0 <= y < H:
+                v = (abs((x - pcx) / pa) ** 3.2 + abs((y - pcy) / pb) ** 3.2) ** (1 / 3.2)
+                plot_v[y][x] = v + (pn(x, y) - 0.5) * 0.16
+    return path_f, wear, plot_v
+
+
+DIRT4 = ["#8a6a3e", "#a7834f", "#c39d63", "#d8b57a"]  # dark -> light
+TILL = ["#5f4428", "#7a5a36", "#957247", "#b58d58", "#d2ab70"]  # furrow shadow -> lit ridge top
 
 
 def build_ground():
     cv = Canvas(W, H)
     n1, n2, nd = make_noise(W, H, 30), make_noise(W, H, 8), make_noise(W, H, 46)
-    GR, DR = [rgb(c) for c in TH["grass"]], [rgb(c) for c in TH["dirt"]]
+    nt, nr = make_noise(W, H, 6), make_noise(W, H, 14)
+    GR, DR = [rgb(c) for c in TH["grass"]], [rgb(c) for c in DIRT4]
+    TL = [rgb(c) for c in TILL]
+    path_f, wear, plot_v = build_fields()
+    pcx, pcy, pa, pb = PLOT
     dirt = [[False] * W for _ in range(H)]
     for y in range(H):
         for x in range(W):
-            b = (BAYER[(y & 3) * 4 + (x & 3)] / 16 - 0.5) * 0.11
+            bay = BAYER[(y & 3) * 4 + (x & 3)] / 16 - 0.5
+            b = bay * 0.11
             t = n1(x, y) * 0.78 + n2(x, y) * 0.22 + b
             col = GR[0 if t < 0.3 else 1 if t < 0.54 else 2 if t < 0.74 else 3]
-            if y > CLIFF_TOP + FACE:
-                dd = 0.5 + dirt_field(x, y) * 0.45 + (nd(x, y) - 0.5) * 0.2 + b * 0.8
+            pv = plot_v[y][x]
+            plot_f = max(0.0, min(1.0, (1.06 - pv) * 6))
+            field = max(path_f[y][x], plot_f)
+            if y > CLIFF_TOP + FACE - 2 and field > 0:
+                dd = 0.5 + field * 0.45 + (nd(x, y) - 0.5) * 0.2 + b * 0.8
                 if dd > 0.82:
-                    col = DR[1 if dd > 0.87 else 2 if t < 0.5 else 0]
                     dirt[y][x] = True
+                    # worn, lighter centre; darker moist edges; mottled texture
+                    v = 0.42 + wear[y][x] * 0.32 + (nt(x, y) - 0.5) * 0.45 - (0.25 if dd < 0.86 else 0) + bay * 0.25
+                    col = DR[max(0, min(3, int(v * 4)))]
+                    if pv < 0.9:  # tilled: curved mounded rows, lit on top, shadowed in the furrow
+                        u = y + 0.0035 * (x - pcx) ** 2 + (nr(x, y) - 0.5) * 3.0
+                        f = (u % 7) / 7
+                        tone = 0 if f < 0.16 else 1 if f < 0.3 else 4 if f < 0.48 else 3 if f < 0.7 else 2
+                        tone = max(0, min(4, tone + (1 if bay > 0.3 and tone in (2, 3) else 0)))
+                        if pv > 0.82 and bay > (0.9 - pv) * 6 - 0.5:  # dithered blend into plain dirt at the edge
+                            pass
+                        else:
+                            col = TL[tone]
             cv.px[x, y] = col
 
-    # tilled plot: furrow rows inside the farm plot
-    x0, y0, x1, y1 = PLOT
-    furrow, ridge = rgb("#7d5f38"), rgb(TH["dirt"][1])
-    nf = make_noise(W, H, 5)
-    for y in range(y0 + 4, y1 - 3):
-        row = (y - y0 - 4) % 7
-        for x in range(x0 + 6, x1 - 6):
-            if nf(x, y) < 0.22:  # crumbled gaps break up the rows
-                continue
-            if row == 0 and rnd.random() > 0.12:
-                cv.put(x, y, furrow)
-            elif row == 1 and rnd.random() > 0.25:
-                cv.put(x, y, rgb("#6e5232"))
-            elif row == 5 and rnd.random() > 0.55:
-                cv.put(x, y, ridge)
+    # clods and pebbles on the dirt
+    for _ in range(170):
+        x, y = rnd.randrange(W), rnd.randrange(CLIFF_TOP + FACE, H)
+        if not dirt[y][x]:
+            continue
+        if plot_v[y][x] < 0.9:
+            cv.rect(x, y, 2, 1, rgb(TILL[4]))
+            cv.put(x, y + 1, rgb(TILL[0]))
+        else:
+            cv.put(x + 1, y + 1, (60, 40, 20, 110))
+            cv.put(x, y, rgb("#d9d6c4" if rnd.random() < 0.5 else "#9d9a88"))
+    cv.fields = (plot_v, wear)
 
     # blade strokes and pebbles for texture
     for _ in range(W * H // 380):
@@ -245,6 +304,7 @@ def build_ground():
 
     # layered sandstone cliff between the upper meadow and the farm
     cols = flora.paint_cliff(cv, CLIFF_TOP, FACE, 41, cave_x=CAVE[0])
+    cv.cliff_cols = cols
     for x in range(W):  # the cliff shades the meadow right below it
         for i in range(6):
             cv.put(x, cols[x][1] + 1 + i, (20, 40, 25, round((0.26 - i * 0.04) * 255)))
@@ -320,32 +380,49 @@ def save_fx():
             if ((x - 6) / 6.5) ** 2 + ((y - 2) / 2.5) ** 2 <= 1:
                 shadow.putpixel((x, y), (13, 36, 20, 92))
     shadow.save(fx / "shadow.png")
+    leaf = Image.new("RGBA", (3, 2))  # white leaf, tinted per tree in Godot
+    for x, y, a in ((0, 0, 255), (1, 0, 255), (1, 1, 255), (2, 1, 180)):
+        leaf.putpixel((x, y), (255, 255, 255, a))
+    leaf.save(fx / "leaf.png")
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "props").mkdir(exist_ok=True)
     cv, dirt = build_ground()
+    plot_v, wear = cv.fields
+    cols = cv.cliff_cols
 
     # trees: every one generated with its own seed; species and size vary
     trees = []
     x = -16
     while x < W + 24:  # upper meadow, two loose depth rows
         kind = rnd.choices(["oak", "pine", "birch", "blossom"], [5, 3, 2, 1])[0]
-        trees.append({"x": x + rnd.uniform(-5, 5), "y": CLIFF_TOP - rnd.uniform(2, 9), "kind": kind,
-                      "scale": rnd.uniform(0.6, 0.85)})
-        x += rnd.randint(22, 34)
+        trees.append({"x": x + rnd.uniform(-5, 5), "y": CLIFF_TOP - rnd.uniform(3, 10), "kind": kind,
+                      "scale": rnd.uniform(0.4, 0.52)})
+        x += rnd.randint(18, 28)
     for tx, ty, kind, sc in [(16, 150, "oak", 0.9), (6, 226, "pine", 0.85), (404, 132, "oak", 0.85),
                              (414, 212, "birch", 0.9), (346, 102, "blossom", 0.75), (372, 120, "sapling", 1.0),
                              (60, 236, "sapling", 0.9), (300, 104, "birch", 0.65)]:
         trees.append({"x": tx, "y": ty, "kind": kind, "scale": sc})
-    (OUT / "props" / "trees").mkdir(parents=True, exist_ok=True)
+    tree_dir = OUT / "props" / "trees"
+    tree_dir.mkdir(parents=True, exist_ok=True)
+    for old in tree_dir.glob("*.png*"):
+        old.unlink()
+    leaf_colours = {"oak": "#5ba044", "birch": "#a6cf62", "blossom": "#f5b5cd", "sapling": "#5ba044", "pine": "#3d784c"}
     for i, t in enumerate(trees):
-        trunk_im, crown_im, (ax, ay), sway = flora.tree(t["kind"], 1000 + i, t["scale"])
-        trunk_im.save(OUT / "props" / "trees" / f"tree_{i}_trunk.png")
-        crown_im.save(OUT / "props" / "trees" / f"tree_{i}_crown.png")
-        t.update({"i": i, "ax": ax, "ay": ay, "sway": sway, "ph": rnd.random() * math.tau})
-        half_w = crown_im.width * 0.32
+        trunk_im, layers, (ax, ay) = flora.tree(t["kind"], 1000 + i, t["scale"])
+        trunk_im.save(tree_dir / f"tree_{i}_trunk.png")
+        entries = []
+        union = None
+        for j, (im, sway) in enumerate(layers):
+            im.save(tree_dir / f"tree_{i}_crown_{j}.png")
+            entries.append({"f": f"tree_{i}_crown_{j}.png", "sway": sway})
+            union = im if union is None else Image.alpha_composite(union, im)
+        bx0, by0, bx1, by1 = union.getbbox()
+        t.update({"i": i, "ax": ax, "ay": ay, "layers": entries, "ph": rnd.random() * math.tau,
+                  "leaf": leaf_colours[t["kind"]], "crown": [bx0 - ax, by0 - ay, bx1 - ax, by1 - ay]})
+        half_w = (bx1 - bx0) * 0.36
         for j in range(-4, 5):  # baked ground shadow, cast to the lower right
             half = round(math.sqrt(1 - (j / 5) ** 2) * half_w)
             cv.rect(round(t["x"] + half_w * 0.4 - half), round(t["y"] + j), half * 2, 1, (15, 45, 25, 77))
@@ -375,22 +452,46 @@ def main():
         x += rnd.randint(22, 34)
         k += 1
 
-    # living grass tufts (drawn and swayed by Godot), sprouts in the plot
+    # living grass tufts (drawn and swayed by Godot)
     tufts = []
-    x0, y0, x1, y1 = PLOT
     for _ in range(W * H // 150):
-        x, y = rnd.randint(4, W - 4), rnd.randint(CLIFF_TOP + FACE + 4, H - 2)
-        if dirt[y][x] or any(abs(p["x"] - x) < 9 and abs(p["y"] - y) < 5 for p in pillars) \
+        x, y = rnd.randint(4, W - 4), rnd.randint(cols[0][1] + 2, H - 2)
+        if y <= cols[x][1] + 1 or any(abs(p["x"] - x) < 9 and abs(p["y"] - y) < 5 for p in pillars) \
                 or any(abs(rx - x) < rw / 2 + 2 and ry - 10 < y < ry + 3 for rx, ry, rw in rocks):
+            continue
+        if dirt[y][x]:
+            # grass creeps onto the path edges and the odd tuft survives in the middle
+            if plot_v[y][x] < 1.0 or not (wear[y][x] < 0.3 and rnd.random() < 0.45 or rnd.random() < 0.04):
+                continue
+            tufts.append({"x": x, "y": y, "h": rnd.randint(2, 4), "n": 2, "fl": None})
             continue
         fl = rnd.choice(TH["flowers"]) if rnd.random() < TH["flower_rate"] else None
         tufts.append({"x": x, "y": y, "h": rnd.randint(3, 7), "n": rnd.randint(2, 3), "fl": fl})
-    for y in range(y0 + 9, y1 - 4, 7):  # crop seedlings on the ridges
-        for x in range(x0 + 12, x1 - 10, 9):
-            if rnd.random() < 0.8:
-                tufts.append({"x": x + rnd.randint(-1, 1), "y": y, "h": rnd.randint(3, 5), "n": 2, "fl": None, "crop": 1})
+    # tall grass along the cliff foot, hiding the bottom of the rock face
+    for x in range(-2, W + 2, 2):
+        cx = min(max(x, 0), W - 1)
+        near_cave = abs(x - CAVE[0]) < 16
+        for row in range(2):
+            y = cols[cx][1] + row * 3 + rnd.randint(0, 2)
+            if rnd.random() < (0.35 if near_cave else 0.92):
+                tall = (3, 5) if near_cave else ((8, 14) if row == 0 else (5, 9))
+                fl = rnd.choice(TH["flowers"]) if rnd.random() < 0.06 else None
+                tufts.append({"x": x + rnd.randint(-1, 1), "y": y, "h": rnd.randint(*tall), "n": rnd.randint(2, 4), "fl": fl})
+    # a fringe of grass along the cliff top lip
+    for x in range(0, W, 3):
+        if rnd.random() < 0.7:
+            tufts.append({"x": x, "y": cols[x][0] - 1, "h": rnd.randint(3, 6), "n": rnd.randint(2, 3), "fl": None})
+    # crop seedlings riding the lit tops of the curved ridges
+    pcx, pcy, pa, pb = PLOT
+    for r in range(-8, 8):
+        for x in range(int(pcx - pa), int(pcx + pa), 8):
+            xx = x + rnd.randint(-1, 2)
+            y = round(7 * r + 0.39 * 7 + pcy - 0.0035 * (xx - pcx) ** 2) + 3
+            if 0 <= y < H and 0 <= xx < W and plot_v[y][xx] < 0.8 and rnd.random() < 0.85:
+                tufts.append({"x": xx, "y": y, "h": rnd.randint(3, 6), "n": rnd.choice((2, 3)), "fl": None, "crop": 1})
     for _ in range(60):  # tufts on the upper meadow too
-        x, y = rnd.randint(4, W - 4), rnd.randint(6, CLIFF_TOP - 4)
+        x = rnd.randint(4, W - 4)
+        y = rnd.randint(6, max(7, cols[x][0] - 4))
         tufts.append({"x": x, "y": y, "h": rnd.randint(3, 6), "n": rnd.randint(2, 3), "fl": None})
     tufts.sort(key=lambda t: t["y"])
 
@@ -401,7 +502,7 @@ def main():
     build_mage().save(OUT / "props" / "mage.png")
     save_fx()
     layout = {"size": [W, H], "tuft_colours": TH["tuft"], "cave": CAVE, "trees": trees, "pillars": pillars,
-              "tufts": tufts, "player": [221, 196]}
+              "tufts": tufts, "player": [220, 214]}
     (OUT / "layout.json").write_text(json.dumps(layout))
     print(f"wrote {OUT.relative_to(ROOT)}: {len(tufts)} tufts, {len(trees)} trees")
 
