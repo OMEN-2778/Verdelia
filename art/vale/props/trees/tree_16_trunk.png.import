@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hujrx1v8piqp"
-path="res://.godot/imported/tree_crown_1.png-c8576381f8a39686fdc15365ee38459d.ctex"
+uid="uid://cnse1uxpf6i60"
+path="res://.godot/imported/tree_16_trunk.png-9218411bdcedff1d238be8b4cb1c3378.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/vale/props/tree_crown_1.png"
-dest_files=["res://.godot/imported/tree_crown_1.png-c8576381f8a39686fdc15365ee38459d.ctex"]
+source_file="res://art/vale/props/trees/tree_16_trunk.png"
+dest_files=["res://.godot/imported/tree_16_trunk.png-9218411bdcedff1d238be8b4cb1c3378.ctex"]
 
 [params]
 

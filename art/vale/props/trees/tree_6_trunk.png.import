@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://surfiada1uh4"
-path="res://.godot/imported/tree_trunk_1.png-656da53699c65bd73029435dc1d1bb46.ctex"
+uid="uid://dsex4ke6xswxf"
+path="res://.godot/imported/tree_6_trunk.png-54f727f2f3eb3e5cb7bfb928c006f6b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/vale/props/tree_trunk_1.png"
-dest_files=["res://.godot/imported/tree_trunk_1.png-656da53699c65bd73029435dc1d1bb46.ctex"]
+source_file="res://art/vale/props/trees/tree_6_trunk.png"
+dest_files=["res://.godot/imported/tree_6_trunk.png-54f727f2f3eb3e5cb7bfb928c006f6b6.ctex"]
 
 [params]
 

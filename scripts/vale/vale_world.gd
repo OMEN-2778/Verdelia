@@ -14,11 +14,13 @@ func _ready() -> void:
 	for t: Dictionary in layout.trees:
 		var tree := Node2D.new()
 		tree.position = Vector2(t.x, t.y)
-		var v := int(t.v)
-		tree.add_child(_sprite("%s/props/tree_trunk_%d.png" % [ART, v], Vector2(-23, -55)))
-		var crown := _sprite("%s/props/tree_crown_%d.png" % [ART, v], Vector2(-23, -55))
+		var anchor := Vector2(-t.ax, -t.ay)
+		var i := int(t.i)
+		tree.add_child(_sprite("%s/props/trees/tree_%d_trunk.png" % [ART, i], anchor))
+		var crown := _sprite("%s/props/trees/tree_%d_crown.png" % [ART, i], anchor)
 		crown.set_script(preload("res://scripts/vale/tree_crown.gd"))
 		crown.phase = t.ph
+		crown.amount = t.sway
 		tree.add_child(crown)
 		props.add_child(tree)
 	for p: Dictionary in layout.pillars:

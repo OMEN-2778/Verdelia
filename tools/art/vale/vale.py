@@ -14,6 +14,8 @@ from pathlib import Path
 
 from PIL import Image
 
+import flora
+
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "art/vale"
 W, H = 426, 240  # one screen at 3x for 1280x720
@@ -101,52 +103,21 @@ class Canvas:
         x, y = int(x), int(y)
         return self.px[x, y] if 0 <= x < self.w and 0 <= y < self.h else (0, 0, 0, 0)
 
+    def set(self, x, y, col):
+        x, y = int(x), int(y)
+        if 0 <= x < self.w and 0 <= y < self.h:
+            self.px[x, y] = col
 
-def blob_shade(cv, cx, cy, discs, P):
-    """Pixel-shaded union of discs; P = [outline, dark, mid, light]; light from the upper left."""
-    minx = min(dx - r for dx, dy, r in discs)
-    maxx = max(dx + r for dx, dy, r in discs)
-    miny = min(dy - r for dx, dy, r in discs)
-    maxy = max(dy + r for dx, dy, r in discs)
+    def blend(self, x, y, col):
+        self.put(x, y, col)
 
-    def inside(px, py):
-        for d in discs:
-            if (px - d[0]) ** 2 + (py - d[1]) ** 2 <= d[2] * d[2]:
-                return d
-        return None
+    def paste(self, im, x, y):
+        self.im.alpha_composite(im, (int(x), int(y))) if x >= 0 and y >= 0 else self._paste_clipped(im, int(x), int(y))
 
-    for py in range(math.floor(miny) - 1, math.ceil(maxy) + 2):
-        for px in range(math.floor(minx) - 1, math.ceil(maxx) + 2):
-            d = inside(px, py)
-            if not d:
-                if inside(px + 1, py) or inside(px - 1, py) or inside(px, py + 1) or inside(px, py - 1):
-                    cv.put(cx + px, cy + py, rgb(P[0]))
-                continue
-            s = ((px - d[0]) + (py - d[1])) / d[2] + (rnd.random() - 0.5) * 0.35
-            cv.put(cx + px, cy + py, rgb(P[3] if s < -0.75 else P[2] if s < 0.15 else P[1]))
-
-
-def draw_bush(cv, cx, cy, r):
-    blob_shade(cv, cx, cy, [(0, 0, r), (-r * 0.7, r * 0.25, r * 0.7), (r * 0.7, r * 0.2, r * 0.7)], TH["bush"])
-
-
-def build_tree(variant):
-    w, h = 46, 56
-    trunk, crown = Canvas(w, h), Canvas(w, h)
-    trunk.rect(19, 30, 8, 26, rgb("#2a1a10"))
-    trunk.rect(20, 30, 6, 25, rgb(TH["trunk"][0]))
-    trunk.rect(20, 30, 2, 25, rgb(TH["trunk"][1]))
-    trunk.rect(16, 53, 14, 3, rgb("#2a1a10"))
-    trunk.rect(17, 53, 12, 2, rgb(TH["trunk"][0]))
-    discs = ([(0, 0, 12), (-9, 5, 9), (9, 5, 9), (0, -9, 9), (-5, 10, 8), (6, 10, 8)] if variant
-             else [(0, 0, 14), (-11, 4, 9), (11, 3, 9), (-4, -10, 9), (6, -8, 8)])
-    blob_shade(crown, 23, 22, discs, TH["leaf"])
-    for _ in range(14):  # sunlit leaf clusters
-        a, r = rnd.random() * math.tau, rnd.uniform(3, 11)
-        px, py = round(23 - 4 + math.cos(a) * r), round(22 - 5 + math.sin(a) * r * 0.8)
-        if crown.get(px, py)[3]:
-            crown.rect(px, py, 2, 1, rgb(TH["leaf"][3]))
-    return trunk.im, crown.im
+    def _paste_clipped(self, im, x, y):
+        sx, sy = max(0, -x), max(0, -y)
+        crop = im.crop((sx, sy, im.width, im.height))
+        self.im.alpha_composite(crop, (x + sx, y + sy))
 
 
 def build_pillar(variant):
@@ -272,35 +243,24 @@ def build_ground():
         cv.rect(x, y, 3, 1, rgb("#9d9a88"))
         cv.put(x, y, rgb("#d9d6c4"))
 
-    # cliff face below the upper meadow, with a grass lip and drips
-    nc = make_noise(W, 64, 6)
-    for x in range(W):
-        for j in range(FACE):
-            band = math.floor((j + nc(x, j) * 5) / 6)
-            shade = 3 if j > FACE - 6 else 2 if band % 2 else 1
-            cv.put(x, CLIFF_TOP + j, rgb(TH["cliff"][shade]))
-        if rnd.random() < 0.06:
-            yy = CLIFF_TOP + rnd.randint(4, 12)
-            for _ in range(rnd.randint(4, 10)):
-                cv.put(x + rnd.randint(-1, 0), yy, rgb(TH["cliff"][3]))
-                yy += 1
-        if rnd.random() < 0.2:
-            cv.put(x, CLIFF_TOP + rnd.randint(2, 20), rgb(TH["cliff"][0]))
-        cv.rect(x, CLIFF_TOP - 2, 1, 3, rgb(TH["bush"][1]))
-        cv.rect(x, CLIFF_TOP - 3, 1, 2, rgb(TH["tuft"][1]))
-        if rnd.random() < 0.35:
-            cv.rect(x, CLIFF_TOP + 1, 1, rnd.randint(1, 4), rgb(TH["bush"][1]))
-    for i in range(7):  # the cliff shades the meadow right below it
-        cv.rect(0, CLIFF_TOP + FACE + i, W, 1, (20, 40, 25, round((0.28 - i * 0.04) * 255)))
+    # layered sandstone cliff between the upper meadow and the farm
+    cols = flora.paint_cliff(cv, CLIFF_TOP, FACE, 41, cave_x=CAVE[0])
+    for x in range(W):  # the cliff shades the meadow right below it
+        for i in range(6):
+            cv.put(x, cols[x][1] + 1 + i, (20, 40, 25, round((0.26 - i * 0.04) * 255)))
 
     draw_cave(cv)
 
-    # bushes framing the sides
-    y = CLIFF_TOP + FACE - 4
+    # bushes framing the sides, all different
+    kinds = ["green", "green", "flower", "berry", "pink", "violet"]
+    y, k = CLIFF_TOP + FACE - 6, 0
     while y < H + 14:
-        draw_bush(cv, -4 + rnd.randint(-2, 1), y, rnd.randint(8, 11))
-        draw_bush(cv, W + 4 + rnd.randint(-1, 2), y, rnd.randint(8, 11))
-        y += rnd.randint(9, 12)
+        for side in (0, 1):
+            b = flora.bush(500 + k, rnd.choice(kinds), rnd.uniform(0.75, 1.05))
+            x = -b.width // 2 + rnd.randint(-2, 4) if side == 0 else W - b.width // 2 + rnd.randint(-4, 2)
+            cv.paste(b, x, y - b.height + 6)
+            k += 1
+        y += rnd.randint(13, 18)
     return cv, dirt
 
 
@@ -367,19 +327,37 @@ def main():
     (OUT / "props").mkdir(exist_ok=True)
     cv, dirt = build_ground()
 
-    # trees: a row on the upper meadow, a few around the edges; shadows baked into the ground
+    # trees: every one generated with its own seed; species and size vary
     trees = []
-    x = -20
-    while x < W + 30:
-        trees.append({"x": x + rnd.uniform(-6, 6), "y": CLIFF_TOP - rnd.uniform(4, 16), "v": rnd.randint(0, 1)})
-        x += rnd.randint(30, 44)
-    trees += [{"x": 18, "y": 150, "v": 0}, {"x": 8, "y": 222, "v": 1}, {"x": 404, "y": 128, "v": 1},
-              {"x": 416, "y": 206, "v": 0}, {"x": 340, "y": 98, "v": 0}]
-    for t in trees:
-        t["ph"] = rnd.random() * math.tau
-        for j in range(-4, 5):
-            half = round(math.sqrt(1 - (j / 5) ** 2) * 15)
-            cv.rect(round(t["x"] + 8 - half), round(t["y"] + j), half * 2, 1, (15, 45, 25, 77))
+    x = -16
+    while x < W + 24:  # upper meadow, two loose depth rows
+        kind = rnd.choices(["oak", "pine", "birch", "blossom"], [5, 3, 2, 1])[0]
+        trees.append({"x": x + rnd.uniform(-5, 5), "y": CLIFF_TOP - rnd.uniform(2, 9), "kind": kind,
+                      "scale": rnd.uniform(0.6, 0.85)})
+        x += rnd.randint(22, 34)
+    for tx, ty, kind, sc in [(16, 150, "oak", 0.9), (6, 226, "pine", 0.85), (404, 132, "oak", 0.85),
+                             (414, 212, "birch", 0.9), (346, 102, "blossom", 0.75), (372, 120, "sapling", 1.0),
+                             (60, 236, "sapling", 0.9), (300, 104, "birch", 0.65)]:
+        trees.append({"x": tx, "y": ty, "kind": kind, "scale": sc})
+    (OUT / "props" / "trees").mkdir(parents=True, exist_ok=True)
+    for i, t in enumerate(trees):
+        trunk_im, crown_im, (ax, ay), sway = flora.tree(t["kind"], 1000 + i, t["scale"])
+        trunk_im.save(OUT / "props" / "trees" / f"tree_{i}_trunk.png")
+        crown_im.save(OUT / "props" / "trees" / f"tree_{i}_crown.png")
+        t.update({"i": i, "ax": ax, "ay": ay, "sway": sway, "ph": rnd.random() * math.tau})
+        half_w = crown_im.width * 0.32
+        for j in range(-4, 5):  # baked ground shadow, cast to the lower right
+            half = round(math.sqrt(1 - (j / 5) ** 2) * half_w)
+            cv.rect(round(t["x"] + half_w * 0.4 - half), round(t["y"] + j), half * 2, 1, (15, 45, 25, 77))
+
+    # mossy boulders
+    rocks = []
+    for rx, ry, rw, rh in [(132, 206, 22, 15), (312, 150, 16, 11), (382, 176, 20, 14), (30, 186, 14, 10)]:
+        im = flora.rock(rx * 7 + ry, rw, rh)
+        for j in range(3):
+            cv.rect(rx - rw // 2 + 2 + j, ry + j - 1, rw, 1, (15, 45, 25, 70 - j * 18))
+        cv.paste(im, rx - im.width // 2, ry - im.height + 2)
+        rocks.append((rx, ry, rw))
 
     pillars = [{"x": 40, "y": 112, "v": 0}, {"x": 122, "y": 92, "v": 2}, {"x": 58, "y": 98, "v": 1},
                {"x": 318, "y": 182, "v": 2}]
@@ -390,17 +368,20 @@ def main():
 
     # front layer: a row of bushes along the bottom edge
     front = Canvas(W, H)
-    x = -10
+    x, k = -14, 0
     while x < W + 14:
-        draw_bush(front, x, H + 6 + rnd.randint(-1, 2), rnd.randint(9, 12))
-        x += rnd.randint(10, 14)
+        b = flora.bush(800 + k, rnd.choice(["green", "green", "flower", "berry"]), rnd.uniform(0.65, 0.9))
+        front.paste(b, x, H - b.height + 14 + rnd.randint(-2, 3))
+        x += rnd.randint(22, 34)
+        k += 1
 
     # living grass tufts (drawn and swayed by Godot), sprouts in the plot
     tufts = []
     x0, y0, x1, y1 = PLOT
     for _ in range(W * H // 150):
         x, y = rnd.randint(4, W - 4), rnd.randint(CLIFF_TOP + FACE + 4, H - 2)
-        if dirt[y][x] or any(abs(p["x"] - x) < 9 and abs(p["y"] - y) < 5 for p in pillars):
+        if dirt[y][x] or any(abs(p["x"] - x) < 9 and abs(p["y"] - y) < 5 for p in pillars) \
+                or any(abs(rx - x) < rw / 2 + 2 and ry - 10 < y < ry + 3 for rx, ry, rw in rocks):
             continue
         fl = rnd.choice(TH["flowers"]) if rnd.random() < TH["flower_rate"] else None
         tufts.append({"x": x, "y": y, "h": rnd.randint(3, 7), "n": rnd.randint(2, 3), "fl": fl})
@@ -415,10 +396,6 @@ def main():
 
     cv.im.save(OUT / "ground.png")
     front.im.save(OUT / "front.png")
-    for v in (0, 1):
-        trunk, crown = build_tree(v)
-        trunk.save(OUT / "props" / f"tree_trunk_{v}.png")
-        crown.save(OUT / "props" / f"tree_crown_{v}.png")
     for v in (0, 1, 2):
         build_pillar(v).save(OUT / "props" / f"pillar_{v}.png")
     build_mage().save(OUT / "props" / "mage.png")
