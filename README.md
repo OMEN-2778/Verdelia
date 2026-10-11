@@ -22,3 +22,13 @@
   - `preview in.png --after out.png -o cmp.png`：放大并排对比。
   - `palette art/palette/verdelia`：修改色阶后重新生成调色板。
 - `docs/art/palette-remap-demo.png`：效果演示，左边是原图，右边是处理后。原图是 Kenney 的 Tiny Battle（CC0）。
+
+## 自绘美术（第一版）
+
+全部素材由 `tools/art/draw/` 里的脚本逐像素绘制，颜色只取项目调色板。修改脚本后运行 `python3 tools/art/draw/build.py` 重新生成。
+
+- `art/tiles/terrain_base.png`：草地（含花）、泥土、耕地纹理、水（可循环）
+- `art/tiles/*_over.png`：草地盖泥土、泥土岸盖水、干/湿耕地。都是 4×4 的 dual-grid 过渡表，瓦片编号 = 左上×1 + 右上×2 + 左下×4 + 右下×8（该角是否属于上层地形），显示时相对逻辑格偏移半格
+- `art/sprites/props.png`：萝卜 4 个生长阶段、光种花 3 个阶段、发光花、杂草 ×2、石头 ×2、篱笆
+- `art/sprites/tree.png`、`bush.png`、`protagonist_front.png`（主角正面站立，16×32）
+- `docs/art/farm-mockup.png`：拼起来的农场场景示意
