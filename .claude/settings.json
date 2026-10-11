@@ -1,0 +1,21 @@
+{
+  "enabledPlugins": {
+    "godot-prompter@godot-prompter-marketplace": true,
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "godot-prompter-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "jame581/GodotPrompter"
+      }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
+  }
+}
