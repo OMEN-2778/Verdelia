@@ -4,15 +4,15 @@ config_version=5
 [application]
 
 config/name="Verdelia"
-run/main_scene="res://scenes/farm_demo.tscn"
+run/main_scene="res://scenes/vale_demo.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]
 
-window/size/viewport_width=336
-window/size/viewport_height=192
-window/size/window_width_override=1344
-window/size/window_height_override=768
+window/size/viewport_width=426
+window/size/viewport_height=240
+window/size/window_width_override=1278
+window/size/window_height_override=720
 window/stretch/mode="viewport"
 
 [rendering]

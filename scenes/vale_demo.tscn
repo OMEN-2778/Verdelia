@@ -1,0 +1,116 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scripts/vale/vale_world.gd" id="world"]
+[ext_resource type="Script" path="res://scripts/vale/tufts.gd" id="tufts"]
+[ext_resource type="Script" path="res://scripts/vale/flies.gd" id="flies"]
+[ext_resource type="Script" path="res://scripts/vale/sky_light.gd" id="sky"]
+[ext_resource type="Script" path="res://scripts/vale/demo_walker.gd" id="walker"]
+[ext_resource type="Shader" path="res://shaders/grade.gdshader" id="grade"]
+[ext_resource type="Texture2D" path="res://art/vale/ground.png" id="ground"]
+[ext_resource type="Texture2D" path="res://art/vale/front.png" id="front"]
+[ext_resource type="Texture2D" path="res://art/vale/props/mage.png" id="mage"]
+[ext_resource type="Texture2D" path="res://art/vale/fx/shadow.png" id="shadow"]
+[ext_resource type="Texture2D" path="res://art/vale/fx/cloud.png" id="cloud"]
+[ext_resource type="Texture2D" path="res://art/vale/fx/shaft.png" id="shaft"]
+[ext_resource type="Texture2D" path="res://art/demo/fx/petal.png" id="petal"]
+
+[sub_resource type="ShaderMaterial" id="grade_mat"]
+shader = ExtResource("grade")
+shader_parameter/contrast = 1.0
+shader_parameter/lift = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/tint = Color(1, 1, 1, 1)
+shader_parameter/vignette = 0.12
+shader_parameter/bloom_strength = 0.35
+shader_parameter/bloom_threshold = 0.78
+shader_parameter/warm = Color(1, 0.925, 0.667, 0.2)
+shader_parameter/cool = Color(0.078, 0.196, 0.314, 0.35)
+shader_parameter/cloud_strength = 0.0
+
+[sub_resource type="CanvasItemMaterial" id="additive"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="petal_fade"]
+offsets = PackedFloat32Array(0, 0.15, 0.85, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="petal_colours"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.953, 0.69, 1, 1, 0.839, 0.918, 1)
+
+[node name="ValeDemo" type="Node2D"]
+script = ExtResource("world")
+
+[node name="Ground" type="Sprite2D" parent="."]
+texture = ExtResource("ground")
+centered = false
+
+[node name="Tufts" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("tufts")
+player = NodePath("../Props/Player")
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" type="Node2D" parent="Props"]
+script = ExtResource("walker")
+waypoints = PackedVector2Array(221, 196, 221, 176, 150, 120, 104, 90, 150, 120, 221, 176)
+
+[node name="Shadow" type="Sprite2D" parent="Props/Player"]
+position = Vector2(0, 0)
+texture = ExtResource("shadow")
+
+[node name="Body" type="Sprite2D" parent="Props/Player"]
+texture = ExtResource("mage")
+hframes = 4
+offset = Vector2(0, -10)
+
+[node name="Front" type="Sprite2D" parent="."]
+texture = ExtResource("front")
+centered = false
+
+[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("flies")
+player = NodePath("../Props/Player")
+
+[node name="Petals" type="CPUParticles2D" parent="."]
+position = Vector2(213, 120)
+amount = 46
+lifetime = 12.0
+preprocess = 12.0
+texture = ExtResource("petal")
+emission_shape = 3
+emission_rect_extents = Vector2(260, 140)
+direction = Vector2(1, 0.2)
+spread = 25.0
+gravity = Vector2(0, 2.5)
+initial_velocity_min = 6.0
+initial_velocity_max = 14.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+color_ramp = SubResource("petal_fade")
+color_initial_ramp = SubResource("petal_colours")
+
+[node name="Clouds" type="Node2D" parent="."]
+script = ExtResource("sky")
+cloud_texture = ExtResource("cloud")
+shaft_texture = ExtResource("shaft")
+
+[node name="Shafts" type="Node2D" parent="."]
+material = SubResource("additive")
+script = ExtResource("sky")
+shafts = true
+cloud_texture = ExtResource("cloud")
+shaft_texture = ExtResource("shaft")
+
+[node name="Grade" type="CanvasLayer" parent="."]
+
+[node name="Screen" type="ColorRect" parent="Grade"]
+material = SubResource("grade_mat")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(213, 120)

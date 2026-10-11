@@ -17,6 +17,12 @@ uniform float bloom_strength : hint_range(0.0, 2.0) = 0.55;
 uniform float bloom_threshold : hint_range(0.0, 1.0) = 0.68;
 uniform float bloom_radius = 2.0;
 
+group_uniforms sun;
+// Stardust Vale grade: warm light screened in from the top-left corner, cool multiply toward the
+// bottom-right. Alpha is the strength; 0 disables.
+uniform vec4 warm : source_color = vec4(1.0, 0.925, 0.667, 0.0);
+uniform vec4 cool : source_color = vec4(0.078, 0.196, 0.314, 0.0);
+
 group_uniforms clouds;
 uniform float cloud_strength : hint_range(0.0, 0.5) = 0.13;
 uniform float cloud_scale = 0.55;
@@ -40,6 +46,13 @@ void fragment() {
 	c *= 1.0 - cloud_strength * smoothstep(0.48, 0.68, n);
 
 	c += bloom * bloom_strength;
+
+	vec2 screen_px = 1.0 / SCREEN_PIXEL_SIZE;
+	vec2 p = SCREEN_UV * screen_px;
+	float fw = max(0.0, 1.0 - length(p) / (length(screen_px) * 0.95)) * warm.a;
+	c = 1.0 - (1.0 - c) * (1.0 - warm.rgb * fw);
+	float diag = dot(p, screen_px) / dot(screen_px, screen_px);
+	c *= mix(vec3(1.0), cool.rgb, clamp((diag - 0.45) / 0.55, 0.0, 1.0) * cool.a);
 	float luma = dot(c, vec3(0.299, 0.587, 0.114));
 	c = mix(vec3(luma), c, saturation);
 	c = (c - 0.5) * contrast + 0.5 + lift;

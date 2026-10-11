@@ -53,3 +53,15 @@
 Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材原图和由它合成的图层都放在被 git 忽略的 `art/vendor/` 里，不提交。新环境里要先把素材放回 `art/vendor/manaseed/`，再运行：
 
     python3 tools/art/draw/manaseed_demo.py --soften   # 降对比后拼图，生成 art/vendor/demo/ 和场景文件
+
+## 星尘山谷风格农场（当前主场景）
+
+`scenes/vale_demo.tscn` 照着 [stardust-vale](https://github.com/OMEN-2778/stardust-vale) 的场景画法移植，美术全部由代码生成：
+
+- `tools/art/vale/vale.py`：烘焙静态层（双层噪声 + 4×4 Bayer 抖动的草地、泥路和耕地、悬崖与遗迹洞口、两侧和前景灌木、石柱、树干/树冠、预烘焙阴影），并把动态部分写进 `art/vale/layout.json`。配色沿用原作的 meadow 主题
+- `scripts/vale/`：每帧重绘的草丛（随风摆、被角色推开、阵风时草尖反光，花开在草尖上）、单独随风摆的树冠、蝴蝶、云影、斜向光柱。风场在 `wind.gd`，和原作公式相同
+- `shaders/grade.gdshader` 新增原作的 warm/cool 调色：左上角暖光 screen，右下角冷色 multiply
+- 主角暂用原作的小法师当占位
+- 效果：`docs/art/vale-demo.gif`、`docs/art/vale-still.png`
+
+工程视口改成了 426×240，和原作一样按 3 倍缩放到 1280×720。
