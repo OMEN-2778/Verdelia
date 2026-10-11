@@ -54,14 +54,21 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 
     python3 tools/art/draw/manaseed_demo.py --soften   # 降对比后拼图，生成 art/vendor/demo/ 和场景文件
 
-## 星尘山谷风格农场（当前主场景）
+## 世界系统（主场景 `scenes/vale_demo.tscn`）
 
-`scenes/vale_demo.tscn` 照着 [stardust-vale](https://github.com/OMEN-2778/stardust-vale) 的场景画法移植，美术全部由代码生成：
+画法移植自 [stardust-vale](https://github.com/OMEN-2778/stardust-vale)，做成了可以在任意大小的地图上复用的节点。演示地图 960×480，镜头跟随角色走一圈：`docs/art/world-demo.mp4`。
 
-- `tools/art/vale/vale.py`：烘焙静态层（双层噪声 + 4×4 Bayer 抖动的草地、泥路和耕地、悬崖与遗迹洞口、两侧和前景灌木、石柱、树干/树冠、预烘焙阴影），并把动态部分写进 `art/vale/layout.json`。配色沿用原作的 meadow 主题
-- `scripts/vale/`：每帧重绘的草丛（随风摆、被角色推开、阵风时草尖反光，花开在草尖上）、单独随风摆的树冠、蝴蝶、云影、斜向光柱。风场在 `wind.gd`，和原作公式相同
-- `shaders/grade.gdshader` 新增原作的 warm/cool 调色：左上角暖光 screen，右下角冷色 multiply
-- 主角暂用原作的小法师当占位
-- 效果：`docs/art/vale-demo.gif`、`docs/art/vale-still.png`
+| 节点 | 作用 | 怎么用 |
+|---|---|---|
+| `Terrain`（`world/terrain/`） | 整张地图的地面：抖动草地、泥路、耕地、湿耕地，由 `ground.gdshader` 实时绘制，没有瓦片接缝 | 加一个 TileMapLayer，tile_set 选 `terrain_brushes.tres`，用 泥路 / 耕地 / 浇水 / 擦除 四种刷子画，地面立刻更新；也可以给 `mask` 一张 RGBA 图（R=泥 G=耕 B=湿，每像素一格）。游戏里锄地、浇水调用 `set_cell(cell, Terrain.Kind.TILLED)` |
+| `GrassField`（`world/grass/`） | 会动的草：随风摆、阵风时草尖发亮、被角色推开、开花；路边自动变稀，耕地上长幼苗 | 指定 `terrain` 和 `player`。按 128px 分块批量渲染，大地图也不卡；地形一变只重建受影响的块 |
+| `WorldTree`（`world/flora/`） | 素材库里的树（oak / birch / pine / blossom / sapling / oak_far / pine_far），叶团分层摆动、阵风发亮、落叶或落花、柔和投影、树根长草 | 放在树干底部，选 `species`；`variant` = -1 时按位置自动挑变体 |
+| `WorldProp` | 任意单图物件：灌木、石头、遗迹、树桩、花 | 设 `texture`，或用 `library_item` = `bush:green` / `rock`。物件底部会自动长一圈草来过渡：小物件配短草，大物件配高草，前排草盖住物件底边；物件下方不长草 |
+| `Scatter` | 在矩形或多边形区域里批量散布上面这些 | `items` 写 `tree:oak`、`bush:flower`、`rock`、`prop:res://….png@sway=0.5@shadow=0`，配上 `weights`、`count`、`min_distance`、`clearance`（离路和田的距离）。点检查器里的 `generate` 就会摆好，摆完还可以手动调整 |
+| `CliffBand`（`world/cliff/`） | 沿折线生成的岩壁：高度起伏、岩刺和凹槽、不规则岩层、风化和裂缝、零星的垂草和藤蔓、崖脚碎石，崖脚自动长一排高草 | `points` 是岩壁顶边，`openings` 是洞口（中心 x, 半宽） |
 
-工程视口改成了 426×240，和原作一样按 3 倍缩放到 1280×720。
+素材库由 `tools/art/vale/library.py` 生成（`flora.py` 是树、灌木、石头的生成器），输出到 `art/library/`：46 棵树、20 丛灌木、8 块石头、53 种草丛。改了生成器后重新运行这个脚本即可。
+
+第三方素材：`art/third_party/grassland/` 来自上传的 *Grassland Top Down Tileset Pixel Art*。用 `tools/art/vale/grassland.py <解压目录>` 导入，导入时会把绿色微调到草地色调。演示场景用到了里面的遗迹、石堆、开花灌木、树桩和花。
+
+旧版的一次性烘焙演示（`art/vale`、`scripts/vale`）已经被这套系统取代并删除。

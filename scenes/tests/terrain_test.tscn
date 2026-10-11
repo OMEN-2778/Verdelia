@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
+[ext_resource type="Texture2D" path="res://art/demo_world/terrain_mask.png" id="mask"]
+[ext_resource type="Script" path="res://world/grass/grass_field.gd" id="grass"]
+[ext_resource type="Script" path="res://world/cliff/cliff_band.gd" id="cliff"]
+[ext_resource type="Script" path="res://world/flora/scatter.gd" id="scatter"]
+[ext_resource type="Script" path="res://world/flora/world_prop.gd" id="prop"]
+
+[node name="TerrainTest" type="Node2D"]
+
+[node name="Terrain" type="Sprite2D" parent="."]
+script = ExtResource("terrain")
+map_size_px = Vector2i(960, 480)
+mask = ExtResource("mask")
+
+[node name="Cliff" type="Sprite2D" parent="."]
+script = ExtResource("cliff")
+points = PackedVector2Array(0, 60, 300, 70, 600, 56, 960, 66)
+openings = PackedVector2Array(150, 12)
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Trees" type="Node2D" parent="Props" node_paths=PackedStringArray("terrain")]
+script = ExtResource("scatter")
+area = Rect2(20, 110, 280, 300)
+items = PackedStringArray("tree:oak", "tree:birch", "tree:blossom", "bush:green", "bush:flower", "rock")
+weights = PackedFloat32Array(4, 2, 1, 3, 2, 3)
+count = 16
+min_distance = 34.0
+terrain = NodePath("../../Terrain")
+
+[node name="Rock" type="Node2D" parent="Props"]
+position = Vector2(360, 200)
+script = ExtResource("prop")
+library_item = "rock"
+
+[node name="Grass" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("grass")
+terrain = NodePath("../Terrain")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(220, 140)
