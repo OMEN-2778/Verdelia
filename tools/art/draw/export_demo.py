@@ -35,7 +35,10 @@ def export_art():
     return ground.size, names
 
 
-def tscn(size, names):
+def tscn(size, names, props=None, out_path="scenes/farm_demo.tscn", art_dir="res://art/demo",
+         water=True, extra_ext=(), extra_nodes=(), grade=None):
+    """Write a demo scene. props: [((x, y), name, sprite)]; textures live at {art_dir}/props/{name}.png."""
+    props = scene.prop_list() if props is None else props
     w, h = size
     ext, sub, nodes = [], [], []
 
@@ -49,12 +52,14 @@ def tscn(size, names):
     ext_res("Script", "res://scripts/day_cycle.gd", "day_cycle")
     ext_res("Script", "res://scripts/idle_bob.gd", "idle_bob")
     ext_res("Script", "res://scripts/light_shaft.gd", "light_shaft")
-    ext_res("Texture2D", "res://art/demo/ground.png", "ground")
-    ext_res("Texture2D", "res://art/demo/water.png", "water_tex")
+    ext_res("Texture2D", f"{art_dir}/ground.png", "ground")
+    if water:
+        ext_res("Texture2D", f"{art_dir}/water.png", "water_tex")
     ext_res("Texture2D", "res://art/demo/fx/pollen.png", "pollen")
     ext_res("Texture2D", "res://art/demo/fx/petal.png", "petal")
     for name in names:
-        ext_res("Texture2D", f"res://art/demo/props/{name}.png", f"prop_{name}")
+        ext_res("Texture2D", f"{art_dir}/props/{name}.png", f"prop_{name}")
+    ext.extend(extra_ext)
 
     sub.append("""[sub_resource type="Gradient" id="sky"]
 offsets = PackedFloat32Array(0, 0.2, 0.28, 0.5, 0.7, 0.78, 0.86, 1)
@@ -69,7 +74,8 @@ seamless = true
 noise = SubResource("cloud_noise")""")
     sub.append("""[sub_resource type="ShaderMaterial" id="grade_mat"]
 shader = ExtResource("grade")
-shader_parameter/cloud_noise = SubResource("cloud_tex")""")
+shader_parameter/cloud_noise = SubResource("cloud_tex")""" + "".join(
+        f"\nshader_parameter/{k} = {v}" for k, v in (grade or {}).items()))
     sub.append("""[sub_resource type="ShaderMaterial" id="water_mat"]
 shader = ExtResource("water")""")
     for kind, amount in SWAY.items():
@@ -98,16 +104,18 @@ script = ExtResource("day_cycle")
 cycle_seconds = 24.0
 start_time = 0.32
 sky = SubResource("sky")""")
-    nodes.append("""[node name="Water" type="Sprite2D" parent="."]
+    if water:
+        nodes.append("""[node name="Water" type="Sprite2D" parent="."]
 material = SubResource("water_mat")
 texture = ExtResource("water_tex")
 centered = false""")
     nodes.append("""[node name="Ground" type="Sprite2D" parent="."]
 texture = ExtResource("ground")
 centered = false""")
+    nodes.extend(extra_nodes)  # between the ground and the y-sorted props
     nodes.append('[node name="Props" type="Node2D" parent="."]\ny_sort_enabled = true')
     counts = {}
-    for (bx, by), name, sprite in scene.prop_list():
+    for (bx, by), name, sprite in props:
         counts[name] = counts.get(name, 0) + 1
         node = f"{name}_{counts[name]}"
         kind = next((k for k in SWAY if name.startswith(k)), None)
@@ -173,7 +181,7 @@ position = Vector2({w / 2}, {h / 2})""")
 
     out = [f"[gd_scene load_steps={len(ext) + len(sub) + 1} format=3]", ""]
     out += ext + [""] + "\n\n".join(sub).split("\n") + [""] + "\n\n".join(nodes).split("\n")
-    path = ROOT / "scenes/farm_demo.tscn"
+    path = ROOT / out_path
     path.write_text("\n".join(out) + "\n")
     return path
 

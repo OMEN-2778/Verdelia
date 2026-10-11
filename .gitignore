@@ -1,3 +1,6 @@
 # Godot
 .godot/
 *.tmp
+
+# Licensed third-party art (e.g. Mana Seed): no redistribution, keep out of this public repo
+art/vendor/
