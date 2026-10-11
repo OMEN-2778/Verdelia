@@ -5,6 +5,7 @@ Subcommands:
   palette   write the project palette (hue-shifted ramps) as .gpl + swatch .png
   remap     map every opaque pixel to the nearest project-palette colour (OKLab distance)
   selout    recolour the black outline with a darkened version of the colour it borders
+  soften    lower contrast / lift shadows / desaturate a sheet, colour by colour (keeps pixels crisp)
   preview   nearest-neighbour upscale (and optional side-by-side before/after)
 
 Typical use:  remap in.png out.png --selout && preview in.png --after out.png -o cmp.png
@@ -171,6 +172,42 @@ def selout(im, preset, dark_threshold=0.22):
     return out
 
 
+def oklab_to_srgb(lab):
+    L, a, b = lab
+    l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    s = (L - 0.0894841775 * a - 1.2914855480 * b) ** 3
+    rgb = (
+        4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+        -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+        -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s,
+    )
+
+    def enc(v):
+        v = min(1.0, max(0.0, v))
+        return v * 12.92 if v <= 0.0031308 else 1.055 * v ** (1 / 2.4) - 0.055
+
+    return tuple(round(enc(v) * 255) for v in rgb)
+
+
+def soften(im, contrast=0.85, lift=0.04, chroma=0.9, warmth=0.01, pivot=0.62):
+    """Soft, bright grade applied per unique colour in OKLab, so every pixel stays a flat colour."""
+    cache = {}
+    out = im.copy()
+    px = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            r, g, b, alpha = px[x, y]
+            if alpha == 0:
+                continue
+            if (r, g, b) not in cache:
+                L, A, B = srgb_to_oklab((r, g, b))
+                L = (L - pivot) * contrast + pivot + lift
+                cache[(r, g, b)] = oklab_to_srgb((L, A * chroma + warmth, B * chroma + warmth))
+            px[x, y] = (*cache[(r, g, b)], alpha)
+    return out
+
+
 def upscale(im, k):
     return im.resize((im.width * k, im.height * k), Image.NEAREST)
 
@@ -210,6 +247,11 @@ def cmd_selout(args):
     selout(Image.open(args.input).convert("RGBA"), PRESETS[args.preset]).save(args.output)
 
 
+def cmd_soften(args):
+    im = Image.open(args.input).convert("RGBA")
+    soften(im, args.contrast, args.lift, args.chroma, args.warmth).save(args.output)
+
+
 def cmd_preview(args):
     images = [upscale(Image.open(path).convert("RGBA"), args.scale) for path in [args.input, *args.after]]
     gap = 2 * args.scale
@@ -244,6 +286,15 @@ def main():
     s.add_argument("output")
     s.add_argument("--preset", choices=PRESETS, default=DEFAULT_PRESET)
     s.set_defaults(func=cmd_selout)
+
+    s = sub.add_parser("soften")
+    s.add_argument("input")
+    s.add_argument("output")
+    s.add_argument("--contrast", type=float, default=0.85, help="<1 flattens light/dark differences")
+    s.add_argument("--lift", type=float, default=0.04, help="raise overall lightness (OKLab L)")
+    s.add_argument("--chroma", type=float, default=0.9, help="<1 desaturates")
+    s.add_argument("--warmth", type=float, default=0.01, help="push toward warm yellow")
+    s.set_defaults(func=cmd_soften)
 
     s = sub.add_parser("preview")
     s.add_argument("input")

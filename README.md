@@ -32,3 +32,16 @@
 - `art/sprites/props.png`：萝卜 4 个生长阶段、光种花 3 个阶段、发光花、杂草 ×2、石头 ×2、篱笆
 - `art/sprites/tree.png`、`bush.png`、`protagonist_front.png`（主角正面站立，16×32）
 - `docs/art/farm-mockup.png`：拼起来的农场场景示意
+
+## Godot 演示场景：光影与场景动效
+
+`scenes/farm_demo.tscn`（主场景），用 Godot 4.7 打开即可运行。由 `tools/art/draw/export_demo.py` 生成，素材换成 Mana Seed 等正式素材时替换 `art/demo/` 里的图层即可。
+
+- `shaders/grade.gdshader`：全屏调色，包括降对比、提亮暗部、暖色、泛光、漂移的云影和暗角。参数都能在检查器里实时调
+- `shaders/sway.gdshader`：树、灌木、作物随风摇摆，相邻植物相位不同
+- `shaders/water.gdshader`：水面按整像素波动，带闪烁的高光
+- `scripts/day_cycle.gd`：昼夜循环（演示里 24 秒一天）。天黑后 `night_lights` 组里的灯会亮起（光种花、发光花）
+- 光柱（加色混合，天黑渐隐）、花粉和花瓣粒子、主角呼吸待机
+- 效果录像：`docs/art/farm-demo-daycycle.mp4` / `.gif`，四个时段截图：`docs/art/farm-demo-times.png`
+
+素材本身也能离线柔化：`python3 tools/art/pixeltool.py soften in.png out.png --contrast 0.85 --lift 0.04 --chroma 0.9`。按颜色逐个处理，像素保持清晰。

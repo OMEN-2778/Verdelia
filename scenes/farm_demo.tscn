@@ -1,0 +1,446 @@
+[gd_scene load_steps=44 format=3]
+
+[ext_resource type="Shader" path="res://shaders/grade.gdshader" id="grade"]
+[ext_resource type="Shader" path="res://shaders/sway.gdshader" id="sway"]
+[ext_resource type="Shader" path="res://shaders/water.gdshader" id="water"]
+[ext_resource type="Script" path="res://scripts/day_cycle.gd" id="day_cycle"]
+[ext_resource type="Script" path="res://scripts/idle_bob.gd" id="idle_bob"]
+[ext_resource type="Script" path="res://scripts/light_shaft.gd" id="light_shaft"]
+[ext_resource type="Texture2D" path="res://art/demo/ground.png" id="ground"]
+[ext_resource type="Texture2D" path="res://art/demo/water.png" id="water_tex"]
+[ext_resource type="Texture2D" path="res://art/demo/fx/pollen.png" id="pollen"]
+[ext_resource type="Texture2D" path="res://art/demo/fx/petal.png" id="petal"]
+[ext_resource type="Texture2D" path="res://art/demo/props/turnip_3.png" id="prop_turnip_3"]
+[ext_resource type="Texture2D" path="res://art/demo/props/turnip_2.png" id="prop_turnip_2"]
+[ext_resource type="Texture2D" path="res://art/demo/props/turnip_1.png" id="prop_turnip_1"]
+[ext_resource type="Texture2D" path="res://art/demo/props/turnip_0.png" id="prop_turnip_0"]
+[ext_resource type="Texture2D" path="res://art/demo/props/lumen_2.png" id="prop_lumen_2"]
+[ext_resource type="Texture2D" path="res://art/demo/props/lumen_1.png" id="prop_lumen_1"]
+[ext_resource type="Texture2D" path="res://art/demo/props/lumen_0.png" id="prop_lumen_0"]
+[ext_resource type="Texture2D" path="res://art/demo/props/fence.png" id="prop_fence"]
+[ext_resource type="Texture2D" path="res://art/demo/props/tree_1.png" id="prop_tree_1"]
+[ext_resource type="Texture2D" path="res://art/demo/props/tree_2.png" id="prop_tree_2"]
+[ext_resource type="Texture2D" path="res://art/demo/props/tree_3.png" id="prop_tree_3"]
+[ext_resource type="Texture2D" path="res://art/demo/props/bush.png" id="prop_bush"]
+[ext_resource type="Texture2D" path="res://art/demo/props/rock_0.png" id="prop_rock_0"]
+[ext_resource type="Texture2D" path="res://art/demo/props/weed_0.png" id="prop_weed_0"]
+[ext_resource type="Texture2D" path="res://art/demo/props/weed_1.png" id="prop_weed_1"]
+[ext_resource type="Texture2D" path="res://art/demo/props/rock_1.png" id="prop_rock_1"]
+[ext_resource type="Texture2D" path="res://art/demo/props/glow_flower.png" id="prop_glow_flower"]
+[ext_resource type="Texture2D" path="res://art/demo/props/protagonist.png" id="prop_protagonist"]
+
+[sub_resource type="Gradient" id="sky"]
+offsets = PackedFloat32Array(0, 0.2, 0.28, 0.5, 0.7, 0.78, 0.86, 1)
+colors = PackedColorArray(0.42, 0.46, 0.7, 1, 0.5, 0.52, 0.72, 1, 1, 0.88, 0.84, 1, 1, 0.99, 0.95, 1, 1, 0.9, 0.74, 1, 0.92, 0.66, 0.6, 1, 0.5, 0.5, 0.72, 1, 0.42, 0.46, 0.7, 1)
+
+[sub_resource type="FastNoiseLite" id="cloud_noise"]
+frequency = 0.012
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="cloud_tex"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("cloud_noise")
+
+[sub_resource type="ShaderMaterial" id="grade_mat"]
+shader = ExtResource("grade")
+shader_parameter/cloud_noise = SubResource("cloud_tex")
+
+[sub_resource type="ShaderMaterial" id="water_mat"]
+shader = ExtResource("water")
+
+[sub_resource type="ShaderMaterial" id="sway_tree"]
+shader = ExtResource("sway")
+shader_parameter/amount = 1.2
+
+[sub_resource type="ShaderMaterial" id="sway_bush"]
+shader = ExtResource("sway")
+shader_parameter/amount = 0.7
+
+[sub_resource type="ShaderMaterial" id="sway_turnip"]
+shader = ExtResource("sway")
+shader_parameter/amount = 0.6
+
+[sub_resource type="ShaderMaterial" id="sway_lumen"]
+shader = ExtResource("sway")
+shader_parameter/amount = 0.8
+
+[sub_resource type="ShaderMaterial" id="sway_weed"]
+shader = ExtResource("sway")
+shader_parameter/amount = 0.9
+
+[sub_resource type="ShaderMaterial" id="sway_glow_flower"]
+shader = ExtResource("sway")
+shader_parameter/amount = 0.8
+
+[sub_resource type="Gradient" id="light_falloff"]
+offsets = PackedFloat32Array(0, 0.35, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.45, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="light_tex"]
+gradient = SubResource("light_falloff")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="additive"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="particle_fade"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="FarmDemo" type="Node2D"]
+
+[node name="DayCycle" type="CanvasModulate" parent="."]
+script = ExtResource("day_cycle")
+cycle_seconds = 24.0
+start_time = 0.32
+sky = SubResource("sky")
+
+[node name="Water" type="Sprite2D" parent="."]
+material = SubResource("water_mat")
+texture = ExtResource("water_tex")
+centered = false
+
+[node name="Ground" type="Sprite2D" parent="."]
+texture = ExtResource("ground")
+centered = false
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="turnip_3_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(80, 56)
+texture = ExtResource("prop_turnip_3")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_3_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(96, 56)
+texture = ExtResource("prop_turnip_3")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_3_3" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(144, 56)
+texture = ExtResource("prop_turnip_3")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_2_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(160, 56)
+texture = ExtResource("prop_turnip_2")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_2_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(80, 72)
+texture = ExtResource("prop_turnip_2")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_3_4" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(96, 72)
+texture = ExtResource("prop_turnip_3")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_1_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(144, 72)
+texture = ExtResource("prop_turnip_1")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_2_3" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(160, 72)
+texture = ExtResource("prop_turnip_2")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_1_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(80, 88)
+texture = ExtResource("prop_turnip_1")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_2_4" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(96, 88)
+texture = ExtResource("prop_turnip_2")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_1_3" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(112, 88)
+texture = ExtResource("prop_turnip_1")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_0_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(128, 88)
+texture = ExtResource("prop_turnip_0")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_1_4" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(144, 88)
+texture = ExtResource("prop_turnip_1")
+offset = Vector2(0, -8.0)
+
+[node name="turnip_0_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_turnip")
+position = Vector2(160, 88)
+texture = ExtResource("prop_turnip_0")
+offset = Vector2(0, -8.0)
+
+[node name="lumen_2_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_lumen")
+position = Vector2(112, 56)
+texture = ExtResource("prop_lumen_2")
+offset = Vector2(0, -8.0)
+
+[node name="lumen_2_1_light" type="PointLight2D" parent="Props/lumen_2_1" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(1.000, 0.851, 0.541, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.9
+
+[node name="lumen_1_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_lumen")
+position = Vector2(128, 56)
+texture = ExtResource("prop_lumen_1")
+offset = Vector2(0, -8.0)
+
+[node name="lumen_1_1_light" type="PointLight2D" parent="Props/lumen_1_1" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(0.788, 0.702, 1.000, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.5
+
+[node name="lumen_1_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_lumen")
+position = Vector2(112, 72)
+texture = ExtResource("prop_lumen_1")
+offset = Vector2(0, -8.0)
+
+[node name="lumen_1_2_light" type="PointLight2D" parent="Props/lumen_1_2" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(0.788, 0.702, 1.000, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.5
+
+[node name="lumen_0_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_lumen")
+position = Vector2(128, 72)
+texture = ExtResource("prop_lumen_0")
+offset = Vector2(0, -8.0)
+
+[node name="lumen_0_1_light" type="PointLight2D" parent="Props/lumen_0_1" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(0.788, 0.702, 1.000, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.35
+
+[node name="fence_1" type="Sprite2D" parent="Props"]
+position = Vector2(48, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_2" type="Sprite2D" parent="Props"]
+position = Vector2(64, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_3" type="Sprite2D" parent="Props"]
+position = Vector2(80, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_4" type="Sprite2D" parent="Props"]
+position = Vector2(96, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_5" type="Sprite2D" parent="Props"]
+position = Vector2(112, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_6" type="Sprite2D" parent="Props"]
+position = Vector2(128, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_7" type="Sprite2D" parent="Props"]
+position = Vector2(144, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_8" type="Sprite2D" parent="Props"]
+position = Vector2(160, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_9" type="Sprite2D" parent="Props"]
+position = Vector2(176, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="fence_10" type="Sprite2D" parent="Props"]
+position = Vector2(192, 24)
+texture = ExtResource("prop_fence")
+offset = Vector2(0, -8.0)
+
+[node name="tree_1_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_tree")
+position = Vector2(32, 104)
+texture = ExtResource("prop_tree_1")
+offset = Vector2(0, -32.0)
+
+[node name="tree_2_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_tree")
+position = Vector2(240, 56)
+texture = ExtResource("prop_tree_2")
+offset = Vector2(0, -32.0)
+
+[node name="tree_3_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_tree")
+position = Vector2(16, 184)
+texture = ExtResource("prop_tree_3")
+offset = Vector2(0, -32.0)
+
+[node name="bush_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_bush")
+position = Vector2(256, 168)
+texture = ExtResource("prop_bush")
+offset = Vector2(0, -16.0)
+
+[node name="rock_0_1" type="Sprite2D" parent="Props"]
+position = Vector2(208, 136)
+texture = ExtResource("prop_rock_0")
+offset = Vector2(0, -8.0)
+
+[node name="weed_0_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_weed")
+position = Vector2(240, 120)
+texture = ExtResource("prop_weed_0")
+offset = Vector2(0, -8.0)
+
+[node name="weed_1_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_weed")
+position = Vector2(64, 152)
+texture = ExtResource("prop_weed_1")
+offset = Vector2(0, -8.0)
+
+[node name="rock_1_1" type="Sprite2D" parent="Props"]
+position = Vector2(96, 184)
+texture = ExtResource("prop_rock_1")
+offset = Vector2(0, -8.0)
+
+[node name="glow_flower_1" type="Sprite2D" parent="Props"]
+material = SubResource("sway_glow_flower")
+position = Vector2(288, 104)
+texture = ExtResource("prop_glow_flower")
+offset = Vector2(0, -8.0)
+
+[node name="glow_flower_1_light" type="PointLight2D" parent="Props/glow_flower_1" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(0.749, 0.902, 1.000, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.8
+
+[node name="glow_flower_2" type="Sprite2D" parent="Props"]
+material = SubResource("sway_glow_flower")
+position = Vector2(272, 136)
+texture = ExtResource("prop_glow_flower")
+offset = Vector2(0, -8.0)
+
+[node name="glow_flower_2_light" type="PointLight2D" parent="Props/glow_flower_2" groups=["night_lights"]]
+position = Vector2(0, -9)
+color = Color(0.749, 0.902, 1.000, 1)
+texture = SubResource("light_tex")
+texture_scale = 0.8
+
+[node name="protagonist_1" type="Sprite2D" parent="Props"]
+position = Vector2(144, 136)
+texture = ExtResource("prop_protagonist")
+offset = Vector2(0, -16.0)
+script = ExtResource("idle_bob")
+
+[node name="SunShafts" type="Node2D" parent="."]
+z_index = 10
+
+[node name="Shaft0" type="Polygon2D" parent="SunShafts" node_paths=PackedStringArray("day_cycle")]
+material = SubResource("additive")
+polygon = PackedVector2Array(250, -10, 320, -10, 216, 202, 146, 202)
+vertex_colors = PackedColorArray(1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0, 1, 0.95, 0.8, 0)
+script = ExtResource("light_shaft")
+day_cycle = NodePath("../../DayCycle")
+
+[node name="Shaft1" type="Polygon2D" parent="SunShafts" node_paths=PackedStringArray("day_cycle")]
+material = SubResource("additive")
+polygon = PackedVector2Array(300, -10, 360, -10, 288, 202, 228, 202)
+vertex_colors = PackedColorArray(1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0, 1, 0.95, 0.8, 0)
+script = ExtResource("light_shaft")
+day_cycle = NodePath("../../DayCycle")
+
+[node name="Shaft2" type="Polygon2D" parent="SunShafts" node_paths=PackedStringArray("day_cycle")]
+material = SubResource("additive")
+polygon = PackedVector2Array(40, -10, 70, -10, -10, 202, -40, 202)
+vertex_colors = PackedColorArray(1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0.22, 1, 0.95, 0.8, 0, 1, 0.95, 0.8, 0)
+script = ExtResource("light_shaft")
+day_cycle = NodePath("../../DayCycle")
+
+[node name="Pollen" type="CPUParticles2D" parent="."]
+z_index = 11
+position = Vector2(168.0, 96.0)
+amount = 40
+lifetime = 9.0
+preprocess = 9.0
+texture = ExtResource("pollen")
+emission_shape = 3
+emission_rect_extents = Vector2(188.0, 106.0)
+direction = Vector2(1, 0.3)
+spread = 40.0
+gravity = Vector2(4, 2)
+initial_velocity_min = 2.0
+initial_velocity_max = 6.0
+angular_velocity_min = -40.0
+angular_velocity_max = 40.0
+color = Color(1, 0.97, 0.85, 0.9)
+color_ramp = SubResource("particle_fade")
+
+[node name="Petals" type="CPUParticles2D" parent="."]
+z_index = 11
+position = Vector2(168.0, 96.0)
+amount = 10
+lifetime = 9.0
+preprocess = 9.0
+texture = ExtResource("petal")
+emission_shape = 3
+emission_rect_extents = Vector2(188.0, 106.0)
+direction = Vector2(1, 0.3)
+spread = 40.0
+gravity = Vector2(6, 5)
+initial_velocity_min = 2.0
+initial_velocity_max = 6.0
+angular_velocity_min = -40.0
+angular_velocity_max = 40.0
+color = Color(1, 1, 1, 1)
+color_ramp = SubResource("particle_fade")
+
+[node name="Grade" type="CanvasLayer" parent="."]
+
+[node name="Screen" type="ColorRect" parent="Grade"]
+material = SubResource("grade_mat")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(168.0, 96.0)
