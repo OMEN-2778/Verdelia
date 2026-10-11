@@ -13,3 +13,12 @@
 | Godot MCP | `.mcp.json` | 让 Claude 启动编辑器、运行项目、读取调试输出、创建场景和节点（需要 `godot` 在 PATH 上） |
 
 在 Claude Code 里打开本仓库时会提示信任项目插件和 `.mcp.json` 里的 MCP 服务器，确认即可。
+
+## 美术工具
+
+- `art/palette/verdelia.gpl`（及色板预览 `.png`）：项目调色板，12 条色阶 × 6 级 + 描边色和纸色，阴影偏紫、高光偏暖。可直接导入 Aseprite / LibreSprite / GIMP。
+- `tools/art/pixeltool.py`：把第三方素材统一到项目调色板。
+  - `remap in.png out.png --selout`：按 OKLab 最近色映射到调色板，并把黑描边改成随底色变化的深色（selout）。
+  - `preview in.png --after out.png -o cmp.png`：放大并排对比。
+  - `palette art/palette/verdelia`：修改色阶后重新生成调色板。
+- `docs/art/palette-remap-demo.png`：效果演示，左边是原图，右边是处理后。原图是 Kenney 的 Tiny Battle（CC0）。

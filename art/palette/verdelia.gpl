@@ -1,0 +1,84 @@
+GIMP Palette
+Name: Verdelia
+Columns: 6
+#
+ 58  42  62	ink
+251 245 230	paper
+ 29  62  34	grass-0
+ 47 115  43	grass-1
+ 82 178  51	grass-2
+134 208  93	grass-3
+180 218 155	grass-4
+221 234 210	grass-5
+ 30  61  52	leaf-0
+ 45 113  82	leaf-1
+ 55 174 103	leaf-2
+ 96 205 127	leaf-3
+157 216 168	leaf-4
+211 233 213	leaf-5
+ 27  48  65	water-0
+ 38  90 120	water-1
+ 42 146 187	water-2
+ 84 194 217	water-3
+150 221 222	water-4
+208 236 232	water-5
+ 32  40  60	sky-0
+ 49  69 109	sky-1
+ 62 103 168	sky-2
+102 151 199	sky-3
+160 196 212	sky-4
+212 229 232	sky-5
+ 65  27  48	blossom-0
+120  38  77	blossom-1
+187  42  97	blossom-2
+217  84 122	blossom-3
+222 150 164	blossom-4
+236 208 211	blossom-5
+ 68  24  35	berry-0
+128  30  44	berry-1
+201  29  33	berry-2
+229  83  72	berry-3
+229 155 144	berry-4
+238 212 206	berry-5
+ 72  21  20	petal-0
+135  40  23	petal-1
+214  74  16	petal-2
+241 130  60	petal-3
+235 180 137	petal-4
+240 221 203	petal-5
+ 73  34  18	sun-0
+139  73  19	sun-1
+220 139   9	sun-2
+247 191  54	sun-3
+238 210 134	sun-4
+242 232 202	sun-5
+ 60  34  32	soil-0
+109  61  49	soil-1
+168  98  62	soil-2
+199 144 102	soil-3
+212 185 160	soil-4
+232 222 212	soil-5
+ 56  38  36	wood-0
+102  69  57	wood-1
+154 109  75	wood-2
+187 152 114	wood-3
+206 188 167	wood-4
+229 223 214	wood-5
+ 42  42  50	stone-0
+ 70  72  88	stone-1
+ 99 104 131	stone-2
+136 144 165	stone-3
+178 186 194	stone-4
+219 223 225	stone-5
+ 47  30  61	magic-0
+ 83  45 113	magic-1
+124  55 174	magic-2
+169  96 205	magic-3
+206 157 216	magic-4
+233 211 233	magic-5
+ 61  31  30	skin-0
+113  56  45	skin-1
+174  90  55	skin-2
+205 138  96	skin-3
+216 182 157	skin-4
+233 221 211	skin-5
