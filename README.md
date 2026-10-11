@@ -16,9 +16,9 @@
 
 ## 美术工具
 
-- `art/palette/verdelia.gpl`（及色板预览 `.png`）：项目调色板，12 条色阶 × 6 级 + 描边色和纸色，阴影偏紫、高光偏暖。可直接导入 Aseprite / LibreSprite / GIMP。
+- `art/palette/verdelia.gpl`（及色板预览 `.png`）：项目调色板（`sunlit` 预设），14 条色阶 × 6 级 + 描边色和纸色。方向是“明媚但不卡通”：低饱和、偏自然的色相，暗部提亮，阴影偏紫、高光偏暖。可直接导入 Aseprite / LibreSprite / GIMP。
 - `tools/art/pixeltool.py`：把第三方素材统一到项目调色板。
-  - `remap in.png out.png --selout`：按 OKLab 最近色映射到调色板，并把黑描边改成随底色变化的深色（selout）。
+  - `remap in.png out.png --selout`：按 OKLab 最近色映射到调色板，并把黑描边改成只比底色深一两级的柔和描边（selout）。`--preset vivid` 是之前的高饱和版本，只留作对比。
   - `preview in.png --after out.png -o cmp.png`：放大并排对比。
   - `palette art/palette/verdelia`：修改色阶后重新生成调色板。
 - `docs/art/palette-remap-demo.png`：效果演示，左边是原图，右边是处理后。原图是 Kenney 的 Tiny Battle（CC0）。

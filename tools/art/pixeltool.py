@@ -17,27 +17,58 @@ from pathlib import Path
 
 from PIL import Image
 
-# Base ramps for the Verdelia palette: (name, hue in degrees, saturation 0-1).
-# Each ramp gets len(STEPS) steps. Shadows drift toward blue/purple, highlights toward warm yellow,
-# which is the classic hue-shifting trick that keeps pixel art from looking muddy.
-RAMPS = [
-    ("grass", 100, 0.48),
-    ("leaf", 140, 0.45),
-    ("water", 195, 0.55),
-    ("sky", 215, 0.40),
-    ("blossom", 340, 0.55),
-    ("berry", 2, 0.65),
-    ("petal", 22, 0.75),
-    ("sun", 42, 0.80),
-    ("soil", 25, 0.40),
-    ("wood", 30, 0.30),
-    ("stone", 230, 0.12),
-    ("magic", 275, 0.45),
-    ("skin", 22, 0.45),
-]
-STEPS = [0.18, 0.31, 0.45, 0.59, 0.73, 0.87]  # HSL lightness per step
-INK = (0x3a, 0x2a, 0x3e)  # outline colour: a warm plum instead of pure black
-PAPER = (0xfb, 0xf5, 0xe6)  # warm off-white
+# Palette presets. Each ramp is (name, hue in degrees, saturation 0-1) and gets len(steps) steps.
+# Shadows drift toward blue/purple, highlights toward warm yellow (hue shifting keeps colours alive
+# without cranking saturation).
+#   sunlit: the project default. Bright and airy but natural: muted, earthy hues, lifted shadows,
+#           soft outlines that are only a little darker than the fill. Avoids the cartoon look.
+#   vivid:  saturated toy-like look, kept only for comparison.
+PRESETS = {
+    "sunlit": {
+        "ramps": [
+            ("grass", 88, 0.38),
+            ("leaf", 115, 0.28),
+            ("water", 192, 0.38),
+            ("sky", 205, 0.40),
+            ("blossom", 348, 0.40),
+            ("berry", 8, 0.46),
+            ("petal", 30, 0.55),
+            ("sun", 45, 0.65),
+            ("soil", 28, 0.28),
+            ("wood", 32, 0.22),
+            ("stone", 40, 0.07),
+            ("slate", 220, 0.10),
+            ("magic", 265, 0.25),
+            ("skin", 24, 0.38),
+        ],
+        "steps": [0.26, 0.39, 0.52, 0.64, 0.76, 0.87],
+        "ink": (0x4a, 0x3c, 0x44),
+        "paper": (0xf6, 0xf0, 0xe2),
+        "outline": "soft",
+    },
+    "vivid": {
+        "ramps": [
+            ("grass", 100, 0.48),
+            ("leaf", 140, 0.45),
+            ("water", 195, 0.55),
+            ("sky", 215, 0.40),
+            ("blossom", 340, 0.55),
+            ("berry", 2, 0.65),
+            ("petal", 22, 0.75),
+            ("sun", 42, 0.80),
+            ("soil", 25, 0.40),
+            ("wood", 30, 0.30),
+            ("stone", 230, 0.12),
+            ("magic", 275, 0.45),
+            ("skin", 22, 0.45),
+        ],
+        "steps": [0.18, 0.31, 0.45, 0.59, 0.73, 0.87],
+        "ink": (0x3a, 0x2a, 0x3e),
+        "paper": (0xfb, 0xf5, 0xe6),
+        "outline": "dark",
+    },
+}
+DEFAULT_PRESET = "sunlit"
 
 
 def hue_shift(h, step_index, n):
@@ -47,12 +78,13 @@ def hue_shift(h, step_index, n):
     return (h + d * abs(t) * 0.35) % 360
 
 
-def build_palette():
-    colours = [INK, PAPER]
-    for _, hue, sat in RAMPS:
-        for i, light in enumerate(STEPS):
-            h = hue_shift(hue, i, len(STEPS))
-            mid = (len(STEPS) - 1) / 2
+def build_palette(preset):
+    steps = preset["steps"]
+    colours = [preset["ink"], preset["paper"]]
+    for _, hue, sat in preset["ramps"]:
+        for i, light in enumerate(steps):
+            h = hue_shift(hue, i, len(steps))
+            mid = (len(steps) - 1) / 2
             s = sat * (0.75 + 0.5 * (1 - abs(i - mid) / mid))  # mid-tones most saturated
             r, g, b = colorsys.hls_to_rgb(h / 360, light, min(s, 1.0))
             colours.append((round(r * 255), round(g * 255), round(b * 255)))
@@ -102,8 +134,13 @@ def remap(im, pal, warmth=0.0):
     return out
 
 
-def selout(im, dark_threshold=0.22):
-    """Selective outline: dark outline pixels take a darkened tint of the neighbouring fill."""
+def selout(im, preset, dark_threshold=0.22):
+    """Selective outline: dark outline pixels take a darkened tint of the neighbouring fill.
+
+    "dark" keeps a strong outline; "soft" keeps it only a step or two darker than the fill,
+    which reads as shading rather than an ink line and is much less cartoon-like.
+    """
+    soft = preset["outline"] == "soft"
     src = im.load()
     out = im.copy()
     px = out.load()
@@ -120,12 +157,16 @@ def selout(im, dark_threshold=0.22):
                     if na and (0.299 * nr + 0.587 * ng + 0.114 * nb) / 255 > dark_threshold:
                         neigh.append((nr, ng, nb))
             if not neigh:
-                px[x, y] = (*INK, a)
+                px[x, y] = (*preset["ink"], a)
                 continue
             mr, mg, mb = (sum(c[i] for c in neigh) / len(neigh) for i in range(3))
             h, l, s = colorsys.rgb_to_hls(mr / 255, mg / 255, mb / 255)
-            h = hue_shift(h * 360, 0, len(STEPS)) / 360  # push toward violet like other shadows
-            nr, ng, nb = colorsys.hls_to_rgb(h, 0.17, min(1.0, s * 0.8 + 0.1))
+            h = hue_shift(h * 360, 0, len(preset["steps"])) / 360  # push toward violet like other shadows
+            if soft:
+                light, sat = max(0.22, l * 0.62), s * 0.75
+            else:
+                light, sat = 0.17, min(1.0, s * 0.8 + 0.1)
+            nr, ng, nb = colorsys.hls_to_rgb(h, light, sat)
             px[x, y] = (round(nr * 255), round(ng * 255), round(nb * 255), a)
     return out
 
@@ -135,47 +176,50 @@ def upscale(im, k):
 
 
 def cmd_palette(args):
-    pal = build_palette()
+    preset = PRESETS[args.preset]
+    pal = build_palette(preset)
+    ramps, n = preset["ramps"], len(preset["steps"])
+    ink, paper = preset["ink"], preset["paper"]
     out = Path(args.out)
-    n = len(STEPS)
-    lines = ["GIMP Palette", "Name: Verdelia", f"Columns: {n}", "#"]
-    lines.append(f"{INK[0]:3d} {INK[1]:3d} {INK[2]:3d}\tink")
-    lines.append(f"{PAPER[0]:3d} {PAPER[1]:3d} {PAPER[2]:3d}\tpaper")
-    for (name, _, _), i in zip(RAMPS, range(len(RAMPS))):
+    lines = ["GIMP Palette", f"Name: Verdelia ({args.preset})", f"Columns: {n}", "#"]
+    lines.append(f"{ink[0]:3d} {ink[1]:3d} {ink[2]:3d}\tink")
+    lines.append(f"{paper[0]:3d} {paper[1]:3d} {paper[2]:3d}\tpaper")
+    for i, (name, _, _) in enumerate(ramps):
         for j, c in enumerate(pal[2 + i * n : 2 + (i + 1) * n]):
             lines.append(f"{c[0]:3d} {c[1]:3d} {c[2]:3d}\t{name}-{j}")
     out.with_suffix(".gpl").write_text("\n".join(lines) + "\n")
-    sw = Image.new("RGBA", (n, len(RAMPS) + 1))
-    sw.putpixel((0, 0), (*INK, 255))
-    sw.putpixel((1, 0), (*PAPER, 255))
-    for i in range(len(RAMPS)):
+    sw = Image.new("RGBA", (n, len(ramps) + 1))
+    sw.putpixel((0, 0), (*ink, 255))
+    sw.putpixel((1, 0), (*paper, 255))
+    for i in range(len(ramps)):
         for j in range(n):
             sw.putpixel((j, i + 1), (*pal[2 + i * n + j], 255))
     upscale(sw, 16).save(out.with_suffix(".png"))
 
 
 def cmd_remap(args):
+    preset = PRESETS[args.preset]
     im = Image.open(args.input).convert("RGBA")
-    im = remap(im, build_palette(), args.warmth)
     if args.selout:
-        im = selout(im)
-    im.save(args.output)
+        # Outline first, so the recoloured outline is also snapped onto the palette.
+        im = selout(im, preset)
+    remap(im, build_palette(preset), args.warmth).save(args.output)
 
 
 def cmd_selout(args):
-    selout(Image.open(args.input).convert("RGBA")).save(args.output)
+    selout(Image.open(args.input).convert("RGBA"), PRESETS[args.preset]).save(args.output)
 
 
 def cmd_preview(args):
-    a = upscale(Image.open(args.input).convert("RGBA"), args.scale)
-    if args.after:
-        b = upscale(Image.open(args.after).convert("RGBA"), args.scale)
-        gap = 2 * args.scale
-        canvas = Image.new("RGBA", (a.width + gap + b.width, max(a.height, b.height)), (*PAPER, 255))
-        canvas.alpha_composite(a, (0, 0))
-        canvas.alpha_composite(b, (a.width + gap, 0))
-        a = canvas
-    a.save(args.output)
+    images = [upscale(Image.open(path).convert("RGBA"), args.scale) for path in [args.input, *args.after]]
+    gap = 2 * args.scale
+    width = sum(im.width for im in images) + gap * (len(images) - 1)
+    canvas = Image.new("RGBA", (width, max(im.height for im in images)), (*PRESETS[DEFAULT_PRESET]["paper"], 255))
+    x = 0
+    for im in images:
+        canvas.alpha_composite(im, (x, 0))
+        x += im.width + gap
+    canvas.save(args.output)
 
 
 def main():
@@ -184,24 +228,27 @@ def main():
 
     s = sub.add_parser("palette")
     s.add_argument("out", help="output path without extension, e.g. art/palette/verdelia")
+    s.add_argument("--preset", choices=PRESETS, default=DEFAULT_PRESET)
     s.set_defaults(func=cmd_palette)
 
     s = sub.add_parser("remap")
     s.add_argument("input")
     s.add_argument("output")
     s.add_argument("--warmth", type=float, default=1.0, help="0 = neutral, 1 = default warm grade")
+    s.add_argument("--preset", choices=PRESETS, default=DEFAULT_PRESET)
     s.add_argument("--selout", action="store_true", help="also apply selective outline")
     s.set_defaults(func=cmd_remap)
 
     s = sub.add_parser("selout")
     s.add_argument("input")
     s.add_argument("output")
+    s.add_argument("--preset", choices=PRESETS, default=DEFAULT_PRESET)
     s.set_defaults(func=cmd_selout)
 
     s = sub.add_parser("preview")
     s.add_argument("input")
     s.add_argument("-o", "--output", required=True)
-    s.add_argument("--after", help="second image to place side by side")
+    s.add_argument("--after", nargs="*", default=[], help="more images to place side by side")
     s.add_argument("--scale", type=int, default=4)
     s.set_defaults(func=cmd_preview)
 
