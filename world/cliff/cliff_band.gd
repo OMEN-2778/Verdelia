@@ -184,21 +184,6 @@ func _paint_face(w: int) -> void:
 				v += 0.04
 			var col := _q(ROCK, v, i, y)
 			_put(i, y, col)
-	# a few rounded outcrops bulging from the face
-	var x := _rng.randf_range(20, 80)
-	while x < w:
-		var r := _rng.randf_range(4, 8)
-		var cy := lerpf(_top[int(x)], _bottom[int(x)], _rng.randf_range(0.35, 0.75))
-		for yy in range(int(cy - r), int(cy + r) + 1):
-			for xx in range(int(x - r * 1.3), int(x + r * 1.3) + 1):
-				var dx := (xx - x) / (r * 1.3)
-				var dy := (yy - cy) / r
-				if dx * dx + dy * dy <= 1.0 and xx >= 0 and xx < w:
-					var lit := -0.55 * dx - 0.75 * dy + 0.45 * sqrt(maxf(0.0, 1.0 - dx * dx - dy * dy))
-					_put(xx, yy, _q(ROCK, 0.25 + lit * 0.6, xx, yy))
-					if dx * dx + dy * dy > 0.8 and dx + dy > 0.4:
-						_put(xx, yy, Color(ROCK[1]))
-		x += _rng.randf_range(60, 150)
 
 
 ## Grass lip of uneven thickness, with clumps of grass hanging over the edge.
@@ -378,9 +363,6 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 					c = Color(MEADOW[2 if g > 0.8 else 1]).darkened(depth * 0.2)  # grass creeping in from the sides
 					if _hash(i, y * 3 + 7) < 0.25:
 						c = Color(MEADOW_BLADE)
-				elif _hash(i * 7 + y, 913) < 0.012:
-					c = Color(ROCK[5])
-					_put(i, y + 1, Color(ROCK[2]))
 			_put(i, y, c)
 	# the gully banks: soil (turf for a grass slope) rising from nothing at the far end to the cut;
 	# the left bank faces away from the light, the right one into it; turf lips the high ground
@@ -651,23 +633,12 @@ func paint_terrain(t: Terrain) -> void:
 					t.paint_ground(Vector2i(cx, cy), Terrain.Kind.DIRT)
 
 
-## Rubble at the foot and the cliff's shadow on the meadow.
+## The cliff's shadow on the meadow at its foot.
 func _paint_foot(w: int) -> void:
 	for i in w:
 		var b := int(_bottom[i])
 		for k in 6:
 			_blend(i, b + 1 + k, Color(0.08, 0.16, 0.1, 0.26 - k * 0.04))
-	var count := w / 18
-	for n in count:
-		var x := _rng.randf_range(0, w)
-		var b := _bottom[int(x)]
-		var r := _rng.randf_range(1.5, 3.5)
-		for y in range(int(b - r), int(b + 2)):
-			for xx in range(int(x - r - 1), int(x + r + 2)):
-				var dx := (xx - x) / r
-				var dy := (y - b) / (r * 0.8)
-				if dx * dx + dy * dy <= 1.0:
-					_put(xx, y, _q(ROCK, 0.35 - 0.4 * dx - 0.5 * dy, xx, y, 2))
 
 
 ## Top edge / foot of the face (global y) at a global x, for snapping waterfalls and props.
