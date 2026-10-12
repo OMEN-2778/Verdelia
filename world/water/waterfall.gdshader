@@ -1,6 +1,8 @@
-// A waterfall seen from the front: a lip where the water bends over the edge, streaks of falling
-// water of different speeds, ragged see-through sides, and a churning foam plume with spreading
-// rings at the foot. The sprite is a blank texture; everything is drawn from UV * size.
+// A waterfall seen from the front, drawn as a solid, rounded sheet: the water rolls over a bright
+// lip, falls as a curved sheet lit from the upper left (a highlight down the left third, shade on
+// the right), carries a few long streaks that stretch as they speed up, whitens near the bottom,
+// and lands in a mound of puffy foam with a skirt of floating foam and clean rings on the pool.
+// Wet rock darkens along both sides. The sprite is a blank texture; everything comes from UV * size.
 shader_type canvas_item;
 
 uniform vec2 size = vec2(40.0, 60.0);  // whole sprite in px (fall + splash + side padding)
@@ -8,10 +10,13 @@ uniform float pad = 10.0;  // px of padding left/right for the splash
 uniform float fall_h = 40.0;  // px from the lip to the pool
 uniform float speed = 1.0;
 uniform float seed = 0.0;
-uniform vec4 c_deep : source_color = vec4(0.208, 0.471, 0.678, 1.0);
-uniform vec4 c_mid : source_color = vec4(0.380, 0.690, 0.851, 1.0);
-uniform vec4 c_light : source_color = vec4(0.690, 0.890, 0.957, 1.0);
+uniform vec4 c_deep : source_color = vec4(0.153, 0.369, 0.553, 1.0);
+uniform vec4 c_mid : source_color = vec4(0.247, 0.522, 0.729, 1.0);
+uniform vec4 c_light : source_color = vec4(0.459, 0.741, 0.882, 1.0);
+uniform vec4 c_high : source_color = vec4(0.773, 0.918, 0.973, 1.0);
 uniform vec4 c_foam : source_color = vec4(0.965, 0.992, 1.0, 1.0);
+uniform vec4 c_foam_shade : source_color = vec4(0.682, 0.827, 0.910, 1.0);
+uniform vec4 wet_rock : source_color = vec4(0.09, 0.08, 0.07, 0.42);
 
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
@@ -29,48 +34,91 @@ float vnoise(vec2 p) {
 	return a + (b - a) * t.x + (c - a) * t.y + (a - b - c + d) * t.x * t.y;
 }
 
+// Foam mound at the foot: overlapping round puffs that swell and settle. Returns 0 outside,
+// 1 for lit foam, 0.5 for the shaded underside of a puff.
+float puffs(vec2 d, float w, float t) {
+	float best = 0.0;
+	for (int i = 0; i < 7; i++) {
+		float fi = float(i);
+		float fx = (fi / 6.0 - 0.5) * (w + 8.0) + (hash(vec2(fi, 2.0)) - 0.5) * 3.0;
+		float lift = sin(t * 2.2 + fi * 1.9) * 0.8;
+		float r = (4.0 + hash(vec2(fi, 5.0)) * 2.5) * (1.0 - abs(fi / 6.0 - 0.5) * 0.8) + sin(t * 3.1 + fi * 2.7) * 0.5;
+		vec2 c = vec2(fx, -1.5 - r * 0.45 + lift);
+		vec2 q = (d - c) * vec2(1.0, 1.15);
+		float l = length(q);
+		if (l < r) {
+			float v = (q.x + q.y) / r > 0.45 ? 0.5 : 1.0;  // light from the upper left
+			best = max(best, v);
+		}
+	}
+	return best;
+}
+
 void fragment() {
 	vec2 p = floor(UV * size);
-	ivec2 q = ivec2(mod(p, 4.0));
-	float bay = BAYER[q.y * 4 + q.x] / 16.0 - 0.5;
+	ivec2 bq = ivec2(mod(p, 4.0));
+	float bay = BAYER[bq.y * 4 + bq.x] / 16.0 - 0.5;
 	float w = size.x - pad * 2.0;
-	float x = p.x - pad;  // 0..w across the fall
+	float xc = p.x + 0.5 - size.x * 0.5;  // 0 in the middle of the fall
 	float y = p.y;  // 0 at the lip
 	float t = TIME * speed;
+	float fall = clamp(y / fall_h, 0.0, 1.0);
 	vec4 col = vec4(0.0);
 
-	// the falling sheet
-	float edge_wobble = (vnoise(vec2(y * 0.25 - t * 6.0, 3.0)) - 0.5) * 2.0;
-	float across = (x + 0.5) / w;
-	if (x >= -edge_wobble * 0.6 && x < w + edge_wobble * 0.6 && y < fall_h + 2.0) {
-		float lane = floor(x / 2.0);
-		float lane_speed = 34.0 + hash(vec2(lane, 7.0)) * 26.0;  // px per second, different per lane
-		float s = vnoise(vec2(x * 0.7, (y - t * lane_speed) * 0.09)) * 0.7 + vnoise(vec2(x * 1.9, (y - t * lane_speed * 1.3) * 0.25)) * 0.3;
-		s += bay * 0.18;
-		float sidedark = smoothstep(0.0, 0.22, min(across, 1.0 - across));
-		vec3 c = s > 0.7 ? c_foam.rgb : s > 0.52 ? c_light.rgb : s > 0.32 ? c_mid.rgb : c_deep.rgb;
-		c = mix(c_deep.rgb, c, 0.55 + 0.45 * sidedark);
-		// the lip: water rolling over the edge, bright and smooth
-		if (y < 3.0) c = y < 1.0 ? c_light.rgb : (s > 0.5 ? c_foam.rgb : c_light.rgb);
-		// thinner (see-through) at the ragged sides
-		float a = mix(0.55, 0.95, sidedark);
+	// sheet outline: spreads a little as it falls, edges sway gently
+	float hw = w * 0.5 + fall * 1.5 + (vnoise(vec2(y * 0.12 - t * 1.5, 3.0)) - 0.5) * 1.2 * fall;
+	float u = xc / hw;  // -1..1 across the sheet
+
+	// wet rock just outside the sheet
+	if (y < fall_h - 1.0 && abs(u) >= 1.0 && abs(xc) < hw + 2.0) {
+		col = wet_rock;
+		if (abs(xc) < hw + 1.0) col.a *= 1.4;
+	}
+
+	if (abs(u) < 1.0 && y < fall_h + 2.0) {
+		// rounded sheet lit from the upper left: highlight a third of the way in, shade on the right
+		float nz = sqrt(max(1.0 - u * u, 0.0));
+		float v = 0.13 + 0.36 * nz - 0.26 * u + 0.2 * exp(-pow((u + 0.4) / 0.16, 2.0));
+		if (u > 0.82) v -= 0.12;  // the shaded far edge
+		// long streaks in a few lanes, stretching as the water speeds up
+		float lane_w = 2.0;
+		float lane = floor((xc + 64.0) / lane_w);
+		float lh = hash(vec2(lane, 7.0));
+		float ys = pow(y + 1.0, 0.75) * 3.0;  // stretched coordinate: streaks lengthen lower down
+		float sp = 9.0 + lh * 6.0;
+		float seg = fract((ys - t * sp) / (10.0 + lh * 8.0) + lh * 3.0);
+		if (lh > 0.5 && seg < 0.4) v += 0.2;
+		else if (lh < 0.18 && seg < 0.3) v -= 0.12;
+		// the lip: water rolling over the edge, smooth and bright
+		if (y < 1.0) v = 0.62;
+		else if (y < 3.0) v = max(v, 0.82 - (y - 1.0) * 0.08 - max(u, 0.0) * 0.3);
+		// aerated and white low down
+		float air = smoothstep(0.68, 1.0, fall) * (0.5 + 0.5 * vnoise(vec2(xc * 0.45, ys * 0.35 - t * 4.0)));
+		v += air * 0.45;
+		v += bay * 0.06;
+		vec3 c = v > 0.92 ? c_foam.rgb : v > 0.74 ? c_high.rgb : v > 0.52 ? c_light.rgb : v > 0.32 ? c_mid.rgb : c_deep.rgb;
+		float a = abs(u) > 0.9 ? 0.82 : 1.0;  // the thin outer edge lets a little rock through
 		col = vec4(c, a);
 	}
 
-	// foam plume and spreading rings at the foot
-	float fy = y - fall_h;  // 0 at the pool surface
-	if (fy > -6.0) {
-		vec2 d = vec2((x - w * 0.5) / (w * 0.5 + pad * 0.6), fy / 7.0);
-		float r = length(d);
-		float boil = vnoise(vec2(x * 0.35 + t * 3.0, fy * 0.5 - t * 5.0)) * 0.6 + vnoise(vec2(x * 0.9 - t * 2.0, fy * 0.9)) * 0.4;
-		if (r < 1.0 && boil + bay * 0.25 > 0.32 + r * 0.45) {
-			col = vec4(boil > 0.62 ? c_foam.rgb : c_light.rgb, 1.0);
+	// at the foot: rings on the pool, a skirt of floating foam, then the foam mound on top
+	vec2 d = vec2(xc, y - fall_h);
+	if (d.y > -10.0) {
+		vec2 e = d / vec2(w * 0.5 + 4.0, 3.2);  // flattened: the pool is seen at an angle
+		float r = length(e);
+		for (int i = 0; i < 2; i++) {
+			float rr = 1.15 + fract(t * 0.35 + float(i) * 0.5) * 1.1;
+			if (d.y > 0.0 && abs(r - rr) * (w * 0.5 + 4.0) < 0.6) {
+				col = vec4(c_high.rgb, 0.7 * (1.0 - (rr - 1.15) / 1.1));
+			}
 		}
-		// rings expanding from the plume over the pool
-		float ring = fract(r * 1.2 - t * 0.8);
-		if (fy > 0.0 && r > 0.85 && r < 1.6 && ring < 0.08 && hash(vec2(floor(x / 2.0), floor(t * 0.8 - r * 1.2))) > 0.3) {
-			col = vec4(c_foam.rgb, 0.65 * (1.6 - r));
+		if (d.y > -1.0 && r < 1.25) {
+			float f = vnoise(vec2(xc * 0.5 + t * 0.6, d.y * 0.9 - t * 0.4)) + bay * 0.2;
+			if (f > 0.35 + r * 0.25) col = vec4(f > 0.72 ? c_foam.rgb : c_foam_shade.rgb, 1.0);
 		}
+		float pf = puffs(d, w, t);
+		if (pf > 0.75) col = vec4(c_foam.rgb, 1.0);
+		else if (pf > 0.0) col = vec4(c_foam_shade.rgb, 1.0);
 	}
 	COLOR = col;
 }
