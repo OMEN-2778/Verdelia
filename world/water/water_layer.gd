@@ -35,3 +35,4 @@ func _on_changed(_cells: Rect2i) -> void:
 	if m:
 		m.set_shader_parameter("map_px", Vector2(terrain.water.get_size() * terrain.cell_px))
 		m.set_shader_parameter("ground_data", terrain.texture)
+		m.set_shader_parameter("shore_depth_px", terrain.water_depth_cells * terrain.cell_px)

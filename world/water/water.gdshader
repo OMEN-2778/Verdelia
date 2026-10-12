@@ -66,6 +66,11 @@ uniform float caustic_strength : hint_range(0.0, 1.0) = 0.8;
 uniform float caustic_size = 9.0;  // px per caustic cell (the whole web scales with it)
 uniform float caustic_reach : hint_range(0.05, 1.0) = 0.6;  // how far from the shore they show (1 = water_depth_cells)
 uniform float caustic_speed = 0.8;
+// the near shore (land below the water, closest to the viewer) shows less of the bed: caustics there
+// reach this fraction as far from the shore and are this much as strong
+uniform float caustic_front_reach : hint_range(0.0, 1.0) = 0.5;
+uniform float caustic_front_strength : hint_range(0.0, 1.0) = 0.75;
+uniform float shore_depth_px = 40.0;  // Terrain.water_depth_cells * cell_px (set by WaterLayer)
 
 // set by DayNight: rgb = colour of the sun (or moon) on the water, a = how strongly it glitters
 global uniform vec4 day_sun;
@@ -308,13 +313,26 @@ void fragment() {
 		// caustics: thin lines of light playing on the bed in the shallow water
 		float ct = t * caustic_speed;
 		float c = caustic(pix, ct);
-		float near = 1.0 - smoothstep(caustic_reach * 0.35, caustic_reach, w.g + (vnoise(pix, 9.0) - 0.5) * 0.12);
-		float cv = near + bay * 0.6 > 0.35 ? c : 0.0;  // the web dissolves towards open water
+		// which shore is nearer, the far one (land above) or the near one (land below)?
+		float d_up = 99.0;
+		float d_down = 99.0;
+		for (int k = 1; k <= 16; k++) {
+			float o = float(k) * 3.0;
+			if (d_up > 98.0 && DATA(pix - vec2(0.0, o)).r < 0.5) d_up = o;
+			if (d_down > 98.0 && DATA(pix + vec2(0.0, o)).r < 0.5) d_down = o;
+		}
+		// only where the shore below is the nearest one (the depth says how far the nearest shore is)
+		float nearest = w.g * shore_depth_px;
+		float front = step(d_down, 98.0) * (1.0 - smoothstep(4.0, 12.0, d_down - nearest)) * smoothstep(-4.0, 6.0, d_up - d_down);
+		float reach = caustic_reach * mix(1.0, caustic_front_reach, front);
+		float c_strength = caustic_strength * mix(1.0, caustic_front_strength, front);
+		float near = 1.0 - smoothstep(reach * 0.35, reach, w.g + (vnoise(pix, 9.0) - 0.5) * 0.12);
+		float cv = near + bay * 0.6 > 0.35 + front * 0.08 ? c : 0.0;  // the web dissolves towards open water
 		if (cv > 0.95) {  // knots where the threads cross
-			col = mix(col, caustic_color.rgb, caustic_strength);
+			col = mix(col, caustic_color.rgb, c_strength);
 			a = max(a, 0.9);
 		} else if (cv > 0.45) {  // the threads
-			col = mix(col, caustic_glow.rgb, caustic_strength * 0.85);
+			col = mix(col, caustic_glow.rgb, c_strength * 0.85);
 			a = max(a, 0.75);
 		}
 
