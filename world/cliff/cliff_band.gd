@@ -57,6 +57,7 @@ const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 		_queue()
 
 var _top := PackedFloat32Array()
+var _top_orig := PackedFloat32Array()  # top edge before grass slopes lowered it
 var _bottom := PackedFloat32Array()
 var _x0 := 0
 var _y0 := 0
@@ -89,10 +90,11 @@ func generate() -> void:
 	for p in points:
 		ymin = minf(ymin, p.y)
 		ymax = maxf(ymax, p.y)
-	_y0 = int(ymin) - 18
+	_y0 = int(ymin) - 18 - (_notch_len() if not ramps.is_empty() else 0)  # room for ramp gullies
 	var h := int(ymax) + face + 36 - _y0
 	_img = Image.create(w, h, false, Image.FORMAT_RGBA8)
 	_shape(w)
+	_taper_for_grass_slopes(w)
 	_paint_face(w)
 	_paint_lip(w)
 	_paint_vines(w)
@@ -302,56 +304,66 @@ func _paint_opening(cx: int, half: int) -> void:
 		_put(x, by + 2, Color(MARBLE[1]))
 
 
-## A ramp cut through the face: the floor (earthen slope or stone stairs) runs from the top edge
-## down to the foot, between two freshly cut side walls (the left one in shade, the right one lit).
+## A ramp cut through the face. Climbing from the lower meadow to the upper level it has to cut
+## back into the high ground too, so above the top edge it runs on as a gully between two banks
+## that rise from nothing at its rounded far end to the full cut where the face drops away. The
+## floor (earthen slope, stone stairs, or the meadow itself) darkens the deeper it lies, the left
+## bank and wall throw their shadow across it, the left side is in shade and the right side lit.
 func _paint_ramp(cx: int, half: int, style: int) -> void:
 	var l := cx - half
 	var r := cx + half
 	if r < 0 or l >= _top.size():
 		return
-	var ta := 0.0
-	var ba := 0.0
-	var n := 0
-	for i in range(maxi(l, 0), mini(r + 1, _top.size())):
-		ta += _top[i]
-		ba += _bottom[i]
-		n += 1
-	ta /= n
-	ba /= n
-	var y0 := int(ta) - 3
+	var span := _ramp_span(cx, half)
+	var ta := span.x
+	var ba := span.y
+	var nl := float(_notch_len())
+	var yn := ta - nl  # far end of the gully
 	var y1 := int(ba) + 3
 	var orig := _img.duplicate() as Image  # the uncut face, to texture the cut walls with
 	# clear the face, lip, hanging grass and foot rubble across the cut
 	for i in range(l, r + 1):
 		for y in range(int(_top[clampi(i, 0, _top.size() - 1)]) - 10, int(_bottom[clampi(i, 0, _top.size() - 1)]) + 9):
 			_put(i, y, Color(0, 0, 0, 0))
-	# the floor
-	var steps := maxi(2, int(roundf((ba - ta) / 6.0)))
-	var sh := (ba - ta + 2.0) / steps
-	for i in range(l, r + 1):
-		var u := (i - cx) / float(maxi(half, 1))  # -1..1 across
-		var top_i := y0 + int(_noise(i, 3, 4) * 3.0)
-		var bot_i := y1 - int(_noise(i, 9, 4) * 3.0)
-		for y in range(top_i, bot_i + 1):
-			var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)  # 0 top .. 1 bottom
+	# the floor, from the far end of the gully down to the foot
+	var steps := maxi(2, int(roundf((ba - yn) / 6.0)))
+	var sh := (ba - yn + 2.0) / steps
+	for y in range(int(yn) - 1, y1 + 1):
+		var west := float(l)
+		var east := float(r)
+		if y < ta:
+			west = cx - _notch_hw(y, ta, nl, half, -1, cx)
+			east = cx + _notch_hw(y, ta, nl, half, 1, cx)
+		var depth := clampf((y - yn) / maxf(ba - yn, 1.0), 0.0, 1.0)  # 0 far end .. 1 foot
+		for i in range(int(ceilf(west)), int(floorf(east)) + 1):
+			if y >= ta:
+				var bot_i := y1 - int(_noise(i, 9, 4) * 3.0)
+				if y > bot_i:
+					continue
+			var u := (i - cx) / float(maxi(half, 1))  # -1..1 across
 			var b: float = BAYER[(y & 3) * 4 + (i & 3)] / 16.0 - 0.5
+			var fade := smoothstep(0.45, 1.0, (ta - y) / nl) if y < ta else 0.0
+			if fade > 0.0 and style != 2 and _hash(i * 3 + 1, y * 7 + 5) + _noise(i, y + 300, 3) * 0.4 < fade * 1.25:
+				continue  # the far end of the gully peters out into the ground
+			var shadow := i - west < 1.0 + 4.0 * depth + (_noise(i, y, 3) - 0.5)  # from the left bank / wall
 			var c: Color
 			if style == 1:
-				c = _stair_pixel(i, y, u, ta, sh, b).darkened(f * 0.22)  # deeper into the cut, less light
-				if _cut_shadow(i, l, y, ta, ba) > 0.25:
+				c = _stair_pixel(i, y, u, yn, sh, b).darkened(depth * 0.24)
+				if shadow:
 					c = c.darkened(0.3)
 			elif style == 2:
 				# the meadow itself shows through (same ground, same tufts); only shade is laid over
 				# it, deepening down the slope and fading out at both ends so there is no seam
-				var ends := smoothstep(0.0, 0.18, f) * (1.0 - smoothstep(0.82, 1.0, f))
-				var shade := (0.06 + 0.2 * f) * ends + (0.16 if _cut_shadow(i, l, y, ta, ba) > 0.25 else 0.0) * smoothstep(0.0, 0.3, f)
+				var ends := smoothstep(0.0, 0.14, depth) * (1.0 - smoothstep(0.86, 1.0, depth))
+				var shade := ((0.04 + 0.22 * depth) * ends + (0.16 if shadow else 0.0) * smoothstep(0.0, 0.25, depth)) * (1.0 - fade)
 				var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
 				if swell < 0.12 and _noise(i, y + 90, 6) > 0.5:
 					shade += 0.06 * ends  # soft lumps in the turf hint at the slope
+				shade *= 1.0 - smoothstep(0.55, 1.0, absf(u)) * 0.7  # soft at the sides, no hard edge
 				shade = floorf((shade + b * 0.06) * 24.0) / 24.0
 				c = Color(0.04, 0.12, 0.06, clampf(shade, 0.0, 0.5))
 			else:
-				var v: float = 0.3 + 0.55 * (1.0 - f) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
+				var v: float = 0.3 + 0.55 * (1.0 - depth) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
 				var ledge := fposmod((y + _noise(i, 40, 6) * 5.0) / 9.0, 1.0)
 				if _noise(i, y + 140, 5) < 0.45:
 					ledge = 0.5  # the ledges break up, so it reads as a slope rather than steps
@@ -359,26 +371,55 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 					v -= 0.3  # little erosion ledges down the slope: a dark lip...
 				elif ledge < 0.24:
 					v += 0.16  # ...under a lit edge
-				if u > 0.8:
-					v -= 0.12
-				v -= _cut_shadow(i, l, y, ta, ba)
+				if shadow:
+					v -= 0.42
 				c = Color(DIRT[clampi(int(v * 6.0), 0, 5)])
 				var g := _noise(i, y + 70, 3)
-				if absf(u) > 0.62 and g > 0.62 - (absf(u) - 0.62):
-					c = Color(MEADOW[2 if g > 0.8 else 1]).darkened(f * 0.18)  # grass creeping in from the edges
+				var edge := minf(i - west, east - i) / maxf(east - west, 1.0)  # 0 at the sides
+				if edge < 0.2 and g > 0.5 + edge * 1.5:
+					c = Color(MEADOW[2 if g > 0.8 else 1]).darkened(depth * 0.2)  # grass creeping in from the sides
 					if _hash(i, y * 3 + 7) < 0.25:
 						c = Color(MEADOW_BLADE)
 				elif _hash(i * 7 + y, 913) < 0.012:
 					c = Color(ROCK[5])
 					_put(i, y + 1, Color(ROCK[2]))
 			_put(i, y, c)
+	# the gully banks: soil (turf for a grass slope) rising from nothing at the far end to the cut;
+	# the left bank faces away from the light, the right one into it; turf lips the high ground
+	for y in range(int(yn), int(ta) + 1):
+		if style == 2:
+			break  # a grass slope has no gully banks: the high ground just rolls down into it
+		var g := clampf((ta - y) / nl, 0.0, 1.0)  # 0 at the face .. 1 at the far end
+		var bh := int(roundf((1.0 - g) * 2.4 - 0.4))
+		for side in [-1, 1]:
+			var edge: float = cx + side * _notch_hw(y, ta, nl, half, side, cx)
+			var x0: int = int(roundf(edge)) + side
+			for k in bh:
+				var x: int = x0 + side * k
+				var c: Color
+				if style == 2:
+					c = Color(MEADOW_BLADE if side < 0 else MEADOW[2])
+				else:
+					c = Color(DIRT[1 if side < 0 else 4]) if k < bh - 1 else Color(DIRT[0] if side < 0 else DIRT[3])
+				_put(x, y, c)
+			var lip_x: int = x0 + side * bh
+			if _noise(lip_x, y + 50, 3) > g * 1.15:  # the turf lip breaks up as the bank dies away
+				_put(lip_x, y, Color(MEADOW[0] if side < 0 else MEADOW[2]))
+				if _noise(lip_x, y, 3) > 0.55:
+					_put(lip_x + side, y, Color(MEADOW[1]))
+	if style == 2:
+		_shade_tapered_ends(l, r)
+		for i in range(l - 3, r + 4):
+			for k in 4:
+				_blend(i, y1 + 1 + k, Color(0.08, 0.16, 0.1, 0.1 - k * 0.025))
+		return
 	# freshly cut side walls: the same rock, turned away from the light on the left and into it on
-	# the right; narrow at the top, widening toward the foot, with a ragged inner edge
+	# the right; widening toward the foot, with a ragged inner edge
 	for side in [-1, 1]:
 		for y in range(int(ta), int(ba) + 2):
 			var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
 			var jag := int(roundf((_noise(side * 31, y, 4) - 0.5) * 3.0))
-			var wpx := int(roundf(1.0 + 5.0 * f))
+			var wpx := int(roundf(2.0 + 4.0 * f))
 			var inner: int = (l + jag) if side < 0 else (r - jag)
 			for k in wpx + 1:
 				var x: int = (inner - k) if side < 0 else (inner + k)
@@ -397,11 +438,6 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				elif k == wpx:
 					c = c.darkened(0.45)  # crease where the wall meets the old face
 				_img.set_pixel(x, yy, c)
-		# the turf of the top edge wraps round the corner
-		var cx2: int = (l - 1) if side < 0 else (r + 1)
-		for k in 3:
-			_put(cx2 + side * k, int(ta) - 1, Color(MEADOW[1]))
-			_put(cx2 + side * k, int(ta) - 2, Color(MEADOW[0]))
 	# the old face rounds off into the cut: shading wraps away from the light on the left end and
 	# into it on the right end
 	for side in [-1, 1]:
@@ -434,6 +470,68 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 			_blend(i, y1 + 1 + k, Color(0.08, 0.16, 0.1, 0.16 - k * 0.04))
 
 
+## A grass slope is no cut: the cliff sinks into it. Either side of it the top edge comes down
+## toward the foot, so the face shrinks to a low lip at the slope and the high ground rolls down
+## to meet it.
+func _taper_for_grass_slopes(w: int) -> void:
+	_top_orig = _top.duplicate()
+	for r in ramps:
+		if int(r.z) != 2:
+			continue
+		var cx := int(r.x) - _x0
+		var half := int(r.y)
+		var reach := half * 1.5 + 10.0
+		for side in [-1, 1]:
+			for d in range(1, int(reach) + 1):
+				var i: int = cx + side * (half + d)
+				if i < 0 or i >= w:
+					continue
+				var t := 1.0 - smoothstep(0.0, 1.0, (d + (_noise(i, side * 7, 6) - 0.5) * 5.0) / reach)
+				var drop := (_bottom[i] - _top[i]) * 0.82 * t
+				_top[i] = maxf(_top[i], _top_orig[i] + drop)
+
+
+## Shade on the high ground that rolls down into a grass slope (it shows the meadow through).
+func _shade_tapered_ends(l: int, r: int) -> void:
+	for i in _top.size():
+		if i >= l and i <= r:
+			continue
+		var t0 := _top_orig[i]
+		var t1 := _top[i]
+		if t1 - t0 < 1.0:
+			continue
+		for y in range(int(t0), int(t1) - 1):
+			var k := (y - t0) / maxf(t1 - t0, 1.0)
+			var b: float = BAYER[(y & 3) * 4 + (i & 3)] / 16.0 - 0.5
+			var a := floorf((0.03 + 0.16 * k + b * 0.05) * 24.0) / 24.0
+			if a > 0.0:
+				_put(i, y, Color(0.04, 0.12, 0.06, a))
+
+
+## How far a ramp's gully runs back into the high ground, in px.
+func _notch_len() -> int:
+	return clampi(int(face * 0.6), 10, 28)
+
+
+## Average top edge and foot (local y) across a ramp's columns.
+func _ramp_span(cx: int, half: int) -> Vector2:
+	var ta := 0.0
+	var ba := 0.0
+	var n := 0
+	for i in range(maxi(cx - half, 0), mini(cx + half + 1, _top.size())):
+		ta += _top_orig[i]
+		ba += _bottom[i]
+		n += 1
+	return Vector2(ta / maxi(n, 1), ba / maxi(n, 1))
+
+
+## Half width of the gully at local y: full where it meets the face, rounding off to a narrow tip
+## at its far end, each side wavering a little on its own.
+func _notch_hw(y: float, ta: float, nl: float, half: int, side: int, cx: int) -> float:
+	var t := clampf((y - (ta - nl)) / (nl * 0.7), 0.0, 1.0)
+	return half * (0.62 + 0.38 * sqrt(t)) + (_noise(cx + side * 17, y, 5) - 0.5) * 1.8
+
+
 func _stair_pixel(i: int, y: int, u: float, ta: float, sh: float, b: float) -> Color:
 	var g := y - (ta - 2.0)
 	var j := floori(g / sh)
@@ -455,14 +553,6 @@ func _stair_pixel(i: int, y: int, u: float, ta: float, sh: float, b: float) -> C
 	return c
 
 
-## Shadow the left cut wall throws across the floor (light comes from the upper left): a few px
-## wide at the foot where the wall is tall, nothing at the top. Returns how much to darken.
-func _cut_shadow(i: int, l: int, y: int, ta: float, ba: float) -> float:
-	var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
-	var reach := 1.0 + 3.5 * f + (_noise(i, y, 3) - 0.5)
-	return 0.42 if i - l < reach else 0.0
-
-
 ## Index of the ramp whose floor contains local x (with `margin` px either side), or -1.
 func _ramp_index(local_x: float, margin := 0.0) -> int:
 	for k in ramps.size():
@@ -479,7 +569,7 @@ func ramp_at(world: Vector2) -> int:
 	if k < 0:
 		return -1
 	var i := clampi(int(p.x) - _x0, 0, _top.size() - 1)
-	if p.y < _top[i] - 3.0 or p.y > _bottom[i] + 3.0:
+	if p.y < _top[i] - _notch_len() - 2.0 or p.y > _bottom[i] + 3.0:
 		return -1
 	return int(ramps[k].z)
 
@@ -506,6 +596,25 @@ func _build_collision() -> void:
 		start = maxi(start, int(c.y) + 1)
 	if start < _top.size() - 1:
 		spans.append(Vector2i(start, _top.size() - 1))
+	# the gully banks: you walk up the floor, not out over the sides
+	for r in ramps:
+		var cx := int(r.x) - _x0
+		var span := _ramp_span(cx, int(r.y))
+		var nl := float(_notch_len())
+		for side in [-1, 1]:
+			var line := PackedVector2Array()
+			var outer := PackedVector2Array()
+			var y := span.x - nl * 0.62
+			while y <= span.x + 3.0:
+				var x: float = cx + side * (_notch_hw(y, span.x, nl, int(r.y), side, cx) + 1.0) + _x0
+				line.append(Vector2(x, y))
+				outer.insert(0, Vector2(x + side * 3.0, y))
+				y += 2.0
+			line.append_array(outer)
+			if line.size() >= 3:
+				var bank := CollisionPolygon2D.new()
+				bank.polygon = line
+				body.add_child(bank)
 	for sp in spans:
 		var poly := PackedVector2Array()
 		var i: int = sp.x
@@ -534,7 +643,7 @@ func paint_terrain(t: Terrain) -> void:
 		if int(r.z) == 2:
 			continue  # grass slopes need no path
 		var i := clampi(int(r.x) - _x0, 0, _top.size() - 1)
-		var top := to_global(Vector2(r.x, _top[i]))
+		var top := to_global(Vector2(r.x, _top[i] - _notch_len()))
 		var bot := to_global(Vector2(r.x, _bottom[i]))
 		for area in [Rect2(top + Vector2(-r.y * 0.8, -14), Vector2(r.y * 1.6, 16)), Rect2(bot + Vector2(-r.y * 0.8, -2), Vector2(r.y * 1.6, 16))]:
 			var c0 := t.cell_at(area.position)
@@ -579,6 +688,9 @@ func grass_excludes(world: Vector2) -> bool:
 	var i := int(p.x) - _x0
 	if i < 0 or i >= _bottom.size():
 		return false
+	var rk := _ramp_index(p.x, 2.0)
+	if rk >= 0 and int(ramps[rk].z) != 2 and p.y > _top[i] - _notch_len() - 2 and p.y <= _top[i]:
+		return true  # the gully floor of a path or stairs
 	if not (p.y > _top[i] - 1 and p.y < _bottom[i] + 1):
 		return false
 	var k := _ramp_index(p.x, -2.0)
