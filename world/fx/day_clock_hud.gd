@@ -18,9 +18,8 @@ const SHADE := Color(0.1, 0.12, 0.18, 0.55)
 func _draw() -> void:
 	var vp := get_viewport_rect().size
 	var origin := Vector2(vp.x - 30, 4)
-	var h := DayNight.hour
-	var is_day := h >= 6.0 and h < 18.0
-	var arc := fmod(h - 6.0 + 24.0, 12.0) / 12.0
+	var is_day := DayNight.is_day()
+	var arc := DayNight.sky_arc()
 	# the arc the sun or moon travels along
 	draw_rect(Rect2(origin + Vector2(-2, -1), Vector2(30, 20)), SHADE)
 	for i in 13:

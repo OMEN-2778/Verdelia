@@ -197,7 +197,7 @@ mouse_filter = 2
 [node name="DayNight" type="Node" parent="." node_paths=PackedStringArray("grade", "clouds", "shafts")]
 script = ExtResource("daynight")
 cycle_minutes = 0.75
-start_hour = 4.5
+start_hour = 3.5
 grade = NodePath("../Grade/Screen")
 clouds = NodePath("../Clouds")
 shafts = NodePath("../Shafts")
