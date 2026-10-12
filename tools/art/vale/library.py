@@ -44,6 +44,7 @@ ROCKS = 8
 DESIGNS = {**town3d.DESIGNS, **market3d.DESIGNS, "armour": market.prop_armour, "banner": market.prop_banner}
 HOMES, SHOPS, MARKET, PROPS = "住宅", "商店与工坊", "集市", "道具"
 BUILDINGS = [
+    {"id": "player_home", "name": "主角小屋", "group": HOMES, "type": "home", "seed": 1},
     {"id": "cabin_red", "name": "红顶木屋", "group": HOMES, "type": "cabin", "seed": 3, "roof_colour": "rust",
      "shutters": "green", "flowers": True, "moss": True, "hip": 16},
     {"id": "cabin_blue", "name": "蓝顶小木屋", "group": HOMES, "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 60,

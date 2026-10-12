@@ -298,3 +298,23 @@ def canvas(ramp, rib=10):
             return _step(ramp, light + 0.12, -1)
         return _t(ramp, light + 0.12)
     return Mat(f)
+
+
+def logs(seed=1):
+    """A stack of split firewood: round log ends on the front, bark on the top."""
+    bark = ["#2a1a10", "#3f2a1a", "#5a3d26", "#74502f", "#8d653c", "#a87c4c"]
+    end = ["#6b4a2a", "#a87a48", "#c99a62", "#e2bb82", "#f0d3a0"]
+
+    def f(u, v, kind, light, P, s):
+        if kind == "top":
+            return _t(bark, light + (0.1 if math.floor(P[0] / 4) % 2 else -0.05))
+        cu, cv = (u % 4) - 2, (v % 4) - 2
+        row = math.floor(v / 4)
+        cu = ((u + (2 if row % 2 else 0)) % 4) - 2
+        dd = cu * cu + cv * cv
+        if dd > 3.2:
+            return bark[1]
+        if dd < 0.8:
+            return end[1]
+        return end[3] if cu + cv < 0 else end[2]
+    return Mat(f)

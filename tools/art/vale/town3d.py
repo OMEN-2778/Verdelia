@@ -512,6 +512,78 @@ def _pixels_where(S, si, top=False):
     return xs, ys
 
 
+def home(spec):
+    """The hero's home on the edge of the farm: a snug plank house under a hipped roof with a
+    dormer, a lower wing on the left with firewood stacked against it, a porch with a bench, a
+    welcome mat and a lantern, flower boxes, a rain barrel, a mailbox and a pumpkin by the step."""
+    rnd = random.Random(spec.get("seed", 1))
+    d = 46
+    roof = ROOFS[spec.get("roof_colour", "teal")]
+    rm = M.shingles(roof, seed=21, moss=0.03)
+    S = Scene()
+    # main block
+    footing(S, -34, 34, 0, d)
+    S.add(box(-34, 34, 0, d, 4, 32, M.planks(WOOD, seed=21)))
+    corner_posts(S, -34, 34, 0, d, 4, 32)
+    zr = hip_roof(S, -39, 39, -5, d + 5, 32, 0.6, 18, rm)
+    ch = chimney(S, 22, d * 0.55, 32, zr + 9)
+    yd = 9
+    zb = 32 + (yd + 5) * 0.6
+    S.add(box(-15, -1, yd, yd + 14, zb - 3, zb + 11, M.planks(WOOD, h=4, seed=22)))  # dormer
+    for sl in roof_shell_y(-17, 1, yd - 2, yd + 14, zb + 9, zb + 17, 2, rm):
+        S.add(sl)
+    S.add(gable_y(-15, -1, yd, yd + 14, zb + 10, zb + 11, zb + 16, M.planks(WOOD, h=4, seed=23)))
+    # the wing on the left, lower, with its own hipped roof, and firewood against it
+    footing(S, -58, -34, 6, 40)
+    S.add(box(-58, -34, 6, 40, 4, 24, M.planks(DARKWOOD, seed=24)))
+    hip_roof(S, -62, -34, 2, 44, 24, 0.55, 10, rm)
+    S.add(box(-57, -48, 0, 5, 0, 14, M.logs()))
+    # porch: deck, posts, a shingled roof
+    S.add(box(-22, 36, -13, 0, 0, 3, M.planks(WOOD, h=4, seed=25)))
+    for px in (2, 21):  # a little canopy on two posts over the door
+        S.add(box(px, px + 3, -12, -9, 3, 27, M.wood(TRIM, bias=0.0)))
+    for sl in roof_shell_y(0, 26, -15, 0, 27, 34, 2, M.shingles(roof, seed=26)):
+        S.add(sl)
+    step(S, 13, w=16, depth=17, h=2)
+    S.add(box(4, 22, -12, -9, 3, 3.5, M.rug(["#3a1418", "#5a2026", "#8a3a3a", "#b85a4a", "#d8806a", "#e8a88a"])))
+    # rain barrel, mailbox, pumpkin
+    S.add(prism(40, 4, 4.5, 0, 11, M.barrel(seed=7), sides=12))
+    S.add(box(46, 48, -20, -18, 0, 14, M.wood(DARKWOOD, bias=0.15)))
+    S.add(box(43.5, 50.5, -21, -15, 14, 19, M.flat(["#1b2945", "#2b4372", "#3d5f9c", "#5a82c0", "#8aaee0"])))
+    S.add(prism(0, -19, 3.5, 0, 5, M.flat(["#5a2a08", "#9a4a10", "#d0701c", "#ef9d3e", "#f6c070"]), sides=10))
+    cv = S.render()
+    cv.on_wall(0)
+    door(cv, rnd, S.sx(13), S.sy(0, 3), style="plank", wood=DARKWOOD, step=False)
+    for wx in (-14, 29):
+        window(cv, rnd, S.sx(wx), S.sy(0, 24), w=12, h=11, shutters=spec.get("shutters", "red"), box=True)
+    cv.on_wall(yd)
+    window(cv, rnd, S.sx(-8), S.sy(yd, zb + 9), w=8, h=7)
+    cv.on_wall(6)
+    window(cv, rnd, S.sx(-40), S.sy(6, 19), w=9, h=9, shutters=spec.get("shutters", "red"))
+    cv.free()
+    lantern(cv, S.sx(25), S.sy(0, 24))
+    # a bench on the porch against the wall
+    cv.at_depth(-4)
+    bx, by = S.sx(-18), S.sy(-4, 3)
+    for x in range(bx, bx + 16):
+        cv.set(x, by - 6, WOOD[5])
+        cv.set(x, by - 5, WOOD[3])
+        cv.set(x, by - 10, WOOD[4])
+        cv.set(x, by - 11, WOOD[5])
+    for x in (bx + 1, bx + 14):
+        for y in range(by - 11, by):
+            cv.set(x, y, WOOD[2])
+    # the pumpkin's stalk, the mailbox flag
+    cv.free()
+    px, py = S.s(0, -19, 5)
+    cv.set(px, py - 1, "#4f6b22")
+    fx, fy = S.s(51, -18, 18)
+    cv.set(fx, fy, "#c0392b")
+    cv.set(fx, fy + 1, "#c0392b")
+    cv.set(fx + 1, fy, "#e74c3c")
+    return done(S, cv, "house", fp(-58, 34, d), 13, chims=[ch])
+
+
 def inn(spec):
     """The inn: two storeys of planks under a long hipped roof, a porch along the front on posts
     with a deck and a signboard on its roof, double doors, lanterns, barrels."""
@@ -546,5 +618,5 @@ def inn(spec):
     return done(S, cv, "house", fp(-h2, h2, d), 0, door_w=18, chims=chims)
 
 
-DESIGNS = {"cabin": cabin, "cottage": cottage, "townhouse": townhouse, "manor": manor, "tower": tower,
+DESIGNS = {"home": home, "cabin": cabin, "cottage": cottage, "townhouse": townhouse, "manor": manor, "tower": tower,
            "barn": barn, "windmill": windmill, "shop": shop, "smithy": smithy, "inn": inn}

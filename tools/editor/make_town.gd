@@ -1,8 +1,8 @@
 extends SceneTree
 ## Writes maps/town.json: a small sample town to try the buildings in (and to start from in the
 ## map editor). A brick-paved high street of houses, shops, the smithy, the inn, a manor and a
-## tower; a busy market square of stalls, tents, a wagon and a well; a farm corner with a barn,
-## a windmill and a field; dirt lanes, a pond and woods round it all.
+## tower; a busy market square of stalls, tents, a wagon and a well; a farm corner with the hero's
+## home, a barn, a windmill and a field; dirt lanes, a pond and woods round it all.
 ##   godot --headless --path . --script res://tools/editor/make_town.gd
 
 
@@ -27,7 +27,8 @@ func _init() -> void:
 	for b in [["cottage", 60, 276], ["cabin_red", 150, 276], ["townhouse", 242, 276], ["townhouse_rose", 324, 276],
 			["shop_grocer", 424, 276], ["shop_bakery", 528, 276], ["smithy", 652, 276], ["inn", 790, 276],
 			["manor", 962, 276], ["tower", 1100, 276],
-			["shop_potion", 151, 430], ["cabin_blue", 245, 452], ["barn", 1000, 474], ["windmill", 1122, 470]]:
+			["shop_potion", 151, 430], ["cabin_blue", 245, 452], ["barn", 1000, 474], ["windmill", 1122, 470],
+			["player_home", 830, 474]]:
 		m.objects.append({"kind": "building", "id": b[0], "x": b[1], "y": b[2]})
 	# the market
 	for b in [["sail_arms", 350, 372], ["produce_stand", 450, 372], ["bake_table", 548, 372], ["sail_cloth", 648, 372],
@@ -53,7 +54,7 @@ func _init() -> void:
 		if _clear(m, p, taken, 6.0):
 			m.objects.append({"kind": "flower", "id": MapWorld.FLOWERS[rng.randi() % MapWorld.FLOWERS.size()], "x": roundf(p.x), "y": roundf(p.y)})
 			taken.append(p)
-	m.spawn = Vector2(600, 296)
+	m.spawn = Vector2(843, 494)  # on the hero's doorstep
 	var err := m.save("res://maps/town.json")
 	print("maps/town.json: ", error_string(err), ", ", m.objects.size(), " objects")
 	quit()

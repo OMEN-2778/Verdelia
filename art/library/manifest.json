@@ -1643,6 +1643,42 @@
  ],
  "buildings": [
   {
+   "id": "player_home",
+   "name": "\u4e3b\u89d2\u5c0f\u5c4b",
+   "group": "\u4f4f\u5b85",
+   "file": "buildings/player_home.png",
+   "night": "buildings/player_home_night.png",
+   "kind": "house",
+   "anchor": [
+    68,
+    94
+   ],
+   "footprint": [
+    -58,
+    -37,
+    92,
+    37
+   ],
+   "door": [
+    13,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     22,
+     -78
+    ]
+   ],
+   "size": [
+    125,
+    118
+   ]
+  },
+  {
    "id": "cabin_red",
    "name": "\u7ea2\u9876\u6728\u5c4b",
    "group": "\u4f4f\u5b85",
