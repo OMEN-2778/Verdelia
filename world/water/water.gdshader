@@ -62,7 +62,7 @@ uniform vec4 sun_core : source_color = vec4(0.698, 0.863, 0.941, 1.0);  // water
 uniform vec4 sun_sheen : source_color = vec4(0.400, 0.667, 0.835, 1.0);  // water lit by the sun
 
 group_uniforms caustics;
-uniform float caustic_strength : hint_range(0.0, 1.0) = 0.8;
+uniform float caustic_strength : hint_range(0.0, 1.0) = 0.4;
 uniform float caustic_size = 9.0;  // px per caustic cell (the whole web scales with it)
 uniform float caustic_reach : hint_range(0.05, 1.0) = 0.6;  // how far from the shore they show (1 = water_depth_cells)
 uniform float caustic_speed = 0.8;
@@ -330,10 +330,10 @@ void fragment() {
 		float cv = near + bay * 0.6 > 0.35 + front * 0.08 ? c : 0.0;  // the web dissolves towards open water
 		if (cv > 0.95) {  // knots where the threads cross
 			col = mix(col, caustic_color.rgb, c_strength);
-			a = max(a, 0.9);
+			a = max(a, mix(a, 0.9, c_strength / 0.8));
 		} else if (cv > 0.45) {  // the threads
 			col = mix(col, caustic_glow.rgb, c_strength * 0.85);
-			a = max(a, 0.75);
+			a = max(a, mix(a, 0.75, c_strength / 0.8));
 		}
 
 		// shadow thrown by the bank face
