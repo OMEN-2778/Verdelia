@@ -1650,14 +1650,14 @@
    "night": "buildings/cabin_red_night.png",
    "kind": "house",
    "anchor": [
-    47,
-    93
+    49,
+    91
    ],
    "footprint": [
-    -40,
-    -30,
-    80,
-    30
+    -38,
+    -35,
+    76,
+    35
    ],
    "door": [
     0,
@@ -1669,13 +1669,13 @@
    ],
    "chimney": [
     [
-     20,
-     -91
+     15,
+     -76
     ]
    ],
    "size": [
-    94,
-    98
+    98,
+    101
    ]
   },
   {
@@ -1686,14 +1686,14 @@
    "night": "buildings/cabin_blue_night.png",
    "kind": "house",
    "anchor": [
-    39,
-    93
+    41,
+    87
    ],
    "footprint": [
-    -32,
     -30,
-    64,
-    30
+    -32,
+    60,
+    32
    ],
    "door": [
     10,
@@ -1705,13 +1705,13 @@
    ],
    "chimney": [
     [
-     15,
-     -91
+     12,
+     -73
     ]
    ],
    "size": [
-    78,
-    98
+    82,
+    97
    ]
   },
   {
@@ -1722,32 +1722,32 @@
    "night": "buildings/cottage_night.png",
    "kind": "house",
    "anchor": [
-    40,
-    74
+    42,
+    84
    ],
    "footprint": [
-    -32,
-    -26,
-    64,
-    26
+    -30,
+    -30,
+    60,
+    30
    ],
    "door": [
     10,
     0
    ],
    "door_size": [
-    14,
+    13,
     22
    ],
    "chimney": [
     [
-     -21,
-     -72
+     -17,
+     -64
     ]
    ],
    "size": [
-    80,
-    79
+    84,
+    94
    ]
   },
   {
@@ -1758,17 +1758,17 @@
    "night": "buildings/townhouse_night.png",
    "kind": "house",
    "anchor": [
-    35,
-    94
+    38,
+    119
    ],
    "footprint": [
-    -27,
-    -30,
-    54,
-    30
+    -26,
+    -37,
+    52,
+    37
    ],
    "door": [
-    -11,
+    -10,
     0
    ],
    "door_size": [
@@ -1777,8 +1777,8 @@
    ],
    "chimney": [],
    "size": [
-    70,
-    99
+    76,
+    129
    ]
   },
   {
@@ -1789,17 +1789,17 @@
    "night": "buildings/townhouse_rose_night.png",
    "kind": "house",
    "anchor": [
-    45,
-    94
+    38,
+    119
    ],
    "footprint": [
-    -27,
-    -30,
-    54,
-    30
+    -26,
+    -37,
+    52,
+    37
    ],
    "door": [
-    11,
+    10,
     0
    ],
    "door_size": [
@@ -1808,8 +1808,8 @@
    ],
    "chimney": [],
    "size": [
-    90,
-    99
+    76,
+    129
    ]
   },
   {
@@ -1820,14 +1820,14 @@
    "night": "buildings/manor_night.png",
    "kind": "house",
    "anchor": [
-    67,
-    104
+    69,
+    121
    ],
    "footprint": [
-    -60,
-    -32,
-    120,
-    32
+    -58,
+    -43,
+    116,
+    43
    ],
    "door": [
     0,
@@ -1839,17 +1839,17 @@
    ],
    "chimney": [
     [
-     -52,
-     -102
+     -46,
+     -99
     ],
     [
-     52,
-     -102
+     46,
+     -99
     ]
    ],
    "size": [
-    134,
-    110
+    138,
+    139
    ]
   },
   {
@@ -1860,14 +1860,14 @@
    "night": "buildings/tower_night.png",
    "kind": "house",
    "anchor": [
-    28,
-    138
+    30,
+    176
    ],
    "footprint": [
     -17,
-    -22,
-    35,
-    22
+    -27,
+    34,
+    27
    ],
    "door": [
     -1,
@@ -1879,8 +1879,8 @@
    ],
    "chimney": [],
    "size": [
-    56,
-    144
+    60,
+    183
    ]
   },
   {
@@ -1891,14 +1891,14 @@
    "night": "buildings/barn_night.png",
    "kind": "house",
    "anchor": [
-    56,
-    100
+    59,
+    134
    ],
    "footprint": [
-    -38,
-    -34,
-    76,
-    34
+    -39,
+    -50,
+    78,
+    50
    ],
    "door": [
     0,
@@ -1910,8 +1910,8 @@
    ],
    "chimney": [],
    "size": [
-    112,
-    106
+    114,
+    150
    ]
   },
   {
@@ -1922,14 +1922,14 @@
    "night": "buildings/windmill_night.png",
    "kind": "house",
    "anchor": [
-    32,
-    108
+    31,
+    112
    ],
    "footprint": [
-    -24,
     -22,
-    48,
-    22
+    -32,
+    44,
+    32
    ],
    "door": [
     0,
@@ -1941,12 +1941,12 @@
    ],
    "chimney": [],
    "size": [
-    64,
-    114
+    62,
+    121
    ],
    "sails": [
     0,
-    -74
+    -75
    ],
    "sails_frames": 12,
    "sails_file": "buildings/windmill_sails.png"
@@ -1959,14 +1959,14 @@
    "night": "buildings/shop_grocer_night.png",
    "kind": "shop",
    "anchor": [
-    49,
-    88
+    52,
+    97
    ],
    "footprint": [
-    -42,
-    -26,
-    84,
-    26
+    -41,
+    -37,
+    82,
+    37
    ],
    "door": [
     18,
@@ -1978,13 +1978,13 @@
    ],
    "chimney": [
     [
-     -30,
-     -86
+     -25,
+     -82
     ]
    ],
    "size": [
-    98,
-    93
+    104,
+    113
    ]
   },
   {
@@ -1995,14 +1995,14 @@
    "night": "buildings/shop_bakery_night.png",
    "kind": "shop",
    "anchor": [
-    49,
-    88
+    52,
+    110
    ],
    "footprint": [
-    -42,
-    -26,
-    84,
-    26
+    -41,
+    -37,
+    82,
+    37
    ],
    "door": [
     -18,
@@ -2014,13 +2014,13 @@
    ],
    "chimney": [
     [
-     28,
-     -86
+     25,
+     -94
     ]
    ],
    "size": [
-    98,
-    93
+    104,
+    126
    ]
   },
   {
@@ -2031,14 +2031,14 @@
    "night": "buildings/shop_potion_night.png",
    "kind": "shop",
    "anchor": [
-    49,
-    88
+    52,
+    97
    ],
    "footprint": [
-    -42,
-    -26,
-    84,
-    26
+    -41,
+    -37,
+    82,
+    37
    ],
    "door": [
     18,
@@ -2050,13 +2050,13 @@
    ],
    "chimney": [
     [
-     -30,
-     -86
+     -25,
+     -82
     ]
    ],
    "size": [
-    98,
-    93
+    104,
+    113
    ]
   },
   {
@@ -2067,17 +2067,17 @@
    "night": "buildings/smithy_night.png",
    "kind": "house",
    "anchor": [
-    54,
+    64,
     84
    ],
    "footprint": [
-    -46,
-    -26,
-    96,
-    26
+    -54,
+    -32,
+    100,
+    32
    ],
    "door": [
-    -16,
+    -24,
     0
    ],
    "door_size": [
@@ -2086,13 +2086,13 @@
    ],
    "chimney": [
     [
-     32,
-     -80
+     22,
+     -65
     ]
    ],
    "size": [
-    108,
-    90
+    119,
+    98
    ]
   },
   {
@@ -2103,14 +2103,14 @@
    "night": "buildings/inn_night.png",
    "kind": "house",
    "anchor": [
-    57,
-    106
+    61,
+    124
    ],
    "footprint": [
     -50,
-    -32,
+    -43,
     100,
-    32
+    43
    ],
    "door": [
     0,
@@ -2122,17 +2122,17 @@
    ],
    "chimney": [
     [
-     -33,
+     -30,
      -104
     ],
     [
-     33,
+     30,
      -104
     ]
    ],
    "size": [
-    114,
-    112
+    122,
+    148
    ]
   },
   {
@@ -2144,20 +2144,20 @@
    "kind": "stall",
    "anchor": [
     40,
-    68
+    58
    ],
    "footprint": [
-    -32,
-    -12,
-    64,
-    12
+    -30,
+    -10,
+    60,
+    10
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    80,
-    74
+    81,
+    65
    ]
   },
   {
@@ -2169,20 +2169,20 @@
    "kind": "stall",
    "anchor": [
     40,
-    68
+    58
    ],
    "footprint": [
-    -32,
-    -12,
-    64,
-    12
+    -30,
+    -10,
+    60,
+    10
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    80,
-    74
+    81,
+    65
    ]
   },
   {
@@ -2194,20 +2194,20 @@
    "kind": "stall",
    "anchor": [
     40,
-    68
+    58
    ],
    "footprint": [
-    -32,
-    -12,
-    64,
-    12
+    -30,
+    -10,
+    60,
+    10
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    80,
-    74
+    81,
+    65
    ]
   },
   {
@@ -2218,21 +2218,21 @@
    "night": "buildings/produce_stand_night.png",
    "kind": "stall",
    "anchor": [
-    39,
-    57
+    43,
+    66
    ],
    "footprint": [
-    -33,
-    -11,
-    66,
-    11
+    -32,
+    -10,
+    64,
+    10
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    78,
-    62
+    86,
+    82
    ]
   },
   {
@@ -2243,21 +2243,21 @@
    "night": "buildings/bake_table_night.png",
    "kind": "stall",
    "anchor": [
-    34,
-    49
+    36,
+    52
    ],
    "footprint": [
-    -28,
-    -10,
-    56,
-    10
+    -26,
+    -11,
+    52,
+    11
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    68,
-    54
+    72,
+    61
    ]
   },
   {
@@ -2268,21 +2268,21 @@
    "night": "buildings/pavilion_night.png",
    "kind": "stall",
    "anchor": [
-    36,
-    77
+    38,
+    116
    ],
    "footprint": [
-    -28,
-    -14,
-    56,
-    14
+    -24,
+    -38,
+    48,
+    38
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    72,
-    86
+    76,
+    134
    ]
   },
   {
@@ -2293,21 +2293,21 @@
    "night": "buildings/wagon_night.png",
    "kind": "stall",
    "anchor": [
-    43,
-    56
+    54,
+    57
    ],
    "footprint": [
-    -23,
-    -12,
+    -30,
+    -16,
     60,
-    12
+    16
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    86,
-    58
+    100,
+    63
    ]
   },
   {
@@ -2318,21 +2318,21 @@
    "night": "buildings/stall_fruit_night.png",
    "kind": "stall",
    "anchor": [
-    26,
-    46
+    29,
+    50
    ],
    "footprint": [
-    -22,
-    -12,
-    44,
-    12
+    -20,
+    -7,
+    40,
+    7
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    52,
-    49
+    58,
+    64
    ]
   },
   {
@@ -2343,21 +2343,21 @@
    "night": "buildings/stall_fish_night.png",
    "kind": "stall",
    "anchor": [
-    26,
-    46
+    29,
+    50
    ],
    "footprint": [
-    -22,
-    -12,
-    44,
-    12
+    -20,
+    -7,
+    40,
+    7
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    52,
-    49
+    58,
+    64
    ]
   },
   {
@@ -2368,21 +2368,21 @@
    "night": "buildings/stall_bread_night.png",
    "kind": "stall",
    "anchor": [
-    26,
-    46
+    29,
+    50
    ],
    "footprint": [
-    -22,
-    -12,
-    44,
-    12
+    -20,
+    -7,
+    40,
+    7
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    52,
-    49
+    58,
+    64
    ]
   },
   {
@@ -2393,21 +2393,21 @@
    "night": "buildings/stall_veg_night.png",
    "kind": "stall",
    "anchor": [
-    26,
-    46
+    29,
+    50
    ],
    "footprint": [
-    -22,
-    -12,
-    44,
-    12
+    -20,
+    -7,
+    40,
+    7
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    52,
-    49
+    58,
+    64
    ]
   },
   {
@@ -2418,21 +2418,21 @@
    "night": "buildings/weapon_rack_night.png",
    "kind": "prop",
    "anchor": [
-    15,
-    27
+    19,
+    38
    ],
    "footprint": [
-    -12,
-    -4,
-    24,
-    4
+    -13,
+    -2,
+    26,
+    2
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    30,
-    30
+    38,
+    44
    ]
   },
   {
@@ -2518,21 +2518,21 @@
    "night": "buildings/dining_night.png",
    "kind": "prop",
    "anchor": [
-    20,
-    24
+    24,
+    28
    ],
    "footprint": [
     -10,
-    -7,
+    -11,
     20,
-    7
+    11
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    40,
-    28
+    47,
+    44
    ]
   },
   {
@@ -2543,21 +2543,21 @@
    "night": "buildings/barrels_night.png",
    "kind": "prop",
    "anchor": [
-    15,
-    23
+    16,
+    34
    ],
    "footprint": [
-    -12,
-    -5,
-    24,
-    5
+    -10,
+    -8,
+    20,
+    8
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    30,
-    26
+    31,
+    40
    ]
   },
   {
@@ -2568,21 +2568,21 @@
    "night": "buildings/crates_night.png",
    "kind": "prop",
    "anchor": [
-    16,
-    25
+    19,
+    30
    ],
    "footprint": [
     -13,
-    -5,
-    26,
-    5
+    -10,
+    25,
+    10
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    32,
-    28
+    36,
+    36
    ]
   },
   {
@@ -2594,7 +2594,7 @@
    "kind": "rug",
    "anchor": [
     15,
-    12
+    13
    ],
    "footprint": [
     -13,
@@ -2607,7 +2607,7 @@
    "chimney": [],
    "size": [
     30,
-    14
+    15
    ],
    "solid": false
   },
@@ -2619,21 +2619,21 @@
    "night": "buildings/well_night.png",
    "kind": "prop",
    "anchor": [
-    17,
-    42
+    22,
+    58
    ],
    "footprint": [
     -12,
-    -10,
-    25,
-    10
+    -16,
+    24,
+    16
    ],
    "door": null,
    "door_size": null,
    "chimney": [],
    "size": [
-    34,
-    46
+    44,
+    66
    ]
   }
  ],

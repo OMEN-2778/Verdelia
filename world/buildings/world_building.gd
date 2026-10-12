@@ -81,7 +81,7 @@ func _rebuild() -> void:
 		add_child(_sprite)
 		_lamps = null
 		return
-	add_child(_shadow(int(fp.size.x) + 14))
+	add_child(_shadow(fp))
 	add_child(_sprite)
 	if _entry.has("sails_file"):
 		_sails = Sprite2D.new()
@@ -154,27 +154,32 @@ func grass_excludes(world: Vector2) -> bool:
 	return d.x > fp.position.x - 3.0 and d.x < fp.end.x + 3.0 and d.y > e.position.y and d.y < 5.0
 
 
-## A soft, wide contact shadow along the base, dithered toward its rim like SoftShadow.
+## A soft shadow under the whole footprint, a little to the right (the sun is up on the left),
+## its rounded rim dithered like SoftShadow; only its edges show round the building.
 static var _shadow_cache := {}
 
 
-func _shadow(w: int) -> Sprite2D:
-	var h := 9
-	if not _shadow_cache.has(w):
+func _shadow(fp: Rect2) -> Sprite2D:
+	var w := int(fp.size.x) + 10
+	var h := int(fp.size.y) + 8
+	var key := Vector2i(w, h)
+	if not _shadow_cache.has(key):
 		var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+		var r := 5.0
 		for y in h:
 			for x in w:
-				var dx := absf(x + 0.5 - w / 2.0) - (w / 2.0 - h / 2.0)
-				var dy := y + 0.5 - h / 2.0
-				var dd := (maxf(dx, 0.0) ** 2 + dy * dy) / ((h / 2.0) ** 2)
-				if dd > 1.0 or (dd > 0.6 and SoftShadow.BAYER[(y & 3) * 4 + (x & 3)] < 8):
+				var dx := maxf(0.0, absf(x + 0.5 - w / 2.0) - (w / 2.0 - r))
+				var dy := maxf(0.0, absf(y + 0.5 - h / 2.0) - (h / 2.0 - r))
+				var dd := (dx * dx + dy * dy) / (r * r)
+				if dd > 1.0 or (dd > 0.5 and SoftShadow.BAYER[(y & 3) * 4 + (x & 3)] < 8):
 					continue
-				img.set_pixel(x, y, Color(0.06, 0.18, 0.1, 0.34 if dd < 0.45 else 0.2))
-		_shadow_cache[w] = ImageTexture.create_from_image(img)
+				img.set_pixel(x, y, Color(0.06, 0.18, 0.1, 0.32 if dd < 0.4 else 0.18))
+		_shadow_cache[key] = ImageTexture.create_from_image(img)
 	var s := Sprite2D.new()
 	s.name = "Shadow"
-	s.texture = _shadow_cache[w]
-	s.position = Vector2(0, -1)
+	s.texture = _shadow_cache[key]
+	s.centered = false
+	s.position = Vector2(fp.position.x - 3.0, fp.position.y - 2.0)
 	s.z_as_relative = false
 	s.z_index = -6
 	return s

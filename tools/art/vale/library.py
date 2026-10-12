@@ -4,8 +4,9 @@
 Writes art/library/:
   trees/<id>_trunk.png, <id>_crown_<k>.png   per variant (crown layers sway independently)
   bushes/<id>.png, rocks/<id>.png
-  buildings/<id>.png, <id>_night.png         town buildings, stalls and props (buildings.py, landmarks.py,
-                                             market.py) and what glows at night; <id>_sails.png for the windmill
+  buildings/<id>.png, <id>_night.png         town buildings, stalls and props modelled in 3D (town3d.py,
+                                             market3d.py, drawn by oblique.py) and what glows at night;
+                                             <id>_sails.png holds the windmill's sail frames
   tufts.png                                  grass tuft atlas (8x16 cells), see TUFT_* below
   manifest.json                              everything Godot needs: anchors, sizes, sway, groups
 
@@ -19,9 +20,9 @@ from pathlib import Path
 from PIL import Image
 
 import flora
-import buildings
-import landmarks
 import market
+import market3d
+import town3d
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "art/library"
@@ -38,15 +39,15 @@ TREES = {  # species: (variants, scale range)
 BUSHES = {"green": 6, "flower": 4, "berry": 4, "pink": 3, "violet": 3}
 ROCKS = 8
 
-# town buildings, workshops, market stalls and street props (buildings.py, landmarks.py,
-# market.py); "name" and "group" are what the map editor shows
-DESIGNS = {**buildings.DESIGNS, **landmarks.DESIGNS, **market.DESIGNS}
+# town buildings, workshops, market stalls and street props, modelled in 3D (town3d.py,
+# market3d.py); "name" and "group" are what the map editor shows
+DESIGNS = {**town3d.DESIGNS, **market3d.DESIGNS, "armour": market.prop_armour, "banner": market.prop_banner}
 HOMES, SHOPS, MARKET, PROPS = "住宅", "商店与工坊", "集市", "道具"
 BUILDINGS = [
     {"id": "cabin_red", "name": "红顶木屋", "group": HOMES, "type": "cabin", "seed": 3, "roof_colour": "rust",
-     "shutters": "green", "flowers": True, "moss": 6},
-    {"id": "cabin_blue", "name": "蓝顶小木屋", "group": HOMES, "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 64,
-     "windows": (0.24,), "door_at": 0.66, "shutters": "blue", "chimney": 0.7, "moss": 3},
+     "shutters": "green", "flowers": True, "moss": True, "hip": 16},
+    {"id": "cabin_blue", "name": "蓝顶小木屋", "group": HOMES, "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 60,
+     "depth": 40, "windows": (0.24,), "door_at": 0.66, "shutters": "blue", "chimney": 0.7, "hip": 10},
     {"id": "cottage", "name": "茅草石屋", "group": HOMES, "type": "cottage", "seed": 4},
     {"id": "townhouse", "name": "木筋楼房", "group": HOMES, "type": "townhouse", "seed": 6, "roof_colour": "slate", "shutters": "red"},
     {"id": "townhouse_rose", "name": "粉墙楼房", "group": HOMES, "type": "townhouse", "seed": 9, "roof_colour": "teal",
@@ -58,7 +59,7 @@ BUILDINGS = [
     {"id": "shop_grocer", "name": "蔬果铺", "group": SHOPS, "type": "shop", "seed": 12, "paint": "sage", "awning": "red",
      "sign": "apple", "goods": ["apple", "orange", "cabbage", "pumpkin"], "sack": True},
     {"id": "shop_bakery", "name": "面包店", "group": SHOPS, "type": "shop", "seed": 13, "paint": "cream", "awning": "yellow",
-     "sign": "bread", "goods": ["bread"], "roof_colour": "rust", "door_at": 0.28},
+     "sign": "bread", "goods": ["bread"], "roof_colour": "rust", "door_at": 0.28, "gable": True},
     {"id": "shop_potion", "name": "药水铺", "group": SHOPS, "type": "shop", "seed": 14, "paint": "blue", "awning": "purple",
      "sign": "potion", "goods": ["potion_r", "potion_b", "potion_g"], "roof_colour": "plum", "barrel": False},
     {"id": "smithy", "name": "铁匠铺", "group": SHOPS, "type": "smithy", "seed": 3},
