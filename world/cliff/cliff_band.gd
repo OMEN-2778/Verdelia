@@ -4,12 +4,16 @@ extends Sprite2D
 ## A layered sandstone cliff generated along a polyline (the top edge, left to right, in local
 ## coordinates). The face height wanders, rock spurs push down into the meadow and recesses cut
 ## back, strata are irregular with cracks and weathering, grass hangs off the lip in uneven clumps
-## and only the odd vine trails down. Openings (cave mouths with a stone frame) can be cut in.
+## and only the odd vine trails down. Openings (cave mouths with a stone frame) can be cut in, and
+## ramps cut through the face so the upper level can be reached: an earthen slope or stone stairs.
+## The face blocks walking (a StaticBody2D is generated along it) except where a ramp cuts through.
 ## The foot grows tall grass through GrassField (grass_skirt) and the face keeps grass off.
 
 const ROCK := ["#3b2a24", "#5e4232", "#82603f", "#a47e52", "#c19c69", "#d9b884", "#ecd2a2", "#f8e8c4"]
 const MOSS := ["#1f3d22", "#2f5a2c", "#457a36", "#62994a"]
 const LEAF := ["#122a1a", "#1d4325", "#2a5f2f", "#3b7c37", "#579b45", "#7fbd58", "#aedb7a"]
+const STONE := ["#3a3633", "#58514b", "#7a7064", "#9d917e", "#bfb39a", "#ddd3b9", "#f1ead6"]
+const DIRT := ["#5f4630", "#755737", "#8a6a3e", "#a7834f", "#c39d63", "#d8b57a"]  # top four match ground.gdshader
 const MARBLE := ["#4b5160", "#aab2c4", "#d6dce8", "#eef1f7", "#ffffff"]
 const FLOWERS := ["#ffffff", "#ffe066", "#ffc4e1"]
 const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
@@ -38,6 +42,13 @@ const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 	set(v):
 		openings = v
 		_queue()
+## Ramps up to the upper level: (centre x, half width, style). Style 0 = earthen slope, 1 = stone
+## stairs. Each one cuts the face, leaves a gap in the collision and paints dirt at both mouths.
+@export var ramps := PackedVector3Array():
+	set(v):
+		ramps = v
+		_queue()
+@export var collision := true  ## generate a StaticBody2D so characters cannot walk through the face
 @export var regenerate := false:
 	set(_v):
 		_queue()
@@ -55,6 +66,8 @@ var _spillways: Array[Node2D] = []  # waterfalls pouring over this cliff (see ad
 func _ready() -> void:
 	add_to_group("grass_exclude")
 	add_to_group("grass_skirt")
+	add_to_group("cliffs")
+	add_to_group("terrain_painters")
 	centered = false
 	z_index = -8
 	generate()
@@ -84,8 +97,15 @@ func generate() -> void:
 		_paint_opening(int(o.x) - _x0, int(o.y))
 	_paint_foot(w)
 	_clear_spillways()
+	for r in ramps:
+		_paint_ramp(int(r.x) - _x0, int(r.y), int(r.z))
 	texture = ImageTexture.create_from_image(_img)
 	offset = Vector2(_x0, _y0)
+	_build_collision()
+	if not ramps.is_empty() and is_inside_tree():
+		var t := get_tree().get_first_node_in_group("terrain")
+		if t:
+			t.call_deferred("rebuild")  # repaint the dirt at the ramp mouths
 
 
 ## Top and bottom of the face per column: wandering edge, spurs that reach down, recesses.
@@ -279,6 +299,234 @@ func _paint_opening(cx: int, half: int) -> void:
 		_put(x, by + 2, Color(MARBLE[1]))
 
 
+## A ramp cut through the face: the floor (earthen slope or stone stairs) runs from the top edge
+## down to the foot, between two freshly cut side walls (the left one in shade, the right one lit).
+func _paint_ramp(cx: int, half: int, style: int) -> void:
+	var l := cx - half
+	var r := cx + half
+	if r < 0 or l >= _top.size():
+		return
+	var ta := 0.0
+	var ba := 0.0
+	var n := 0
+	for i in range(maxi(l, 0), mini(r + 1, _top.size())):
+		ta += _top[i]
+		ba += _bottom[i]
+		n += 1
+	ta /= n
+	ba /= n
+	var y0 := int(ta) - 3
+	var y1 := int(ba) + 3
+	var orig := _img.duplicate() as Image  # the uncut face, to texture the cut walls with
+	# clear the face, lip, hanging grass and foot rubble across the cut
+	for i in range(l, r + 1):
+		for y in range(int(_top[clampi(i, 0, _top.size() - 1)]) - 10, int(_bottom[clampi(i, 0, _top.size() - 1)]) + 9):
+			_put(i, y, Color(0, 0, 0, 0))
+	# the floor
+	var steps := maxi(2, int(roundf((ba - ta) / 6.0)))
+	var sh := (ba - ta + 2.0) / steps
+	for i in range(l, r + 1):
+		var u := (i - cx) / float(maxi(half, 1))  # -1..1 across
+		var top_i := y0 + int(_noise(i, 3, 4) * 3.0)
+		var bot_i := y1 - int(_noise(i, 9, 4) * 3.0)
+		for y in range(top_i, bot_i + 1):
+			var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)  # 0 top .. 1 bottom
+			var b: float = BAYER[(y & 3) * 4 + (i & 3)] / 16.0 - 0.5
+			var c: Color
+			if style == 1:
+				c = _stair_pixel(i, y, u, ta, sh, b).darkened(f * 0.22)  # deeper into the cut, less light
+				if _cut_shadow(i, l, y, ta, ba) > 0.25:
+					c = c.darkened(0.3)
+			else:
+				var v: float = 0.3 + 0.55 * (1.0 - f) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
+				var ledge := fposmod((y + _noise(i, 40, 6) * 5.0) / 9.0, 1.0)
+				if _noise(i, y + 140, 5) < 0.45:
+					ledge = 0.5  # the ledges break up, so it reads as a slope rather than steps
+				if ledge < 0.12:
+					v -= 0.3  # little erosion ledges down the slope: a dark lip...
+				elif ledge < 0.24:
+					v += 0.16  # ...under a lit edge
+				if u > 0.8:
+					v -= 0.12
+				v -= _cut_shadow(i, l, y, ta, ba)
+				c = Color(DIRT[clampi(int(v * 6.0), 0, 5)])
+				var g := _noise(i, y + 70, 3)
+				if absf(u) > 0.62 and g > 0.62 - (absf(u) - 0.62):
+					c = Color(LEAF[4 if g > 0.8 else 3])  # grass creeping in from the edges
+				elif _hash(i * 7 + y, 913) < 0.012:
+					c = Color(ROCK[5])
+					_put(i, y + 1, Color(ROCK[2]))
+			_put(i, y, c)
+	# freshly cut side walls: the same rock, turned away from the light on the left and into it on
+	# the right; narrow at the top, widening toward the foot, with a ragged inner edge
+	for side in [-1, 1]:
+		for y in range(int(ta), int(ba) + 2):
+			var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
+			var jag := int(roundf((_noise(side * 31, y, 4) - 0.5) * 3.0))
+			var wpx := int(roundf(1.0 + 5.0 * f))
+			var inner: int = (l + jag) if side < 0 else (r - jag)
+			for k in wpx + 1:
+				var x: int = (inner - k) if side < 0 else (inner + k)
+				var yy := y - _y0
+				if x < 0 or x >= _img.get_width() or yy < 0 or yy >= _img.get_height():
+					continue
+				var c := orig.get_pixel(x, yy)
+				if c.a < 0.5 or c.g > c.r:
+					c = _q(ROCK, 0.45 + (_noise(x, y, 3) - 0.5) * 0.3, x, y)
+				if side < 0:
+					c = c.darkened(0.45 - k * 0.03)
+				else:
+					c = c.lightened(0.3 - k * 0.03)
+				if k == 0:
+					c = c.lightened(0.18) if side > 0 else c.darkened(0.1)  # the edge along the floor
+				elif k == wpx:
+					c = c.darkened(0.45)  # crease where the wall meets the old face
+				_img.set_pixel(x, yy, c)
+		# the turf of the top edge wraps round the corner
+		var cx2: int = (l - 1) if side < 0 else (r + 1)
+		for k in 3:
+			_put(cx2 + side * k, int(ta) - 1, Color(LEAF[3]))
+			_put(cx2 + side * k, int(ta) - 2, Color(LEAF[2]))
+	# the old face rounds off into the cut: shading wraps away from the light on the left end and
+	# into it on the right end
+	for side in [-1, 1]:
+		for d in range(0, 9):
+			var x: int = (l - 8 - d) if side < 0 else (r + 8 + d)
+			if x < 0 or x >= _top.size():
+				continue
+			var amount := (1.0 - d / 9.0) * (0.3 if side < 0 else 0.14)
+			for y in range(int(_top[x]) + 1, int(_bottom[x]) + 1):
+				var yy := y - _y0
+				if yy < 0 or yy >= _img.get_height():
+					continue
+				var c := _img.get_pixel(x, yy)
+				if c.a < 0.5 or c.g > c.r:
+					continue  # leave grass and holes alone
+				_img.set_pixel(x, yy, c.darkened(amount) if side < 0 else c.lightened(amount))
+	# turf overhanging the inner top edges of the cut walls, thinning out down the slope
+	for side in [-1, 1]:
+		for y in range(int(ta) - 1, int(ta + (ba - ta) * 0.7)):
+			var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
+			var jag := int(roundf((_noise(side * 31, y, 4) - 0.5) * 3.0))
+			var x: int = (l + jag) if side < 0 else (r - jag)
+			if _noise(x, y, 3) > 0.3 + f * 0.6:
+				_put(x, y, Color(LEAF[3 if (y & 1) == 0 else 2]))
+				if _noise(x, y + 30, 2) > 0.6:
+					_put(x - side, y, Color(LEAF[4]))
+	# soft shadow of the cut on the meadow below
+	for i in range(l - 3, r + 4):
+		for k in 4:
+			_blend(i, y1 + 1 + k, Color(0.08, 0.16, 0.1, 0.16 - k * 0.04))
+
+
+func _stair_pixel(i: int, y: int, u: float, ta: float, sh: float, b: float) -> Color:
+	var g := y - (ta - 2.0)
+	var j := floori(g / sh)
+	var k := g - j * sh  # 0..sh within the step, tread first
+	if absf(u) > 0.86:
+		return Color(STONE[1] if k > sh - 2.0 else STONE[2])  # the cheek stones either side
+	var c: Color
+	if k < sh - 3.0:
+		c = Color(STONE[4] if _noise(i, y, 3) + b * 0.4 > 0.38 else STONE[3])  # tread
+	elif k < sh - 2.0:
+		c = Color(STONE[6] if _noise(i + 50, y, 2) > 0.3 else STONE[5])  # worn nosing catching the light
+	else:
+		c = Color(STONE[2] if k < sh - 1.0 else STONE[1])  # riser, darkest at its foot
+	var span := 10.0 + _hash(j, 51) * 6.0
+	if fposmod(i + _hash(j, 52) * span, span) < 1.0 and k < sh - 2.0 and k > 0.5:
+		c = Color(STONE[2])  # the odd joint between slabs
+	if absf(u) > 0.55 and _noise(i, y + 200, 4) > 0.7:
+		c = Color(MOSS[2 if k < sh - 1.6 else 1])
+	return c
+
+
+## Shadow the left cut wall throws across the floor (light comes from the upper left): a few px
+## wide at the foot where the wall is tall, nothing at the top. Returns how much to darken.
+func _cut_shadow(i: int, l: int, y: int, ta: float, ba: float) -> float:
+	var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
+	var reach := 1.0 + 3.5 * f + (_noise(i, y, 3) - 0.5)
+	return 0.42 if i - l < reach else 0.0
+
+
+## Index of the ramp whose floor contains local x (with `margin` px either side), or -1.
+func _ramp_index(local_x: float, margin := 0.0) -> int:
+	for k in ramps.size():
+		var r := ramps[k]
+		if absf(local_x - r.x) <= r.y + margin:
+			return k
+	return -1
+
+
+## Style of the ramp under a world position (0 slope, 1 stairs), or -1 if not on a ramp.
+func ramp_at(world: Vector2) -> int:
+	var p := to_local(world)
+	var k := _ramp_index(p.x)
+	if k < 0:
+		return -1
+	var i := clampi(int(p.x) - _x0, 0, _top.size() - 1)
+	if p.y < _top[i] - 3.0 or p.y > _bottom[i] + 3.0:
+		return -1
+	return int(ramps[k].z)
+
+
+## The face blocks walking: one collision polygon per stretch between ramps.
+func _build_collision() -> void:
+	var old := get_node_or_null("Walls")
+	if old:
+		old.free()
+	if not collision or _top.is_empty():
+		return
+	var body := StaticBody2D.new()
+	body.name = "Walls"
+	add_child(body)
+	var cuts := []
+	for r in ramps:
+		cuts.append(Vector2(r.x - r.y - _x0, r.x + r.y - _x0))
+	cuts.sort_custom(func(a, b): return a.x < b.x)
+	var spans := []
+	var start := 0
+	for c in cuts:
+		if c.x > start:
+			spans.append(Vector2i(start, int(c.x)))
+		start = maxi(start, int(c.y) + 1)
+	if start < _top.size() - 1:
+		spans.append(Vector2i(start, _top.size() - 1))
+	for sp in spans:
+		var poly := PackedVector2Array()
+		var i: int = sp.x
+		while true:
+			poly.append(Vector2(i + _x0, _top[i] + 2.0))
+			if i >= sp.y:
+				break
+			i = mini(i + 4, sp.y)
+		i = sp.y
+		while true:
+			poly.append(Vector2(i + _x0, _bottom[i] - 1.0))
+			if i <= sp.x:
+				break
+			i = maxi(i - 4, sp.x)
+		if poly.size() >= 3:
+			var cp := CollisionPolygon2D.new()
+			cp.polygon = poly
+			body.add_child(cp)
+
+
+## Called by Terrain while it rebuilds: dirt at both mouths of each ramp, so paths lead to it.
+func paint_terrain(t: Terrain) -> void:
+	if _top.is_empty():
+		return
+	for r in ramps:
+		var i := clampi(int(r.x) - _x0, 0, _top.size() - 1)
+		var top := to_global(Vector2(r.x, _top[i]))
+		var bot := to_global(Vector2(r.x, _bottom[i]))
+		for area in [Rect2(top + Vector2(-r.y * 0.8, -14), Vector2(r.y * 1.6, 16)), Rect2(bot + Vector2(-r.y * 0.8, -2), Vector2(r.y * 1.6, 16))]:
+			var c0 := t.cell_at(area.position)
+			var c1 := t.cell_at(area.end)
+			for cy in range(c0.y, c1.y + 1):
+				for cx in range(c0.x, c1.x + 1):
+					t.paint_ground(Vector2i(cx, cy), Terrain.Kind.DIRT)
+
+
 ## Rubble at the foot and the cliff's shadow on the meadow.
 func _paint_foot(w: int) -> void:
 	for i in w:
@@ -328,6 +576,8 @@ func grass_skirt_points() -> PackedVector2Array:
 			if absf(x - o.x) < o.y + 6:
 				near_opening = true
 		if near_opening and rng.randf() < 0.7:
+			continue
+		if _ramp_index(x, 3.0) >= 0:
 			continue
 		out.append(to_global(Vector2(x + rng.randi_range(-1, 1), _bottom[i] + rng.randi_range(0, 2))))
 		if rng.randf() < 0.6:

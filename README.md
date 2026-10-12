@@ -73,6 +73,19 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 
 旧版的一次性烘焙演示（`art/vale`、`scripts/vale`）已经被这套系统取代并删除。
 
+## 坡道、台阶和行走（演示场景 `scenes/cliff_demo.tscn`）
+
+岩壁可以劈开，做成通往上一层地面的坡道或石阶，角色只能从这些口子上下。演示视频：`docs/art/cliff-ramps.mp4`（角色先撞上岩壁被挡住，再从土坡走上去，沿上层小路走到石阶，下到下层）；特写：`docs/art/cliff-ramps.png`。
+
+| 节点 | 作用 | 怎么用 |
+|---|---|---|
+| `CliffBand.ramps` | 在岩壁上劈开坡道。土坡是一条自然的土路，上亮下暗，有零星的小土坎，边缘长草；石阶是一级级石板台阶，台阶前沿被磨亮，两侧有石块，带苔藓。切口两侧露出岩壁断面：左侧背光、右侧受光，左壁在坡道上投下一道阴影，顶部草皮沿切口包下来 | 每个坡道填 `(中心 x, 半宽, 样式)`，样式 0 是土坡、1 是石阶。上下两个出口会自动铺一小片土路，用来接小路 |
+| `CliffBand.collision` | 岩壁自动生成碰撞，角色穿不过去，只有坡道的口子能走 | 默认开启。洞口（`openings`）不能通行 |
+| `TerrainPath`（`world/terrain/`） | 沿折线画一条土路，宽度沿途有轻微变化，边缘由地面着色器自然过渡 | `points` 是路线，`width` 是宽度，`kind` 可以改成耕地等其他地面 |
+| 演示角色（`world/demo/demo_player.gd`） | 一个真正会碰撞的角色（CharacterBody2D）：用 WASD 或方向键控制；不按键时按 `waypoints` 自动走，走不通的点会自动跳过；上坡道会放慢，走石阶时一步一颠 | 按任意方向键即可切换为手动控制 |
+
+岩壁只是贴在地面上的画，上层和下层的东西不会互相遮挡，所以不需要单独区分"高度层"，靠岩壁的碰撞就能把上下两层分开。
+
 ## 水体（演示场景 `scenes/water_demo.tscn`）
 
 水只有一种：湖、池塘、河、溪、水坑都是同一种水体，区别只在轮廓形状。所有水画进 `Terrain` 的水数据，再由一个 `WaterLayer` 统一绘制，相邻或重叠的水面会连成一片。演示视频：`docs/art/water-demo.mp4`；截图：`water-lake-sun.png`、`water-lake.png`、`water-waterfall.png`、`water-pond.png`、`water-stream.png`、`water-beach.png`。
