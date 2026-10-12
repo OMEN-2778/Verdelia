@@ -341,9 +341,15 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				if _cut_shadow(i, l, y, ta, ba) > 0.25:
 					c = c.darkened(0.3)
 			elif style == 2:
-				c = _grass_slope_pixel(i, y, f, b)
-				if _cut_shadow(i, l, y, ta, ba) > 0.25:
-					c = c.darkened(0.22)
+				# the meadow itself shows through (same ground, same tufts); only shade is laid over
+				# it, deepening down the slope and fading out at both ends so there is no seam
+				var ends := smoothstep(0.0, 0.18, f) * (1.0 - smoothstep(0.82, 1.0, f))
+				var shade := (0.06 + 0.2 * f) * ends + (0.16 if _cut_shadow(i, l, y, ta, ba) > 0.25 else 0.0) * smoothstep(0.0, 0.3, f)
+				var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
+				if swell < 0.12 and _noise(i, y + 90, 6) > 0.5:
+					shade += 0.06 * ends  # soft lumps in the turf hint at the slope
+				shade = floorf((shade + b * 0.06) * 24.0) / 24.0
+				c = Color(0.04, 0.12, 0.06, clampf(shade, 0.0, 0.5))
 			else:
 				var v: float = 0.3 + 0.55 * (1.0 - f) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
 				var ledge := fposmod((y + _noise(i, 40, 6) * 5.0) / 9.0, 1.0)
@@ -455,21 +461,6 @@ func _cut_shadow(i: int, l: int, y: int, ta: float, ba: float) -> float:
 	var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
 	var reach := 1.0 + 3.5 * f + (_noise(i, y, 3) - 0.5)
 	return 0.42 if i - l < reach else 0.0
-
-
-## A grassy slope: the meadow's own tones (as ground.gdshader draws them), a little darker the
-## lower it runs into the cut, with blade strokes. GrassField also grows tufts on it.
-func _grass_slope_pixel(i: int, y: int, f: float, b: float) -> Color:
-	var t := _noise(i, y, 30) * 0.78 + _noise(i + 13, y, 8) * 0.22 + b * 0.22 - f * 0.28
-	var c := Color(MEADOW[0 if t < 0.3 else (1 if t < 0.5 else (2 if t < 0.7 else 3))])
-	if _hash(i, y * 5 + 3) < 0.03 or _hash(i, (y - 1) * 5 + 3) < 0.03:
-		c = Color(MEADOW_BLADE)  # blade strokes, two px tall
-	elif _hash(i, (y + 1) * 5 + 3) < 0.03:
-		c = Color(MEADOW[3])
-	var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
-	if swell < 0.14 and _noise(i, y + 90, 6) > 0.5:
-		c = c.darkened(0.12)  # soft lumps in the turf hint at the slope
-	return c
 
 
 ## Index of the ramp whose floor contains local x (with `margin` px either side), or -1.
