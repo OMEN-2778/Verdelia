@@ -35,7 +35,19 @@ var _fall_h := 0  # height actually used (snapped to the cliff when `cliff` is s
 
 func _ready() -> void:
 	add_to_group("grass_exclude")
+	add_to_group("terrain_painters")
 	_build()
+
+
+## Called by Terrain while it rebuilds: a stretch of water above the lip, exactly as wide as the
+## fall, so whatever feeds it (a river, a lake) meets the fall over its whole width.
+func paint_terrain(t: Terrain) -> void:
+	var top := global_position
+	var c0 := t.cell_at(top + Vector2(-width * 0.5 + 3.0, -5.0))
+	var c1 := t.cell_at(top + Vector2(width * 0.5 - 3.0, 3.0))
+	for cy in range(c0.y, c1.y + 1):
+		for cx in range(c0.x, c1.x + 1):
+			t.paint_water(Vector2i(cx, cy))
 
 
 func _build() -> void:
@@ -51,6 +63,7 @@ func _build() -> void:
 		var top := cliff.top_at(global_position.x)
 		global_position.y = top - 1.0
 		_fall_h = int(cliff.bottom_at(global_position.x) - top) + 2
+		cliff.add_spillway(self)
 	var w := width + PAD * 2
 	var h := _fall_h + SPLASH
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)

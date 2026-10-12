@@ -91,7 +91,7 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 |---|---|---|
 | `WaterLayer`（`world/water/`） | 绘制所有水面 | 每张地图放一个，指定 `terrain`。材质参数：<br>颜色 `water_color`（深水）、`clear_color`（近岸）、`gradient_reach`（渐变范围）<br>天光 `reflection_amount`<br>水波线 `drift`、`line_density`、`line_length`、`line_opacity`<br>水圈 `ripple_rings`<br>星形闪光 `sparkle`<br>太阳光带 `sun_x`（在屏幕上的横向位置）、`sun_length`（往下延伸多远）、`sun_width`（顶部和底部的半宽）、`sun_glitter`、`sparkle_density`（亮斑多少）<br>焦散 `caustic_strength`、`caustic_size`、`caustic_reach`、`caustic_speed`<br>岸边 `bank_height`（岸壁高度）、`bank_shadow`、`rim_width`（半透明浅水宽度）、`rim_opacity`、`foam_amount` |
 | `WaterBody` | 任意一块水 | 加一个名为 `Shape` 的 Polygon2D 子节点画轮廓（或直接填 `polygon`），河就画成长条形。`shore` 选岸：<br>`GRASS` 草岸<br>`SAND` 沙岸（宽度由 `beach_width` 决定）<br>`ROCK` 石岸（沿岸放 `rocks` 块半浸水的石头）<br>`SAND_AND_ROCK` 两者都有 |
-| `Waterfall` | 岩壁上的瀑布：圆润的水幕（左侧受光、右侧背光），顶部亮色翻卷的水唇，几道越往下拉得越长的水纹，底部泛白；落点堆起一团蓬松的泡沫，周围有漂浮的碎沫和扩散的水圈；两侧岩石被打湿变深 | 指定 `cliff`（一个 CliffBand）后会自动贴到崖顶，高度取岩壁高度；不指定时用 `height`。`width`、`speed` 可调，`mist` 开关水雾。瀑布周围不长草 |
+| `Waterfall` | 岩壁上的瀑布：圆润的水幕（左侧受光、右侧背光），顶部亮色翻卷的水唇，几道越往下拉得越长的水纹，底部泛白；落点堆起一团蓬松的泡沫，周围有漂浮的碎沫和扩散的水圈；两侧岩石被打湿变深 | 指定 `cliff`（一个 CliffBand）后会自动贴到崖顶，高度取岩壁高度，同时去掉落水处的崖顶草边，并在瀑布顶上补一段同宽的水面，和上游的河或湖无缝衔接；不指定时用 `height`。`width`、`speed` 可调，`mist` 开关水雾。瀑布周围不长草 |
 | `WaterReflection` | 倒影 | `WorldTree` 和 `WorldProp` 会自动加，只有下方有水时才显示，不用手动处理。浓淡、晃动幅度和消失距离在 `reflection.gdshader` 里调 |
 
 地面着色器（`ground.gdshader`）配合水体画三样东西：浅水下的湿泥、水边一条湿泥带（沙岸是湿沙）、外面一圈颜色更深的湿草。范围由 `damp_reach` 控制。

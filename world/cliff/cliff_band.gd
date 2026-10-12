@@ -49,6 +49,7 @@ var _y0 := 0
 var _img: Image
 var _rng := RandomNumberGenerator.new()
 var _pending := false
+var _spillways: Array[Node2D] = []  # waterfalls pouring over this cliff (see add_spillway)
 
 
 func _ready() -> void:
@@ -82,6 +83,7 @@ func generate() -> void:
 	for o in openings:
 		_paint_opening(int(o.x) - _x0, int(o.y))
 	_paint_foot(w)
+	_clear_spillways()
 	texture = ImageTexture.create_from_image(_img)
 	offset = Vector2(_x0, _y0)
 
@@ -223,6 +225,27 @@ func _paint_vines(w: int) -> void:
 			if j % 3 == 1:
 				var side := 1 if (j / 3) % 2 == 0 else -1
 				_put(int(vx) + side, int(t) + 2 + j, Color(LEAF[4]))
+
+
+## A waterfall pours over the edge here: no grass lip across its width, so the river above runs
+## straight into the fall.
+func add_spillway(fall: Node2D) -> void:
+	if fall not in _spillways:
+		_spillways.append(fall)
+		_queue()
+
+
+func _clear_spillways() -> void:
+	for f in _spillways:
+		if not is_instance_valid(f):
+			continue
+		var cx := int(to_local(f.global_position).x) - _x0
+		var half := int(f.get("width")) / 2
+		for i in range(cx - half, cx + half + 1):
+			if i < 0 or i >= _top.size():
+				continue
+			for y in range(int(_top[i]) - 8, int(_top[i]) + 1):
+				_put(i, y, Color(0, 0, 0, 0))
 
 
 func _paint_opening(cx: int, half: int) -> void:

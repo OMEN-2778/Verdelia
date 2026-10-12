@@ -10,6 +10,7 @@ uniform float pad = 10.0;  // px of padding left/right for the splash
 uniform float fall_h = 40.0;  // px from the lip to the pool
 uniform float speed = 1.0;
 uniform float seed = 0.0;
+uniform vec4 c_surface : source_color = vec4(0.243, 0.580, 0.741, 1.0);  // match WaterLayer clear_color: the river it pours from
 uniform vec4 c_deep : source_color = vec4(0.153, 0.369, 0.553, 1.0);
 uniform vec4 c_mid : source_color = vec4(0.247, 0.522, 0.729, 1.0);
 uniform vec4 c_light : source_color = vec4(0.459, 0.741, 0.882, 1.0);
@@ -90,13 +91,15 @@ void fragment() {
 		if (lh > 0.5 && seg < 0.4) v += 0.2;
 		else if (lh < 0.18 && seg < 0.3) v -= 0.12;
 		// the lip: water rolling over the edge, smooth and bright
-		if (y < 1.0) v = 0.62;
-		else if (y < 3.0) v = max(v, 0.82 - (y - 1.0) * 0.08 - max(u, 0.0) * 0.3);
+		if (y >= 2.0 && y < 4.0) v = max(v, 0.8 - (y - 2.0) * 0.06 - max(u, 0.0) * 0.3);
 		// aerated and white low down
 		float air = smoothstep(0.68, 1.0, fall) * (0.5 + 0.5 * vnoise(vec2(xc * 0.45, ys * 0.35 - t * 4.0)));
 		v += air * 0.45;
 		v += bay * 0.06;
 		vec3 c = v > 0.92 ? c_foam.rgb : v > 0.74 ? c_high.rgb : v > 0.52 ? c_light.rgb : v > 0.32 ? c_mid.rgb : c_deep.rgb;
+		// the top rows are still the river's surface, then it bends over the lip
+		if (y < 1.0) c = c_surface.rgb;
+		else if (y < 2.0) c = mix(c_surface.rgb, c_light.rgb, 0.5 + bay * 0.4);
 		float a = abs(u) > 0.9 ? 0.82 : 1.0;  // the thin outer edge lets a little rock through
 		col = vec4(c, a);
 	}
