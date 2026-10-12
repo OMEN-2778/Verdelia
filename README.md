@@ -72,3 +72,5 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 第三方素材：`art/third_party/grassland/` 来自上传的 *Grassland Top Down Tileset Pixel Art*。用 `tools/art/vale/grassland.py <解压目录>` 导入，导入时会把绿色微调到草地色调。演示场景用到了里面的遗迹、石堆、开花灌木、树桩和花。
 
 旧版的一次性烘焙演示（`art/vale`、`scripts/vale`）已经被这套系统取代并删除。
+
+更新记录见 [CHANGELOG.md](CHANGELOG.md)。
