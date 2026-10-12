@@ -14,6 +14,9 @@ const MOSS := ["#1f3d22", "#2f5a2c", "#457a36", "#62994a"]
 const LEAF := ["#122a1a", "#1d4325", "#2a5f2f", "#3b7c37", "#579b45", "#7fbd58", "#aedb7a"]
 const STONE := ["#3a3633", "#58514b", "#7a7064", "#9d917e", "#bfb39a", "#ddd3b9", "#f1ead6"]
 const DIRT := ["#5f4630", "#755737", "#8a6a3e", "#a7834f", "#c39d63", "#d8b57a"]  # top four match ground.gdshader
+const MEADOW := ["#3f8f3f", "#55a748", "#6fbf55", "#8fd168"]  # ground.gdshader grass0..3
+const MEADOW_BLADE := "#357a36"
+const STONE_MOSS := Color("#8a9a5e")  # soft olive moss that sits with the meadow
 const MARBLE := ["#4b5160", "#aab2c4", "#d6dce8", "#eef1f7", "#ffffff"]
 const FLOWERS := ["#ffffff", "#ffe066", "#ffc4e1"]
 const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
@@ -43,7 +46,7 @@ const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 		openings = v
 		_queue()
 ## Ramps up to the upper level: (centre x, half width, style). Style 0 = earthen slope, 1 = stone
-## stairs. Each one cuts the face, leaves a gap in the collision and paints dirt at both mouths.
+## stairs, 2 = grassy slope (no path; the meadow's tufts grow on it). Each one cuts the face, leaves a gap in the collision and paints dirt at both mouths.
 @export var ramps := PackedVector3Array():
 	set(v):
 		ramps = v
@@ -337,6 +340,10 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				c = _stair_pixel(i, y, u, ta, sh, b).darkened(f * 0.22)  # deeper into the cut, less light
 				if _cut_shadow(i, l, y, ta, ba) > 0.25:
 					c = c.darkened(0.3)
+			elif style == 2:
+				c = _grass_slope_pixel(i, y, f, b)
+				if _cut_shadow(i, l, y, ta, ba) > 0.25:
+					c = c.darkened(0.22)
 			else:
 				var v: float = 0.3 + 0.55 * (1.0 - f) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
 				var ledge := fposmod((y + _noise(i, 40, 6) * 5.0) / 9.0, 1.0)
@@ -352,7 +359,9 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				c = Color(DIRT[clampi(int(v * 6.0), 0, 5)])
 				var g := _noise(i, y + 70, 3)
 				if absf(u) > 0.62 and g > 0.62 - (absf(u) - 0.62):
-					c = Color(LEAF[4 if g > 0.8 else 3])  # grass creeping in from the edges
+					c = Color(MEADOW[2 if g > 0.8 else 1]).darkened(f * 0.18)  # grass creeping in from the edges
+					if _hash(i, y * 3 + 7) < 0.25:
+						c = Color(MEADOW_BLADE)
 				elif _hash(i * 7 + y, 913) < 0.012:
 					c = Color(ROCK[5])
 					_put(i, y + 1, Color(ROCK[2]))
@@ -385,8 +394,8 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 		# the turf of the top edge wraps round the corner
 		var cx2: int = (l - 1) if side < 0 else (r + 1)
 		for k in 3:
-			_put(cx2 + side * k, int(ta) - 1, Color(LEAF[3]))
-			_put(cx2 + side * k, int(ta) - 2, Color(LEAF[2]))
+			_put(cx2 + side * k, int(ta) - 1, Color(MEADOW[1]))
+			_put(cx2 + side * k, int(ta) - 2, Color(MEADOW[0]))
 	# the old face rounds off into the cut: shading wraps away from the light on the left end and
 	# into it on the right end
 	for side in [-1, 1]:
@@ -410,9 +419,9 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 			var jag := int(roundf((_noise(side * 31, y, 4) - 0.5) * 3.0))
 			var x: int = (l + jag) if side < 0 else (r - jag)
 			if _noise(x, y, 3) > 0.3 + f * 0.6:
-				_put(x, y, Color(LEAF[3 if (y & 1) == 0 else 2]))
+				_put(x, y, Color(MEADOW[1] if (y & 1) == 0 else MEADOW_BLADE).darkened(f * 0.2))
 				if _noise(x, y + 30, 2) > 0.6:
-					_put(x - side, y, Color(LEAF[4]))
+					_put(x - side, y, Color(MEADOW[2]).darkened(f * 0.2))
 	# soft shadow of the cut on the meadow below
 	for i in range(l - 3, r + 4):
 		for k in 4:
@@ -436,7 +445,7 @@ func _stair_pixel(i: int, y: int, u: float, ta: float, sh: float, b: float) -> C
 	if fposmod(i + _hash(j, 52) * span, span) < 1.0 and k < sh - 2.0 and k > 0.5:
 		c = Color(STONE[2])  # the odd joint between slabs
 	if absf(u) > 0.55 and _noise(i, y + 200, 4) > 0.7:
-		c = Color(MOSS[2 if k < sh - 1.6 else 1])
+		c = c.lerp(STONE_MOSS, 0.55)
 	return c
 
 
@@ -446,6 +455,21 @@ func _cut_shadow(i: int, l: int, y: int, ta: float, ba: float) -> float:
 	var f := clampf((y - ta) / maxf(ba - ta, 1.0), 0.0, 1.0)
 	var reach := 1.0 + 3.5 * f + (_noise(i, y, 3) - 0.5)
 	return 0.42 if i - l < reach else 0.0
+
+
+## A grassy slope: the meadow's own tones (as ground.gdshader draws them), a little darker the
+## lower it runs into the cut, with blade strokes. GrassField also grows tufts on it.
+func _grass_slope_pixel(i: int, y: int, f: float, b: float) -> Color:
+	var t := _noise(i, y, 30) * 0.78 + _noise(i + 13, y, 8) * 0.22 + b * 0.22 - f * 0.28
+	var c := Color(MEADOW[0 if t < 0.3 else (1 if t < 0.5 else (2 if t < 0.7 else 3))])
+	if _hash(i, y * 5 + 3) < 0.03 or _hash(i, (y - 1) * 5 + 3) < 0.03:
+		c = Color(MEADOW_BLADE)  # blade strokes, two px tall
+	elif _hash(i, (y + 1) * 5 + 3) < 0.03:
+		c = Color(MEADOW[3])
+	var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
+	if swell < 0.14 and _noise(i, y + 90, 6) > 0.5:
+		c = c.darkened(0.12)  # soft lumps in the turf hint at the slope
+	return c
 
 
 ## Index of the ramp whose floor contains local x (with `margin` px either side), or -1.
@@ -516,6 +540,8 @@ func paint_terrain(t: Terrain) -> void:
 	if _top.is_empty():
 		return
 	for r in ramps:
+		if int(r.z) == 2:
+			continue  # grass slopes need no path
 		var i := clampi(int(r.x) - _x0, 0, _top.size() - 1)
 		var top := to_global(Vector2(r.x, _top[i]))
 		var bot := to_global(Vector2(r.x, _bottom[i]))
@@ -562,7 +588,10 @@ func grass_excludes(world: Vector2) -> bool:
 	var i := int(p.x) - _x0
 	if i < 0 or i >= _bottom.size():
 		return false
-	return p.y > _top[i] - 1 and p.y < _bottom[i] + 1
+	if not (p.y > _top[i] - 1 and p.y < _bottom[i] + 1):
+		return false
+	var k := _ramp_index(p.x, -2.0)
+	return not (k >= 0 and int(ramps[k].z) == 2)  # grass slopes grow the meadow's tufts
 
 
 func grass_skirt_points() -> PackedVector2Array:

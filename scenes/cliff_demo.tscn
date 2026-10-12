@@ -63,7 +63,7 @@ script = ExtResource("cliff")
 points = PackedVector2Array(0, 166, 240, 172, 470, 158, 720, 168)
 face = 40
 seed = 11
-ramps = PackedVector3Array(200, 15, 0, 520, 12, 1)
+ramps = PackedVector3Array(200, 15, 0, 360, 17, 2, 520, 12, 1)
 
 [node name="Grass" type="Node2D" parent="." node_paths=PackedStringArray("terrain", "player")]
 script = ExtResource("grass")
@@ -100,7 +100,7 @@ clearance = 16.0
 [node name="Player" type="CharacterBody2D" parent="Props"]
 position = Vector2(90, 380)
 script = ExtResource("player")
-waypoints = PackedVector2Array(90, 380, 128, 300, 110, 236, 110, 140, 196, 250, 200, 136, 300, 112, 450, 114, 520, 132, 520, 246, 590, 318, 676, 388, 430, 330, 250, 372, 90, 380)
+waypoints = PackedVector2Array(90, 380, 128, 300, 110, 236, 110, 140, 196, 250, 200, 136, 300, 112, 450, 114, 520, 132, 520, 246, 590, 318, 470, 300, 362, 256, 360, 132, 270, 120, 200, 136, 200, 250, 150, 320, 90, 380)
 speed = 46.0
 
 [node name="Feet" type="CollisionShape2D" parent="Props/Player"]

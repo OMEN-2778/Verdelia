@@ -40,7 +40,7 @@ func _physics_process(dt: float) -> void:
 		var s: int = c.ramp_at(global_position)
 		if s >= 0:
 			on_ramp = s
-	var mul := 0.68 if on_ramp == 1 else (0.82 if on_ramp == 0 else 1.0)
+	var mul := 0.68 if on_ramp == 1 else (0.82 if on_ramp == 0 or on_ramp == 2 else 1.0)
 	velocity = dir * speed * mul
 	var before := global_position
 	move_and_slide()
