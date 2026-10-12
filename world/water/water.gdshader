@@ -51,11 +51,15 @@ uniform float ripple_rings : hint_range(0.0, 1.0) = 0.35;  // how often rings sp
 uniform float ring_size = 9.0;  // px, widest ring
 
 group_uniforms sun;
-uniform vec2 sun_center = vec2(0.5, 0.46);  // on screen (0..1): the glitter stays here as the camera moves
-uniform vec2 sun_radius = vec2(0.3, 0.24);  // size of the glittering patch, in screen fractions
-uniform float sun_glitter : hint_range(0.0, 1.0) = 0.7;
-uniform vec4 sun_color : source_color = vec4(1.0, 0.973, 0.851, 1.0);
-uniform vec4 sun_sheen : source_color = vec4(0.416, 0.682, 0.839, 1.0);  // water brightened by the sun
+uniform float sun_x : hint_range(0.0, 1.0) = 0.5;  // column position across the screen; it stays here as the camera moves
+uniform float sun_length : hint_range(0.1, 1.0) = 0.9;  // how far down the screen the column reaches
+uniform vec2 sun_width = vec2(0.17, 0.05);  // column half-width at the top and at the bottom, in screen widths
+uniform float sun_glitter : hint_range(0.0, 1.0) = 0.85;
+uniform float sparkle_density : hint_range(0.0, 1.0) = 0.9;
+uniform vec4 sun_color : source_color = vec4(1.0, 0.988, 0.933, 1.0);  // sparkle cores
+uniform vec4 sun_halo : source_color = vec4(0.749, 0.886, 0.949, 1.0);  // soft light around them
+uniform vec4 sun_core : source_color = vec4(0.698, 0.863, 0.941, 1.0);  // water right under the sun
+uniform vec4 sun_sheen : source_color = vec4(0.400, 0.667, 0.835, 1.0);  // water lit by the sun
 
 group_uniforms caustics;
 uniform float caustic_strength : hint_range(0.0, 1.0) = 0.8;
@@ -167,6 +171,52 @@ float ring(vec2 pix, float t) {
 		else if (e < 0.6 + 1.0 && f < 0.3 && length(d) < r) acc = max(acc, 0.25);  // the dip inside
 	}
 	return acc;
+}
+
+// Strength of the sun's glitter path at a pixel (0..1): a column hanging from the top of the
+// screen at sun_x, wide and strong near the top, narrowing and fading downwards, edges wavering.
+float sun_path(vec2 pix, vec2 suv, float t) {
+	float v = suv.y / sun_length;
+	if (v > 1.0) return 0.0;
+	float wob = (vnoise(vec2(pix.y * 0.8, t * 6.0), 9.0) - 0.5) * 0.05 + (vnoise(vec2(pix.y, 40.0 + t * 3.0), 3.0) - 0.5) * 0.02;
+	float half_w = mix(sun_width.x, sun_width.y, pow(v, 0.8));
+	float dx = (suv.x - sun_x + wob) / half_w;
+	float across = exp(-dx * dx * 1.6);
+	float along = mix(1.0, 0.3, v) * (1.0 - smoothstep(0.75, 1.0, v));
+	return clamp(across * along * sun_glitter, 0.0, 1.0);
+}
+
+// Round sun sparkles: each one swells and dies in a moment. Big ones (only in the bright path)
+// have a white core, a soft halo and four short star points; small ones are a single bright
+// pixel, which also turn up sparsely outside the path. 1 = core, 0.5 = inner glow, 0.2 = halo.
+float sun_sparkles(vec2 pix, float path, float t) {
+	float best = 0.0;
+	vec2 cs = vec2(7.0, 5.0);
+	vec2 base = floor(pix / cs);
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 cell = base + vec2(float(x), float(y));
+			float phase = t * (1.4 + hash(cell + 3.3) * 1.6) + hash(cell + 8.1) * 9.0;
+			vec2 id = cell + floor(phase) * 13.7;
+			float roll = hash(id + 0.4);
+			float chance = path * (0.25 + path) * sparkle_density + 0.004;
+			if (roll > chance) continue;
+			float env = sin(3.14159 * fract(phase));
+			vec2 c = floor(cell * cs + 1.0 + hash2(id) * (cs - 2.0));
+			// bigger sparkles where the path is strongest
+			float size = (roll < chance * 0.22 && path > 0.3) ? 2.6 : (roll < chance * 0.55 && path > 0.12) ? 1.4 : 0.5;
+			size *= env;
+			vec2 d = pix - c;
+			float r = length(d);
+			float v = 0.0;
+			if (r <= size * 0.6) v = 1.0;
+			else if (r <= size) v = 0.5;
+			else if (r <= size + 1.3 && size > 1.0) v = 0.2;
+			if (size > 1.6 && env > 0.6 && (d.x == 0.0 || d.y == 0.0) && r <= size + 2.5) v = max(v, 0.5);
+			best = max(best, v);
+		}
+	}
+	return best;
 }
 
 // Sun glints: tiny stars that flare and die, gathered in slowly wandering patches of glitter.
@@ -289,18 +339,27 @@ void fragment() {
 		float gl = rim > 0.8 ? glint(pix, t) : 0.0;
 		if (gl > 0.0) col = mix(col, glint_color.rgb, gl);
 
-		// the sun on the water: a patch of glitter that stays in the middle of the screen. The
-		// water there is brighter, and wave crests catch the light in flickering dashes.
-		vec2 sd = (SCREEN_UV - sun_center) / sun_radius;
-		float sun = clamp(1.0 - dot(sd, sd), 0.0, 1.0) * sun_glitter * smoothstep(0.4, 0.9, rim);
+		// the sun on the water: a column of glitter running down from the top of the screen
+		// (it stays put as the camera moves). Bright and wide near the sun, narrowing and fading
+		// below; wave crests in it shine as streaks, and round sparkles with halos and star
+		// points flicker along it, thinning out to the odd speck outside.
+		float sun = sun_path(pix, SCREEN_UV, t) * smoothstep(0.4, 0.9, rim);
 		if (sun > 0.0) {
-			if (sun + bay * 0.6 > 0.62) col = mix(col, sun_sheen.rgb, 0.45);
-			float crest = sin(pix.y * 1.4 + vnoise(pix * vec2(0.5, 1.0) + vec2(t * 3.0, 0.0), 6.0) * 7.0 - t * 2.4);
-			vec2 cell = floor((pix + vec2(t * 2.0, 0.0)) / vec2(3.0, 1.0));
-			float fl = hash(cell + floor(t * 7.0 + hash(cell) * 4.0) * 3.7);
-			float k = sun * sun;
-			if (crest > 0.7 && fl < k * 0.32) col = sun_color.rgb;
-			else if (crest > 0.45 && fl < k * 0.16) col = mix(col, sun_color.rgb, 0.5);
+			float sv = sun + bay * 0.45;
+			if (sv > 0.9) col = mix(col, sun_core.rgb, 0.85);
+			else if (sv > 0.6) col = mix(col, sun_core.rgb, 0.45);
+			else if (sv > 0.35) col = mix(col, sun_sheen.rgb, 0.6);
+			else if (sv > 0.18) col = mix(col, sun_sheen.rgb, 0.3);
+			float crest = sin(pix.y * 1.25 + vnoise(pix * vec2(0.35, 1.0) + vec2(t * 2.5, 0.0), 7.0) * 7.0 - t * 2.2);
+			float brk = vnoise(pix * vec2(0.7, 1.0) + vec2(-t * 6.0, 0.0), 3.0);
+			if (crest > 0.9 && brk > 1.0 - sun * 0.45) col = mix(col, sun > 0.6 ? sun_color.rgb : sun_halo.rgb, 0.8);
+			else if (crest > 0.75 && brk > 1.0 - sun * 0.4) col = mix(col, sun_halo.rgb, 0.4);
+		}
+		float sp = sun_sparkles(pix, sun_path(pix, SCREEN_UV, t), t);
+		if (rim > 0.6) {
+			if (sp > 0.75) col = sun_color.rgb;
+			else if (sp > 0.4) col = mix(col, sun_color.rgb, 0.7);
+			else if (sp > 0.0) col = mix(col, sun_halo.rgb, 0.65);
 		}
 
 		COLOR = vec4(col, a);
