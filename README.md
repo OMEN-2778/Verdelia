@@ -65,7 +65,7 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 | `WorldTree`（`world/flora/`） | 素材库里的树（oak / birch / pine / blossom / sapling / oak_far / pine_far），叶团分层摆动、阵风发亮、落叶或落花、柔和投影、树根长草 | 放在树干底部，选 `species`；`variant` = -1 时按位置自动挑变体 |
 | `WorldProp` | 任意单图物件：灌木、石头、遗迹、树桩、花 | 设 `texture`，或用 `library_item` = `bush:green` / `rock`。物件底部会自动长一圈草来过渡：小物件配短草，大物件配高草，前排草盖住物件底边；物件下方不长草 |
 | `Scatter` | 在矩形或多边形区域里批量散布上面这些 | `items` 写 `tree:oak`、`bush:flower`、`rock`、`prop:res://….png@sway=0.5@shadow=0`，配上 `weights`、`count`、`min_distance`、`clearance`（离路和田的距离）。点检查器里的 `generate` 就会摆好，摆完还可以手动调整 |
-| `CliffBand`（`world/cliff/`） | 沿折线生成的岩壁：高度起伏、岩刺和凹槽、不规则岩层、风化和裂缝、零星的垂草和藤蔓、崖脚碎石，崖脚自动长一排高草 | `points` 是岩壁顶边，`openings` 是洞口（中心 x, 半宽） |
+| `CliffBand`（`world/cliff/`） | 沿折线生成的岩壁：高度起伏、岩刺和凹槽；岩层厚薄起伏、略带倾斜、局部融合；随机生长的裂缝和雨水冲刷痕迹；零星的垂草和藤蔓、崖脚碎石，崖脚自动长一排高草 | `points` 是岩壁顶边，`openings` 是洞口（中心 x, 半宽） |
 
 素材库由 `tools/art/vale/library.py` 生成（`flora.py` 是树、灌木、石头的生成器），输出到 `art/library/`：46 棵树、20 丛灌木、8 块石头、53 种草丛。改了生成器后重新运行这个脚本即可。
 
