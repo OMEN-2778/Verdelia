@@ -171,7 +171,7 @@ terrain = NodePath("../../Terrain")
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(640, 92, 320, 388)
-items = PackedStringArray("tree:oak", "tree:pine", "tree:blossom", "tree:birch", "bush:green", "bush:violet", "rock", "prop:res://art/third_party/grassland/Bush1.png@sway=0.5", "prop:res://art/third_party/grassland/Bush14.png@sway=0.5", "prop:res://art/third_party/grassland/Broken_tree1.png", "prop:res://art/third_party/grassland/Rpck_grass4.png@shadow=0", "prop:res://art/third_party/grassland/Flower1.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Flower9.png@skirt=0@shadow=0")
+items = PackedStringArray("tree:oak", "tree:pine", "tree:blossom", "tree:birch", "bush:green", "bush:violet", "rock", "prop:res://art/third_party/grassland/Bush6.png@sway=0.5", "prop:res://art/third_party/grassland/Bush14.png@sway=0.5", "prop:res://art/third_party/grassland/Broken_tree1.png", "prop:res://art/third_party/grassland/Rpck_grass4.png@shadow=0", "prop:res://art/third_party/grassland/Flower1.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Flower9.png@skirt=0@shadow=0")
 weights = PackedFloat32Array(4, 3, 2, 2, 3, 2, 2, 2, 2, 1, 1, 3, 3)
 count = 40
 min_distance = 26.0

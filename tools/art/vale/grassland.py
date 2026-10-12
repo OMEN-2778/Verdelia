@@ -15,9 +15,10 @@ import pixeltool  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "art/third_party/grassland"
+EXCLUDED_BUSHES = (1, 8)  # red spiky bushes: don't fit the look
 KEEP = (["Ruin1_grass_shadow", "Ruin2_grass_shadow", "Ruin3_grass_shadow", "Ruin4_grass_shadow", "Ruin5_grass_shadow"]
         + [f"Stone{i}_grass_shadow" for i in range(1, 6)] + [f"Rpck_grass{i}" for i in range(1, 6)]
-        + [f"Bush{i}" for i in range(1, 20)] + [f"Broken_tree{i}" for i in (1, 2, 4, 5)]
+        + [f"Bush{i}" for i in range(1, 20) if i not in EXCLUDED_BUSHES] + [f"Broken_tree{i}" for i in (1, 2, 4, 5)]
         + [f"Flower{i}" for i in range(1, 12)] + ["grass_element1", "grass_element2", "grass_element3"]
         + [f"Rock_grass_element{i}" for i in (11, 12, 13, 14)])
 
