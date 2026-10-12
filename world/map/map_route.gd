@@ -26,6 +26,8 @@ static func grid(world: MapWorld) -> AStarGrid2D:
 		if o.kind == "flower":
 			continue
 		if o.kind == "building":
+			if not WorldBuilding.is_solid(o.id):
+				continue
 			var hr := MapWorld.building_rect(o)
 			for y in range(floori(hr.position.y / cp), ceili(hr.end.y / cp)):
 				for x in range(floori(hr.position.x / cp), ceili(hr.end.x / cp)):

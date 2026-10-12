@@ -1645,6 +1645,7 @@
   {
    "id": "cabin_red",
    "name": "\u7ea2\u9876\u6728\u5c4b",
+   "group": "\u4f4f\u5b85",
    "file": "buildings/cabin_red.png",
    "night": "buildings/cabin_red_night.png",
    "kind": "house",
@@ -1680,6 +1681,7 @@
   {
    "id": "cabin_blue",
    "name": "\u84dd\u9876\u5c0f\u6728\u5c4b",
+   "group": "\u4f4f\u5b85",
    "file": "buildings/cabin_blue.png",
    "night": "buildings/cabin_blue_night.png",
    "kind": "house",
@@ -1715,6 +1717,7 @@
   {
    "id": "cottage",
    "name": "\u8305\u8349\u77f3\u5c4b",
+   "group": "\u4f4f\u5b85",
    "file": "buildings/cottage.png",
    "night": "buildings/cottage_night.png",
    "kind": "house",
@@ -1750,6 +1753,7 @@
   {
    "id": "townhouse",
    "name": "\u6728\u7b4b\u697c\u623f",
+   "group": "\u4f4f\u5b85",
    "file": "buildings/townhouse.png",
    "night": "buildings/townhouse_night.png",
    "kind": "house",
@@ -1780,6 +1784,7 @@
   {
    "id": "townhouse_rose",
    "name": "\u7c89\u5899\u697c\u623f",
+   "group": "\u4f4f\u5b85",
    "file": "buildings/townhouse_rose.png",
    "night": "buildings/townhouse_rose_night.png",
    "kind": "house",
@@ -1808,8 +1813,148 @@
    ]
   },
   {
+   "id": "manor",
+   "name": "\u5927\u5b85",
+   "group": "\u4f4f\u5b85",
+   "file": "buildings/manor.png",
+   "night": "buildings/manor_night.png",
+   "kind": "house",
+   "anchor": [
+    67,
+    104
+   ],
+   "footprint": [
+    -60,
+    -32,
+    120,
+    32
+   ],
+   "door": [
+    0,
+    0
+   ],
+   "door_size": [
+    18,
+    22
+   ],
+   "chimney": [
+    [
+     -52,
+     -102
+    ],
+    [
+     52,
+     -102
+    ]
+   ],
+   "size": [
+    134,
+    110
+   ]
+  },
+  {
+   "id": "tower",
+   "name": "\u77f3\u5854",
+   "group": "\u4f4f\u5b85",
+   "file": "buildings/tower.png",
+   "night": "buildings/tower_night.png",
+   "kind": "house",
+   "anchor": [
+    28,
+    138
+   ],
+   "footprint": [
+    -17,
+    -22,
+    35,
+    22
+   ],
+   "door": [
+    -1,
+    0
+   ],
+   "door_size": [
+    12,
+    22
+   ],
+   "chimney": [],
+   "size": [
+    56,
+    144
+   ]
+  },
+  {
+   "id": "barn",
+   "name": "\u7ea2\u8c37\u4ed3",
+   "group": "\u4f4f\u5b85",
+   "file": "buildings/barn.png",
+   "night": "buildings/barn_night.png",
+   "kind": "house",
+   "anchor": [
+    56,
+    100
+   ],
+   "footprint": [
+    -38,
+    -34,
+    76,
+    34
+   ],
+   "door": [
+    0,
+    0
+   ],
+   "door_size": [
+    30,
+    22
+   ],
+   "chimney": [],
+   "size": [
+    112,
+    106
+   ]
+  },
+  {
+   "id": "windmill",
+   "name": "\u98ce\u8f66\u78e8\u574a",
+   "group": "\u4f4f\u5b85",
+   "file": "buildings/windmill.png",
+   "night": "buildings/windmill_night.png",
+   "kind": "house",
+   "anchor": [
+    32,
+    108
+   ],
+   "footprint": [
+    -24,
+    -22,
+    48,
+    22
+   ],
+   "door": [
+    0,
+    0
+   ],
+   "door_size": [
+    12,
+    22
+   ],
+   "chimney": [],
+   "size": [
+    64,
+    114
+   ],
+   "sails": [
+    0,
+    -74
+   ],
+   "sails_frames": 12,
+   "sails_file": "buildings/windmill_sails.png"
+  },
+  {
    "id": "shop_grocer",
    "name": "\u852c\u679c\u94fa",
+   "group": "\u5546\u5e97\u4e0e\u5de5\u574a",
    "file": "buildings/shop_grocer.png",
    "night": "buildings/shop_grocer_night.png",
    "kind": "shop",
@@ -1845,6 +1990,7 @@
   {
    "id": "shop_bakery",
    "name": "\u9762\u5305\u5e97",
+   "group": "\u5546\u5e97\u4e0e\u5de5\u574a",
    "file": "buildings/shop_bakery.png",
    "night": "buildings/shop_bakery_night.png",
    "kind": "shop",
@@ -1880,6 +2026,7 @@
   {
    "id": "shop_potion",
    "name": "\u836f\u6c34\u94fa",
+   "group": "\u5546\u5e97\u4e0e\u5de5\u574a",
    "file": "buildings/shop_potion.png",
    "night": "buildings/shop_potion_night.png",
    "kind": "shop",
@@ -1913,8 +2060,45 @@
    ]
   },
   {
+   "id": "smithy",
+   "name": "\u94c1\u5320\u94fa",
+   "group": "\u5546\u5e97\u4e0e\u5de5\u574a",
+   "file": "buildings/smithy.png",
+   "night": "buildings/smithy_night.png",
+   "kind": "house",
+   "anchor": [
+    54,
+    84
+   ],
+   "footprint": [
+    -46,
+    -26,
+    96,
+    26
+   ],
+   "door": [
+    -16,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     32,
+     -80
+    ]
+   ],
+   "size": [
+    108,
+    90
+   ]
+  },
+  {
    "id": "inn",
    "name": "\u65c5\u5e97",
+   "group": "\u5546\u5e97\u4e0e\u5de5\u574a",
    "file": "buildings/inn.png",
    "night": "buildings/inn_night.png",
    "kind": "house",
@@ -1952,8 +2136,184 @@
    ]
   },
   {
+   "id": "sail_arms",
+   "name": "\u5175\u5668\u7bf7\u644a",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/sail_arms.png",
+   "night": "buildings/sail_arms_night.png",
+   "kind": "stall",
+   "anchor": [
+    40,
+    68
+   ],
+   "footprint": [
+    -32,
+    -12,
+    64,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    80,
+    74
+   ]
+  },
+  {
+   "id": "sail_cloth",
+   "name": "\u5e03\u5339\u7bf7\u644a",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/sail_cloth.png",
+   "night": "buildings/sail_cloth_night.png",
+   "kind": "stall",
+   "anchor": [
+    40,
+    68
+   ],
+   "footprint": [
+    -32,
+    -12,
+    64,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    80,
+    74
+   ]
+  },
+  {
+   "id": "sail_pottery",
+   "name": "\u9676\u5668\u7bf7\u644a",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/sail_pottery.png",
+   "night": "buildings/sail_pottery_night.png",
+   "kind": "stall",
+   "anchor": [
+    40,
+    68
+   ],
+   "footprint": [
+    -32,
+    -12,
+    64,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    80,
+    74
+   ]
+  },
+  {
+   "id": "produce_stand",
+   "name": "\u62db\u724c\u83dc\u644a",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/produce_stand.png",
+   "night": "buildings/produce_stand_night.png",
+   "kind": "stall",
+   "anchor": [
+    39,
+    57
+   ],
+   "footprint": [
+    -33,
+    -11,
+    66,
+    11
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    78,
+    62
+   ]
+  },
+  {
+   "id": "bake_table",
+   "name": "\u7cd5\u70b9\u684c\u644a",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/bake_table.png",
+   "night": "buildings/bake_table_night.png",
+   "kind": "stall",
+   "anchor": [
+    34,
+    49
+   ],
+   "footprint": [
+    -28,
+    -10,
+    56,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    68,
+    54
+   ]
+  },
+  {
+   "id": "pavilion",
+   "name": "\u5360\u535c\u5e10\u7bf7",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/pavilion.png",
+   "night": "buildings/pavilion_night.png",
+   "kind": "stall",
+   "anchor": [
+    36,
+    77
+   ],
+   "footprint": [
+    -28,
+    -14,
+    56,
+    14
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    72,
+    86
+   ]
+  },
+  {
+   "id": "wagon",
+   "name": "\u5546\u961f\u7bf7\u8f66",
+   "group": "\u96c6\u5e02",
+   "file": "buildings/wagon.png",
+   "night": "buildings/wagon_night.png",
+   "kind": "stall",
+   "anchor": [
+    43,
+    56
+   ],
+   "footprint": [
+    -23,
+    -12,
+    60,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    86,
+    58
+   ]
+  },
+  {
    "id": "stall_fruit",
    "name": "\u6c34\u679c\u644a",
+   "group": "\u96c6\u5e02",
    "file": "buildings/stall_fruit.png",
    "night": "buildings/stall_fruit_night.png",
    "kind": "stall",
@@ -1978,6 +2338,7 @@
   {
    "id": "stall_fish",
    "name": "\u9c7c\u644a",
+   "group": "\u96c6\u5e02",
    "file": "buildings/stall_fish.png",
    "night": "buildings/stall_fish_night.png",
    "kind": "stall",
@@ -2002,6 +2363,7 @@
   {
    "id": "stall_bread",
    "name": "\u9762\u5305\u644a",
+   "group": "\u96c6\u5e02",
    "file": "buildings/stall_bread.png",
    "night": "buildings/stall_bread_night.png",
    "kind": "stall",
@@ -2026,6 +2388,7 @@
   {
    "id": "stall_veg",
    "name": "\u83dc\u644a",
+   "group": "\u96c6\u5e02",
    "file": "buildings/stall_veg.png",
    "night": "buildings/stall_veg_night.png",
    "kind": "stall",
@@ -2045,6 +2408,232 @@
    "size": [
     52,
     49
+   ]
+  },
+  {
+   "id": "weapon_rack",
+   "name": "\u5175\u5668\u67b6",
+   "group": "\u9053\u5177",
+   "file": "buildings/weapon_rack.png",
+   "night": "buildings/weapon_rack_night.png",
+   "kind": "prop",
+   "anchor": [
+    15,
+    27
+   ],
+   "footprint": [
+    -12,
+    -4,
+    24,
+    4
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    30,
+    30
+   ]
+  },
+  {
+   "id": "armour",
+   "name": "\u76d4\u7532\u67b6",
+   "group": "\u9053\u5177",
+   "file": "buildings/armour.png",
+   "night": "buildings/armour_night.png",
+   "kind": "prop",
+   "anchor": [
+    8,
+    32
+   ],
+   "footprint": [
+    -4,
+    -3,
+    8,
+    3
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    16,
+    34
+   ]
+  },
+  {
+   "id": "banner_red",
+   "name": "\u7ea2\u65d7",
+   "group": "\u9053\u5177",
+   "file": "buildings/banner_red.png",
+   "night": "buildings/banner_red_night.png",
+   "kind": "prop",
+   "anchor": [
+    8,
+    38
+   ],
+   "footprint": [
+    -2,
+    -2,
+    4,
+    2
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    18,
+    40
+   ]
+  },
+  {
+   "id": "banner_blue",
+   "name": "\u84dd\u65d7",
+   "group": "\u9053\u5177",
+   "file": "buildings/banner_blue.png",
+   "night": "buildings/banner_blue_night.png",
+   "kind": "prop",
+   "anchor": [
+    8,
+    38
+   ],
+   "footprint": [
+    -2,
+    -2,
+    4,
+    2
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    18,
+    40
+   ]
+  },
+  {
+   "id": "dining",
+   "name": "\u9910\u684c",
+   "group": "\u9053\u5177",
+   "file": "buildings/dining.png",
+   "night": "buildings/dining_night.png",
+   "kind": "prop",
+   "anchor": [
+    20,
+    24
+   ],
+   "footprint": [
+    -10,
+    -7,
+    20,
+    7
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    40,
+    28
+   ]
+  },
+  {
+   "id": "barrels",
+   "name": "\u6728\u6876\u5806",
+   "group": "\u9053\u5177",
+   "file": "buildings/barrels.png",
+   "night": "buildings/barrels_night.png",
+   "kind": "prop",
+   "anchor": [
+    15,
+    23
+   ],
+   "footprint": [
+    -12,
+    -5,
+    24,
+    5
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    30,
+    26
+   ]
+  },
+  {
+   "id": "crates",
+   "name": "\u8d27\u7bb1\u5806",
+   "group": "\u9053\u5177",
+   "file": "buildings/crates.png",
+   "night": "buildings/crates_night.png",
+   "kind": "prop",
+   "anchor": [
+    16,
+    25
+   ],
+   "footprint": [
+    -13,
+    -5,
+    26,
+    5
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    32,
+    28
+   ]
+  },
+  {
+   "id": "rug",
+   "name": "\u5730\u6bef",
+   "group": "\u9053\u5177",
+   "file": "buildings/rug.png",
+   "night": "buildings/rug_night.png",
+   "kind": "rug",
+   "anchor": [
+    15,
+    12
+   ],
+   "footprint": [
+    -13,
+    -10,
+    26,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    30,
+    14
+   ],
+   "solid": false
+  },
+  {
+   "id": "well",
+   "name": "\u6c34\u4e95",
+   "group": "\u9053\u5177",
+   "file": "buildings/well.png",
+   "night": "buildings/well_night.png",
+   "kind": "prop",
+   "anchor": [
+    17,
+    42
+   ],
+   "footprint": [
+    -12,
+    -10,
+    25,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    34,
+    46
    ]
   }
  ],

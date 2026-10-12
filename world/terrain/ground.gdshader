@@ -1,8 +1,11 @@
 // Procedural ground for the whole map, ported from stardust-vale's arena painter.
 // The sprite's TEXTURE is the terrain data (one texel per cell, linear filtered):
-//   R = bare dirt / path, G = tilled soil, B = watered.
+//   R = bare dirt / path, G = tilled soil, B = watered, A = 0 where the ground is paved.
 // Grass is two value-noise octaves + 4x4 Bayer dithering; dirt and tilled soil get organic,
 // dithered edges from noise, paths are lighter where worn, tilled soil is drawn as mounded rows.
+// Paving is a brick road laid by hand: rows that wander a little, bricks of uneven length with
+// rounded corners, several kinds of stone, grain, cracks, a trodden middle, moss in the joints,
+// and an edge where the bricks thin out, sink and go missing into the grass.
 // water_data (Terrain.water_texture) adds the wet bed under the water's translucent rim, a strip
 // of wet mud or wet sand at the waterline and darker, lusher damp grass around it.
 shader_type canvas_item;
@@ -53,6 +56,13 @@ uniform vec4 damp : source_color = vec4(0.176, 0.396, 0.235, 1.0);  // damp gras
 uniform float damp_reach = 12.0;  // px of damp ground around the water
 uniform float wet_sand_darken = 0.78;
 
+group_uniforms paving;
+uniform float brick_row = 5.0;  // px per row of bricks
+uniform float brick_len = 8.0;  // mean brick length, px
+uniform vec4 joint0 : source_color = vec4(0.333, 0.294, 0.247, 1.0);
+uniform vec4 joint1 : source_color = vec4(0.416, 0.373, 0.318, 1.0);
+uniform vec4 joint_moss : source_color = vec4(0.275, 0.420, 0.216, 1.0);
+
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
 float hash(vec2 p) {
@@ -68,6 +78,18 @@ float vnoise(vec2 p, float cell) {
 	t = t * t * (3.0 - 2.0 * t);
 	float a = hash(i), b = hash(i + vec2(1.0, 0.0)), c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
 	return a + (b - a) * t.x + (c - a) * t.y + (a - b - c + d) * t.x * t.y;
+}
+
+// stone families for the bricks (dark .. light): warm grey, beige, ochre, cool grey, old red brick
+const vec3 STONE[20] = vec3[20](
+	vec3(0.420, 0.392, 0.357), vec3(0.533, 0.498, 0.451), vec3(0.635, 0.596, 0.537), vec3(0.733, 0.698, 0.635),
+	vec3(0.475, 0.408, 0.322), vec3(0.588, 0.514, 0.416), vec3(0.690, 0.616, 0.502), vec3(0.788, 0.718, 0.596),
+	vec3(0.494, 0.384, 0.282), vec3(0.604, 0.478, 0.353), vec3(0.702, 0.569, 0.424), vec3(0.788, 0.663, 0.514),
+	vec3(0.373, 0.384, 0.392), vec3(0.475, 0.486, 0.490), vec3(0.573, 0.584, 0.584), vec3(0.678, 0.682, 0.675),
+	vec3(0.478, 0.329, 0.275), vec3(0.580, 0.400, 0.337), vec3(0.678, 0.482, 0.408), vec3(0.765, 0.576, 0.494));
+
+float joint_at(float k, float row, float len) {
+	return k * len + floor((hash(vec2(k, row) + 0.31) - 0.5) * len * 0.6);
 }
 
 float bayer(vec2 p) {
@@ -126,6 +148,57 @@ void fragment() {
 		col = T[clamp(tone, 0, 4)];
 		float wet = d.b + (vnoise(pix + 5.0, 10.0) - 0.5) * 0.3 + bay * 0.05;
 		if (wet > 0.5) col.rgb *= wet_darken;
+	}
+	// brick paving
+	float pv = 1.0 - d.a;
+	float pe = pv + (vnoise(pix + 51.0, 7.0) - 0.5) * 0.5 + (vnoise(pix + 9.0, 3.0) - 0.5) * 0.18;
+	if (pe > 0.45) {
+		vec4 under = col;
+		// rows wander and lean a little, in whole pixels
+		vec2 q = pix + vec2(round((vnoise(pix + 37.0, 17.0) - 0.5) * 3.0), round((vnoise(pix * vec2(0.5, 1.0) + 91.0, 21.0) - 0.5) * 4.0));
+		float row = floor(q.y / brick_row);
+		float ly = q.y - row * brick_row;
+		float rx = q.x + floor(hash(vec2(row, 3.7)) * brick_len);
+		float k = floor(rx / brick_len);
+		float L = joint_at(k, row, brick_len), R = joint_at(k + 1.0, row, brick_len), id = k;
+		if (rx < L) { R = L; L = joint_at(k - 1.0, row, brick_len); id = k - 1.0; }
+		else if (rx >= R) { L = R; R = joint_at(k + 2.0, row, brick_len); id = k + 1.0; }
+		float lx = rx - L;
+		float rr = R - 1.0 - rx;  // 0 on the brick's last column
+		vec2 bid = vec2(id, row);
+		float h1 = hash(bid * 1.37 + 5.1), h2 = hash(bid * 2.11 + 9.3), h3 = hash(bid * 0.71 + 2.9), h4 = hash(bid * 3.3 + 1.7);
+		bool joint = lx < 1.0 || ly < 1.0
+			|| (lx < 2.0 && (ly < 2.0 || ly >= brick_row - 1.0)) || (rr < 1.0 && (ly < 2.0 || ly >= brick_row - 1.0));
+		float edge_k = 1.0 - smoothstep(0.45, 0.85, pe);  // 1 at the ragged edge of the road
+		float around = (DATA(pix + vec2(7.0, 0.0)).a + DATA(pix - vec2(7.0, 0.0)).a
+			+ DATA(pix + vec2(0.0, 7.0)).a + DATA(pix - vec2(0.0, 7.0)).a) * 0.25;
+		float wear = smoothstep(0.65, 1.0, min(pv, 1.0 - around));  // the trodden middle
+		bool missing = h4 < 0.02 + edge_k * 0.6;
+		if (missing) {
+			col = edge_k > 0.3 ? under : (vnoise(pix, 3.0) + bay * 0.4 < 0.5 ? dirt0 : dirt1);
+		} else if (joint) {
+			float mossy = vnoise(pix + 3.0, 9.0) * 0.8 + vnoise(pix + 8.0, 31.0) * 0.4 + edge_k * 0.4;
+			col = mossy > 0.95 ? (bay > 0.0 ? joint_moss : grass1) : (bay + vnoise(pix, 2.0) * 0.6 > 0.05 ? joint1 : joint0);
+			if (edge_k > 0.5 && bay > -0.1) col = under;  // grass grows up between the outer bricks
+		} else {
+			// mostly warm grey and beige; patches of other stone where a stretch was mended
+			float patch = vnoise(pix + 211.0, 26.0);
+			int fam = h1 < 0.45 ? 0 : h1 < 0.86 ? 1 : (patch > 0.6 ? 2 : patch < 0.3 ? 3 : 0);
+			if (h1 > 0.985) fam = 4;
+			float v = 0.48 + (h2 - 0.5) * 0.3 + wear * 0.16 - edge_k * 0.16 + (vnoise(pix + 17.0, 40.0) - 0.5) * 0.2;
+			if (ly < 2.0 || lx < 2.0) v += 0.22;  // lit top and left edges
+			if (ly >= brick_row - 1.0 || rr < 1.0) v -= 0.24;  // shaded bottom and right edges
+			v += (vnoise(pix * 1.7 + bid * 13.0, 2.0) - 0.5) * 0.26 + bay * 0.12;  // grain
+			if (h3 < 0.16) {  // a crack running across the brick
+				float slope = h3 < 0.08 ? 0.9 : -0.9;
+				float cx = (R - L) * 0.5 + (ly - brick_row * 0.5) * slope + (h2 - 0.5) * 3.0;
+				if (abs(lx - cx) < 0.5 && ly > 0.5) v = -1.0;
+				else if (abs(lx - cx - 1.0) < 0.5 && ly > 0.5) v += 0.25;
+			}
+			vec3 c = v < 0.0 ? STONE[fam * 4] * 0.78 : STONE[fam * 4 + clamp(int(v * 4.0), 0, 3)];
+			if (edge_k > 0.3 && hash(pix * 0.37 + bid) < edge_k * 0.18) c = mix(c, joint_moss.rgb, 0.5);  // moss creeping onto sunk bricks
+			col = vec4(c, 1.0);
+		}
 	}
 	// around and under water (same edge test as water.gdshader, so the strips line up)
 	if (has_water) {

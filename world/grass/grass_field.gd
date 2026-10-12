@@ -113,6 +113,10 @@ func _pick(p: Vector2, rng: RandomNumberGenerator, excluders: Array) -> int:
 		return _rand(rng, "meadow") if rng.randf() < 0.7 else -1  # a fringe of grass on the bank
 	if s.g > 0.4:
 		return -1  # tilled soil: crops are placed on the ridges separately
+	if s.a < 0.35:
+		return -1  # brick paving
+	if s.a < 0.8:
+		return _rand(rng, "short") if rng.randf() < 0.3 else -1  # tufts along the edge of the paving
 	if s.r > 0.62:
 		return _rand(rng, "short") if rng.randf() < 0.04 else -1  # a rare tuft in the middle of a path
 	if s.r > 0.3:

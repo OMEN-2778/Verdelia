@@ -16,7 +16,7 @@ const FLOWERS := [
 	"res://art/third_party/grassland/Flower3.png", "res://art/third_party/grassland/Flower5.png",
 	"res://art/third_party/grassland/Flower6.png", "res://art/third_party/grassland/Flower9.png",
 ]
-const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED]
+const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED, Terrain.Kind.PAVED]
 const SHORE_INSET := 3.0  ## px of shallow water along the shore you can still wade in
 
 var data: MapData
@@ -261,7 +261,7 @@ func cliff_nodes() -> Array:
 
 func _ground_image() -> Image:
 	var img := Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
-	var cols := [Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1)]
+	var cols := [Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 0)]
 	for y in data.size.y:
 		for x in data.size.x:
 			img.set_pixel(x, y, cols[data.ground[y * data.size.x + x]])

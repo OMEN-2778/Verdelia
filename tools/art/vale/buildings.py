@@ -1228,7 +1228,3 @@ def stall(spec):
 
 
 DESIGNS = {"cabin": cabin, "cottage": cottage, "townhouse": townhouse, "shop": shop, "inn": inn, "stall": stall}
-
-
-def build(spec):
-    return DESIGNS[spec["type"]](spec)

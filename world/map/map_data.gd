@@ -7,7 +7,7 @@ extends RefCounted
 
 const VERSION := 1
 
-enum Ground { GRASS, DIRT, SAND, TILLED, WATERED }
+enum Ground { GRASS, DIRT, SAND, TILLED, WATERED, PAVED }
 enum Passage { AUTO, BLOCKED, OPEN }  ## OPEN lets you walk on water (bridges, stepping stones)
 
 var name := "未命名地图"

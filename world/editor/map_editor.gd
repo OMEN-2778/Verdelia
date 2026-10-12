@@ -10,7 +10,7 @@ const LAYERS := ["地面", "水体", "植被", "岩壁", "通行", "建筑"]
 enum Layer { GROUND, WATER, PLANTS, CLIFF, PASSAGE, BUILDING }
 
 const TOOLS := {
-	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4]],
+	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4], ["砖路", 5]],
 	Layer.WATER: [["水", 1]],
 	Layer.PLANTS: [
 		["混合树林", "mix_forest"], ["阔叶树", "tree:oak"], ["白桦", "tree:birch"], ["松树", "tree:pine"],
@@ -806,15 +806,22 @@ func select_layer(i: int) -> void:
 		_layer_buttons[i].button_pressed = true
 	for c in _tool_box.get_children():
 		c.queue_free()
-	var grid := GridContainer.new()
-	grid.columns = 2
-	_tool_box.add_child(grid)
 	var g := ButtonGroup.new()
 	var list: Array = TOOLS[i]
 	if i == Layer.BUILDING:
-		list = FloraLibrary.manifest().get("buildings", []).map(func(e: Dictionary) -> Array: return [e.name, e.id])
+		list = FloraLibrary.manifest().get("buildings", []).map(func(e: Dictionary) -> Array: return [e.name, e.id, e.get("group", "")])
 	tool = list[1][1] if i == Layer.GROUND else list[0][1]
+	var grid: GridContainer = null
+	var group_name := "-"
 	for t in list:
+		var tg: String = t[2] if t.size() > 2 else ""
+		if grid == null or tg != group_name:  # buildings come in groups, each under a heading
+			if tg != "":
+				_heading(_tool_box, tg)
+			grid = GridContainer.new()
+			grid.columns = 2
+			_tool_box.add_child(grid)
+			group_name = tg
 		var b := _toggle(grid, t[0], g, typeof(t[1]) == typeof(tool) and t[1] == tool)
 		b.pressed.connect(select_tool.bind(t[1]))
 	_density_row.visible = i == Layer.PLANTS

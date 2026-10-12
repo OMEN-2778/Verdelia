@@ -1,38 +1,46 @@
 extends SceneTree
 ## Writes maps/town.json: a small sample town to try the buildings in (and to start from in the
-## map editor). A main street with houses, shops and the inn along it, a market square with
-## stalls, a pond and some woods.
+## map editor). A brick-paved high street of houses, shops, the smithy, the inn, a manor and a
+## tower; a busy market square of stalls, tents, a wagon and a well; a farm corner with a barn,
+## a windmill and a field; dirt lanes, a pond and woods round it all.
 ##   godot --headless --path . --script res://tools/editor/make_town.gd
 
 
 func _init() -> void:
-	var m := MapData.create(Vector2i(110, 62))
+	var m := MapData.create(Vector2i(150, 84))
 	m.name = "小镇"
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 2778
-	# main street, the market square and the lanes off it
-	_ground(m, Rect2(0, 232, 880, 30), MapData.Ground.DIRT)
-	_ground(m, Rect2(300, 262, 330, 140), MapData.Ground.SAND)
-	_ground(m, Rect2(140, 262, 22, 124), MapData.Ground.DIRT)
-	_ground(m, Rect2(236, 262, 22, 146), MapData.Ground.DIRT)
-	for c in _cells(m, Rect2(712, 372, 120, 76)):
+	# brick high street and market square, dirt lanes, a field by the barn, a pond
+	_ground(m, Rect2(0, 280, 1200, 32), MapData.Ground.PAVED)
+	_ground(m, Rect2(296, 312, 470, 216), MapData.Ground.PAVED)
+	_ground(m, Rect2(140, 312, 22, 120), MapData.Ground.DIRT)
+	_ground(m, Rect2(234, 312, 22, 142), MapData.Ground.DIRT)
+	_ground(m, Rect2(900, 312, 22, 190), MapData.Ground.DIRT)  # lane down to the farm
+	_ground(m, Rect2(900, 480, 130, 22), MapData.Ground.DIRT)
+	_ground(m, Rect2(860, 540, 330, 104), MapData.Ground.TILLED)
+	for c in _cells(m, Rect2(40, 520, 200, 120)):
 		var p := (Vector2(c) + Vector2(0.5, 0.5)) * m.cell_px
-		if pow((p.x - 772) / 60.0, 2) + pow((p.y - 410) / 38.0, 2) < 1.0:
+		if pow((p.x - 140) / 92.0, 2) + pow((p.y - 580) / 50.0, 2) < 1.0:
 			m.water[m.idx(c)] = 1
-	# along the street
-	for b in [["cottage", 70, 228], ["cabin_red", 170, 228], ["townhouse", 270, 228], ["townhouse_rose", 356, 228],
-			["shop_grocer", 470, 228], ["shop_bakery", 580, 228], ["inn", 722, 228],
-			["shop_potion", 151, 384], ["cabin_blue", 247, 404]]:
+	# the high street
+	for b in [["cottage", 60, 276], ["cabin_red", 150, 276], ["townhouse", 242, 276], ["townhouse_rose", 324, 276],
+			["shop_grocer", 424, 276], ["shop_bakery", 528, 276], ["smithy", 652, 276], ["inn", 790, 276],
+			["manor", 962, 276], ["tower", 1100, 276],
+			["shop_potion", 151, 430], ["cabin_blue", 245, 452], ["barn", 1000, 474], ["windmill", 1122, 470]]:
 		m.objects.append({"kind": "building", "id": b[0], "x": b[1], "y": b[2]})
 	# the market
-	var stalls := ["stall_fruit", "stall_fish", "stall_bread", "stall_veg"]
-	for k in 4:
-		m.objects.append({"kind": "building", "id": stalls[k], "x": 352 + k * 62, "y": 318})
-		m.objects.append({"kind": "building", "id": stalls[(k + 2) % 4], "x": 352 + k * 62, "y": 382})
-	# woods behind the houses and round the pond
+	for b in [["sail_arms", 350, 372], ["produce_stand", 450, 372], ["bake_table", 548, 372], ["sail_cloth", 648, 372],
+			["pavilion", 352, 470], ["stall_fruit", 440, 452], ["stall_fish", 506, 452], ["sail_pottery", 592, 462],
+			["wagon", 704, 468], ["well", 530, 512], ["banner_red", 304, 330], ["banner_blue", 756, 330],
+			["barrels", 742, 400], ["crates", 412, 404], ["weapon_rack", 320, 400], ["armour", 300, 384],
+			["dining", 820, 340], ["dining", 868, 352], ["barrels", 896, 320], ["banner_red", 1046, 470],
+			["crates", 1160, 486], ["rug", 470, 492]]:
+		m.objects.append({"kind": "building", "id": b[0], "x": b[1], "y": b[2]})
+	# woods behind the houses and round the edges, bushes nearer the buildings, flowers
 	var taken: Array = []
-	for i in 260:
-		var p := Vector2(rng.randf_range(8, 872), rng.randf_range(10, 488))
+	for i in 420:
+		var p := Vector2(rng.randf_range(8, 1192), rng.randf_range(10, 664))
 		if _clear(m, p, taken):
 			var r := rng.randf()
 			var o := {"kind": "tree", "id": "oak" if r < 0.4 else ("birch" if r < 0.6 else ("pine" if r < 0.85 else "blossom")), "x": roundf(p.x), "y": roundf(p.y)}
@@ -40,12 +48,12 @@ func _init() -> void:
 				o = {"kind": "bush", "id": ["green", "flower", "berry"][rng.randi() % 3], "x": roundf(p.x), "y": roundf(p.y)}
 			m.objects.append(o)
 			taken.append(p)
-	for i in 160:
-		var p := Vector2(rng.randf_range(8, 872), rng.randf_range(10, 488))
+	for i in 260:
+		var p := Vector2(rng.randf_range(8, 1192), rng.randf_range(10, 664))
 		if _clear(m, p, taken, 6.0):
 			m.objects.append({"kind": "flower", "id": MapWorld.FLOWERS[rng.randi() % MapWorld.FLOWERS.size()], "x": roundf(p.x), "y": roundf(p.y)})
 			taken.append(p)
-	m.spawn = Vector2(450, 248)
+	m.spawn = Vector2(600, 296)
 	var err := m.save("res://maps/town.json")
 	print("maps/town.json: ", error_string(err), ", ", m.objects.size(), " objects")
 	quit()
@@ -87,7 +95,7 @@ func _clear(m: MapData, p: Vector2, taken: Array, spacing := 16.0) -> bool:
 			r.end.y += 10.0
 			if r.has_point(p):
 				return false
-	if Vector2(p.x, p.y + 8).distance_to(Vector2(772, 410)) < 70.0 and m.water_at(Vector2i(Vector2(p.x, p.y + 10) / m.cell_px)):
+	if m.water_at(Vector2i(Vector2(p.x, p.y + 10) / m.cell_px)):
 		return false
 	for q in taken:
 		if q.distance_to(p) < spacing:

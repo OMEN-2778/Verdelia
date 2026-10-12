@@ -1,17 +1,20 @@
 @tool
 class_name WorldBuilding
 extends Node2D
-## A building from the library: cabins, a thatched cottage, townhouses, shops, the inn and market
-## stalls (tools/art/vale/buildings.py). Place it at the middle of its front wall's base (a
-## stall: the front of its counter). The walls block walking; a house or shop has a Door area on
-## its doorstep that reports who steps onto it (door_entered), ready for interiors. At night the
-## windows and lanterns light up and stay bright through the dark grade (the lamp mark in
-## grade.gdshader), smoke rises from the chimneys, and walking behind the building fades it so the
-## player stays in sight.
+## A building, stall or street prop from the library (tools/art/vale/buildings.py, landmarks.py,
+## market.py): houses, a manor, a tower, a barn and a windmill, shops, a smithy and the inn,
+## market stalls, tents and a wagon, racks, banners, tables, a well... Place it at the middle of
+## its front wall's base (a stall: the front of its counter). The walls block walking (a rug lies
+## flat and does not); a house or shop has a Door area on its doorstep that reports who steps onto
+## it (door_entered), ready for interiors. At night windows, lanterns and the forge light up and
+## stay bright through the dark grade (the lamp mark in grade.gdshader), smoke rises from the
+## chimneys, a windmill's sails turn, and walking behind the building fades it so the player stays
+## in sight.
 
 signal door_entered(body: Node2D)
 
 const FADE_ALPHA := 0.45
+const SAIL_FPS := 5.0  ## windmill sail frames per second (12 frames = a quarter turn)
 
 @export var building := "cabin_red":
 	set(v):
@@ -23,12 +26,19 @@ const FADE_ALPHA := 0.45
 var _entry := {}
 var _sprite: Sprite2D
 var _lamps: Sprite2D
+var _sails: Sprite2D
 var _fade := 1.0
+var _t := 0.0
 
 
 func _ready() -> void:
 	add_to_group("grass_exclude")
 	_rebuild()
+
+
+## Whether it blocks walking (everything but rugs).
+static func is_solid(id: String) -> bool:
+	return FloraLibrary.building(id).get("solid", true)
 
 
 ## Ground the building stands on (its walls or counter), relative to its base point.
@@ -59,13 +69,27 @@ func _rebuild() -> void:
 		return
 	var anchor := -Vector2(_entry.anchor[0], _entry.anchor[1])
 	var fp := footprint_of(building)
-	add_child(_shadow(int(fp.size.x) + 14))
+	var solid := is_solid(building)
 	_sprite = Sprite2D.new()
 	_sprite.name = "Building"
 	_sprite.texture = FloraLibrary.texture(_entry.file)
 	_sprite.centered = false
 	_sprite.position = anchor
+	if not solid:  # lies flat on the ground, under everyone walking over it
+		_sprite.z_as_relative = false
+		_sprite.z_index = -5
+		add_child(_sprite)
+		_lamps = null
+		return
+	add_child(_shadow(int(fp.size.x) + 14))
 	add_child(_sprite)
+	if _entry.has("sails_file"):
+		_sails = Sprite2D.new()
+		_sails.name = "Sails"
+		_sails.texture = FloraLibrary.texture(_entry.sails_file)
+		_sails.hframes = int(_entry.sails_frames)
+		_sails.position = Vector2(_entry.sails[0], _entry.sails[1])
+		add_child(_sails)
 	_lamps = Sprite2D.new()
 	_lamps.name = "Lamps"
 	_lamps.texture = FloraLibrary.texture(_entry.night)
@@ -77,7 +101,10 @@ func _rebuild() -> void:
 	if smoke:
 		for c: Array in _entry.get("chimney", []):
 			add_child(_smoke(Vector2(c[0], c[1])))
-	WaterReflection.attach(self, [_sprite] as Array[Sprite2D])
+	var mirrored: Array[Sprite2D] = [_sprite]
+	if _sails:
+		mirrored.append(_sails)
+	WaterReflection.attach(self, mirrored)
 	var body := StaticBody2D.new()
 	body.name = "Walls"
 	var shape := CollisionShape2D.new()
@@ -101,8 +128,11 @@ func _rebuild() -> void:
 
 
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or _sprite == null:
+	if Engine.is_editor_hint() or _sprite == null or _lamps == null:
 		return
+	_t += delta
+	if _sails:
+		_sails.frame = int(_t * SAIL_FPS) % _sails.hframes
 	# fade while a player is behind the building (above its base line, inside the picture)
 	var behind := false
 	var r := sprite_rect_of(building)
@@ -112,6 +142,8 @@ func _process(delta: float) -> void:
 			behind = true
 	_fade = move_toward(_fade, FADE_ALPHA if behind else 1.0, delta * 3.0)
 	_sprite.modulate.a = _fade
+	if _sails:
+		_sails.modulate.a = _fade
 	_lamps.modulate.a = 1.0 if _fade >= 1.0 else 0.0  # the lamp mark needs the exact colours
 
 

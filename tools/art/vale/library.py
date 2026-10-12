@@ -4,11 +4,12 @@
 Writes art/library/:
   trees/<id>_trunk.png, <id>_crown_<k>.png   per variant (crown layers sway independently)
   bushes/<id>.png, rocks/<id>.png
-  buildings/<id>.png, <id>_night.png         town buildings (buildings.py) and what glows at night
+  buildings/<id>.png, <id>_night.png         town buildings, stalls and props (buildings.py, landmarks.py,
+                                             market.py) and what glows at night; <id>_sails.png for the windmill
   tufts.png                                  grass tuft atlas (8x16 cells), see TUFT_* below
   manifest.json                              everything Godot needs: anchors, sizes, sway, groups
 
-Re-run after changing flora.py or buildings.py:  python3 tools/art/vale/library.py
+Re-run after changing flora.py or the building scripts:  python3 tools/art/vale/library.py
 """
 import json
 import math
@@ -19,6 +20,8 @@ from PIL import Image
 
 import flora
 import buildings
+import landmarks
+import market
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "art/library"
@@ -35,28 +38,56 @@ TREES = {  # species: (variants, scale range)
 BUSHES = {"green": 6, "flower": 4, "berry": 4, "pink": 3, "violet": 3}
 ROCKS = 8
 
-# town buildings (buildings.build specs); "name" is what the map editor shows
+# town buildings, workshops, market stalls and street props (buildings.py, landmarks.py,
+# market.py); "name" and "group" are what the map editor shows
+DESIGNS = {**buildings.DESIGNS, **landmarks.DESIGNS, **market.DESIGNS}
+HOMES, SHOPS, MARKET, PROPS = "住宅", "商店与工坊", "集市", "道具"
 BUILDINGS = [
-    {"id": "cabin_red", "name": "红顶木屋", "type": "cabin", "seed": 3, "roof_colour": "rust", "shutters": "green",
-     "flowers": True, "moss": 6},
-    {"id": "cabin_blue", "name": "蓝顶小木屋", "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 64,
+    {"id": "cabin_red", "name": "红顶木屋", "group": HOMES, "type": "cabin", "seed": 3, "roof_colour": "rust",
+     "shutters": "green", "flowers": True, "moss": 6},
+    {"id": "cabin_blue", "name": "蓝顶小木屋", "group": HOMES, "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 64,
      "windows": (0.24,), "door_at": 0.66, "shutters": "blue", "chimney": 0.7, "moss": 3},
-    {"id": "cottage", "name": "茅草石屋", "type": "cottage", "seed": 4},
-    {"id": "townhouse", "name": "木筋楼房", "type": "townhouse", "seed": 6, "roof_colour": "slate", "shutters": "red"},
-    {"id": "townhouse_rose", "name": "粉墙楼房", "type": "townhouse", "seed": 9, "roof_colour": "teal", "plaster": "rose",
-     "lower": "planks", "door_at": 0.7, "sign": "bread"},
-    {"id": "shop_grocer", "name": "蔬果铺", "type": "shop", "seed": 12, "paint": "sage", "awning": "red", "sign": "apple",
-     "goods": ["apple", "orange", "cabbage", "pumpkin"], "sack": True},
-    {"id": "shop_bakery", "name": "面包店", "type": "shop", "seed": 13, "paint": "cream", "awning": "yellow", "sign": "bread",
-     "goods": ["bread"], "roof_colour": "rust", "door_at": 0.28},
-    {"id": "shop_potion", "name": "药水铺", "type": "shop", "seed": 14, "paint": "blue", "awning": "purple", "sign": "potion",
-     "goods": ["potion_r", "potion_b", "potion_g"], "roof_colour": "plum", "barrel": False},
-    {"id": "inn", "name": "旅店", "type": "inn", "seed": 15, "roof_colour": "rust"},
-    {"id": "stall_fruit", "name": "水果摊", "type": "stall", "seed": 21, "canopy": "red", "goods": ["apple", "orange", "cabbage"]},
-    {"id": "stall_fish", "name": "鱼摊", "type": "stall", "seed": 22, "canopy": "blue", "goods": ["fish", "fish"], "hang": "fish"},
-    {"id": "stall_bread", "name": "面包摊", "type": "stall", "seed": 23, "canopy": "yellow", "goods": ["bread", "pumpkin"],
-     "hang": "bread"},
-    {"id": "stall_veg", "name": "菜摊", "type": "stall", "seed": 24, "canopy": "green", "goods": ["grape", "cabbage", "apple"]},
+    {"id": "cottage", "name": "茅草石屋", "group": HOMES, "type": "cottage", "seed": 4},
+    {"id": "townhouse", "name": "木筋楼房", "group": HOMES, "type": "townhouse", "seed": 6, "roof_colour": "slate", "shutters": "red"},
+    {"id": "townhouse_rose", "name": "粉墙楼房", "group": HOMES, "type": "townhouse", "seed": 9, "roof_colour": "teal",
+     "plaster": "rose", "lower": "planks", "door_at": 0.7, "sign": "bread"},
+    {"id": "manor", "name": "大宅", "group": HOMES, "type": "manor", "seed": 4, "roof_colour": "slate"},
+    {"id": "tower", "name": "石塔", "group": HOMES, "type": "tower", "seed": 5, "flag": "red"},
+    {"id": "barn", "name": "红谷仓", "group": HOMES, "type": "barn", "seed": 1},
+    {"id": "windmill", "name": "风车磨坊", "group": HOMES, "type": "windmill", "seed": 2},
+    {"id": "shop_grocer", "name": "蔬果铺", "group": SHOPS, "type": "shop", "seed": 12, "paint": "sage", "awning": "red",
+     "sign": "apple", "goods": ["apple", "orange", "cabbage", "pumpkin"], "sack": True},
+    {"id": "shop_bakery", "name": "面包店", "group": SHOPS, "type": "shop", "seed": 13, "paint": "cream", "awning": "yellow",
+     "sign": "bread", "goods": ["bread"], "roof_colour": "rust", "door_at": 0.28},
+    {"id": "shop_potion", "name": "药水铺", "group": SHOPS, "type": "shop", "seed": 14, "paint": "blue", "awning": "purple",
+     "sign": "potion", "goods": ["potion_r", "potion_b", "potion_g"], "roof_colour": "plum", "barrel": False},
+    {"id": "smithy", "name": "铁匠铺", "group": SHOPS, "type": "smithy", "seed": 3},
+    {"id": "inn", "name": "旅店", "group": SHOPS, "type": "inn", "seed": 15, "roof_colour": "rust"},
+    {"id": "sail_arms", "name": "兵器篷摊", "group": MARKET, "type": "sail_stall", "seed": 1, "cloth": "blue", "goods": "weapons"},
+    {"id": "sail_cloth", "name": "布匹篷摊", "group": MARKET, "type": "sail_stall", "seed": 2, "cloth": "red", "goods": "cloth"},
+    {"id": "sail_pottery", "name": "陶器篷摊", "group": MARKET, "type": "sail_stall", "seed": 3, "cloth": "teal", "goods": "pottery"},
+    {"id": "produce_stand", "name": "招牌菜摊", "group": MARKET, "type": "sign_stall", "seed": 4},
+    {"id": "bake_table", "name": "糕点桌摊", "group": MARKET, "type": "table_stall", "seed": 5, "awning": "red",
+     "goods": ["bread", "pie", "bun", "cake"]},
+    {"id": "pavilion", "name": "占卜帐篷", "group": MARKET, "type": "pavilion", "seed": 6, "cloth": "purple"},
+    {"id": "wagon", "name": "商队篷车", "group": MARKET, "type": "wagon", "seed": 7, "cloth": "green", "barrel": True},
+    {"id": "stall_fruit", "name": "水果摊", "group": MARKET, "type": "stall", "seed": 21, "canopy": "red",
+     "goods": ["apple", "orange", "cabbage"]},
+    {"id": "stall_fish", "name": "鱼摊", "group": MARKET, "type": "stall", "seed": 22, "canopy": "blue", "goods": ["fish", "fish"],
+     "hang": "fish"},
+    {"id": "stall_bread", "name": "面包摊", "group": MARKET, "type": "stall", "seed": 23, "canopy": "yellow",
+     "goods": ["bread", "pumpkin"], "hang": "bread"},
+    {"id": "stall_veg", "name": "菜摊", "group": MARKET, "type": "stall", "seed": 24, "canopy": "green",
+     "goods": ["grape", "cabbage", "apple"]},
+    {"id": "weapon_rack", "name": "兵器架", "group": PROPS, "type": "weapon_rack", "seed": 8},
+    {"id": "armour", "name": "盔甲架", "group": PROPS, "type": "armour"},
+    {"id": "banner_red", "name": "红旗", "group": PROPS, "type": "banner", "cloth": "red"},
+    {"id": "banner_blue", "name": "蓝旗", "group": PROPS, "type": "banner", "cloth": "blue"},
+    {"id": "dining", "name": "餐桌", "group": PROPS, "type": "dining"},
+    {"id": "barrels", "name": "木桶堆", "group": PROPS, "type": "barrels"},
+    {"id": "crates", "name": "货箱堆", "group": PROPS, "type": "crates", "seed": 9},
+    {"id": "rug", "name": "地毯", "group": PROPS, "type": "rug", "cloth": "red"},
+    {"id": "well", "name": "水井", "group": PROPS, "type": "well"},
 ]
 TUFT_COLOURS = ["#357a36", "#5fae4a", "#a6de72", "#e4f7a8"]
 CROP_COLOURS = ["#5fae4a", "#a6de72", "#d6f39a", "#f0fbd0"]
@@ -329,12 +360,19 @@ def main():
         manifest["rocks"].append({"id": f"rock_{v}", "file": f"rocks/rock_{v}.png", "size": [im.width, im.height]})
     manifest["buildings"] = []
     for spec in BUILDINGS:
-        im, night, info = buildings.build(spec)
+        out = DESIGNS[spec["type"]](spec)
+        im, night, info = out[0], out[1], out[2]
         bid = spec["id"]
         im.save(OUT / "buildings" / f"{bid}.png")
         night.save(OUT / "buildings" / f"{bid}_night.png")
-        manifest["buildings"].append({"id": bid, "name": spec["name"], "file": f"buildings/{bid}.png",
-                                      "night": f"buildings/{bid}_night.png", **info})
+        entry = {"id": bid, "name": spec["name"], "group": spec["group"], "file": f"buildings/{bid}.png",
+                 "night": f"buildings/{bid}_night.png", **info}
+        for part, img in (out[3] if len(out) > 3 else {}).items():  # extra sprites (windmill sails)
+            img.save(OUT / "buildings" / f"{bid}_{part}.png")
+            entry[part + "_file"] = f"buildings/{bid}_{part}.png"
+        if info["kind"] == "rug":
+            entry["solid"] = False
+        manifest["buildings"].append(entry)
     manifest["tufts"] = build_tufts(rnd)
     (OUT / "props").mkdir(exist_ok=True)
     for v in (0, 1, 2):

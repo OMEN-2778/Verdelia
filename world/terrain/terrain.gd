@@ -6,7 +6,7 @@ extends Sprite2D
 ##
 ## Authoring: paint with `paint_layer` (a TileMapLayer using terrain_brushes.tres: dirt, tilled,
 ## watered, grass/erase, water) and/or start from `mask` (an RGBA image, R=dirt G=tilled
-## B=watered) and `water_mask` (grey, white = water). Nodes in the "terrain_painters" group
+## B=watered, A=0 paved) and `water_mask` (grey, white = water). Nodes in the "terrain_painters" group
 ## (WaterBody) add their shapes through paint_terrain(terrain) on every rebuild.
 ## At runtime, gameplay calls set_cell() (e.g. hoeing, watering); `changed` tells the grass.
 ##
@@ -15,7 +15,7 @@ extends Sprite2D
 
 signal changed(cell_rect: Rect2i)
 
-enum Kind { GRASS, DIRT, TILLED, WATERED, WATER, SAND }
+enum Kind { GRASS, DIRT, TILLED, WATERED, WATER, SAND, PAVED }
 const BRUSH_KINDS: Array[int] = [Kind.DIRT, Kind.TILLED, Kind.WATERED, Kind.GRASS, Kind.WATER]  # terrain_brushes.png order
 
 @export var map_size_px := Vector2i(426, 240):
@@ -208,6 +208,8 @@ func kind_at(world: Vector2) -> int:
 	if water_at(world) > 0.5:
 		return Kind.WATER
 	var s := sample(world)
+	if s.a < 0.5:
+		return Kind.PAVED
 	if s.g > 0.5:
 		return Kind.WATERED if s.b > 0.5 else Kind.TILLED
 	if s.r > 0.5:
@@ -254,6 +256,8 @@ func _write_ground(cell: Vector2i, kind: int) -> void:
 			c = Color(1, 1, 1, 1)
 		Kind.SAND:
 			c = Color(1, 0, 1, 1)  # dirt + "wet" bit without tilled = beach sand
+		Kind.PAVED:
+			c = Color(0, 0, 0, 0)  # alpha 0 = brick paving (over grass, which shows at its edges)
 	data.set_pixelv(cell, c)
 
 
