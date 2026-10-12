@@ -191,13 +191,16 @@ func _paint_lip(w: int) -> void:
 	var i := 0
 	while i < w:
 		var t := int(_top[i])
-		var lip := 1 + int(_noise(i, 7, 9) * 4.0)
-		for j in lip:
-			_put(i, t - j, Color(LEAF[3 if j == lip - 1 else 2]))
-		if _rng.randf() < 0.35:
-			_put(i, t - lip, Color(LEAF[5]))
-		_blend(i, t + 1, Color(0.08, 0.12, 0.06, 0.45))
-		_blend(i, t + 2, Color(0.08, 0.12, 0.06, 0.22))
+		var f := _face_ratio(i)  # the lip thins out and fades where the face sinks into a grass slope
+		var lip := 1 + int(_noise(i, 7, 9) * 4.0 * f)
+		var tuft := _rng.randf() < 0.35
+		if f > 0.12 + _noise(i, 11, 3) * 0.12:
+			for j in lip:
+				_put(i, t - j, Color(LEAF[3 if j == lip - 1 else 2]))
+			if tuft:
+				_put(i, t - lip, Color(LEAF[5]))
+			_blend(i, t + 1, Color(0.08, 0.12, 0.06, 0.45 * f))
+			_blend(i, t + 2, Color(0.08, 0.12, 0.06, 0.22 * f))
 		i += 1
 	# hanging clumps: irregular widths and lengths, separated by bare stretches
 	var x := _rng.randf_range(0, 12)
@@ -210,6 +213,7 @@ func _paint_lip(w: int) -> void:
 				break
 			var t := int(_top[xx])
 			var n_px := int(depth * (1.0 - absf(k - cw / 2.0) / (cw / 2.0 + 1)) + _rng.randf_range(0, 2.5))
+			n_px = int(n_px * clampf((_face_ratio(xx) - 0.2) / 0.5, 0.0, 1.0))  # none on a sunken face
 			for j in n_px:
 				var c := Color(LEAF[2 if j < n_px - 1 else (1 if _rng.randf() < 0.5 else 3)])
 				if j == 0:
@@ -335,16 +339,7 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				if shadow:
 					c = c.darkened(0.3)
 			elif style == 2:
-				# the meadow itself shows through (same ground, same tufts); only shade is laid over
-				# it, deepening down the slope and fading out at both ends so there is no seam
-				var ends := smoothstep(0.0, 0.14, depth) * (1.0 - smoothstep(0.86, 1.0, depth))
-				var shade := ((0.04 + 0.22 * depth) * ends + (0.16 if shadow else 0.0) * smoothstep(0.0, 0.25, depth)) * (1.0 - fade)
-				var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
-				if swell < 0.12 and _noise(i, y + 90, 6) > 0.5:
-					shade += 0.06 * ends  # soft lumps in the turf hint at the slope
-				shade *= 1.0 - smoothstep(0.55, 1.0, absf(u)) * 0.7  # soft at the sides, no hard edge
-				shade = floorf((shade + b * 0.06) * 24.0) / 24.0
-				c = Color(0.04, 0.12, 0.06, clampf(shade, 0.0, 0.5))
+				continue  # the meadow shows through; _shade_grass_slope() shades it
 			else:
 				var v: float = 0.3 + 0.55 * (1.0 - depth) + 0.12 * (1.0 - absf(u)) + (_noise(i, y, 3) - 0.5) * 0.24 + b * 0.2
 				var ledge := fposmod((y + _noise(i, 40, 6) * 5.0) / 9.0, 1.0)
@@ -388,10 +383,7 @@ func _paint_ramp(cx: int, half: int, style: int) -> void:
 				if _noise(lip_x, y, 3) > 0.55:
 					_put(lip_x + side, y, Color(MEADOW[1]))
 	if style == 2:
-		_shade_tapered_ends(l, r)
-		for i in range(l - 3, r + 4):
-			for k in 4:
-				_blend(i, y1 + 1 + k, Color(0.08, 0.16, 0.1, 0.1 - k * 0.025))
+		_shade_grass_slope(l, r)
 		return
 	# freshly cut side walls: the same rock, turned away from the light on the left and into it on
 	# the right; widening toward the foot, with a ragged inner edge
@@ -466,26 +458,42 @@ func _taper_for_grass_slopes(w: int) -> void:
 				var i: int = cx + side * (half + d)
 				if i < 0 or i >= w:
 					continue
-				var t := 1.0 - smoothstep(0.0, 1.0, (d + (_noise(i, side * 7, 6) - 0.5) * 5.0) / reach)
-				var drop := (_bottom[i] - _top[i]) * 0.82 * t
+				var t := 1.0 - smoothstep(0.0, 1.0, clampf((d - 1.0 + (_noise(i, side * 7, 6) - 0.5) * 4.0 * minf(1.0, d / 4.0)) / reach, 0.0, 1.0))
+				var drop := (_bottom[i] - _top_orig[i]) * t  # all the way down at the slope's edge
 				_top[i] = maxf(_top[i], _top_orig[i] + drop)
 
 
-## Shade on the high ground that rolls down into a grass slope (it shows the meadow through).
-func _shade_tapered_ends(l: int, r: int) -> void:
-	for i in _top.size():
-		if i >= l and i <= r:
+## How much of the face is left at column i (1 = full height, 0 = sunk into a grass slope).
+func _face_ratio(i: int) -> float:
+	if _top_orig.is_empty():
+		return 1.0
+	return clampf((_bottom[i] - _top[i]) / maxf(_bottom[i] - _top_orig[i], 1.0), 0.0, 1.0)
+
+
+## One shading over a grass slope and the high ground rolling down into it on both sides: the
+## meadow shows through and only darkens with how far down the drop it lies, so the slope, its
+## sides and the meadow around them meet without an edge.
+func _shade_grass_slope(l: int, r: int) -> void:
+	var reach := (r - l) * 0.75 + 14.0
+	for i in range(maxi(0, int(l - reach)), mini(_top.size(), int(r + reach) + 1)):
+		var inside := i >= l and i <= r
+		var drop := 1.0 if inside else 1.0 - _face_ratio(i)  # how far the high ground has rolled down here
+		if drop <= 0.01:
 			continue
 		var t0 := _top_orig[i]
-		var t1 := _top[i]
-		if t1 - t0 < 1.0:
-			continue
-		for y in range(int(t0), int(t1) - 1):
-			var k := (y - t0) / maxf(t1 - t0, 1.0)
+		var bot := _bottom[i]
+		var y_end := bot if inside else _top[i] - 1.0
+		for y in range(int(t0) - 2, int(y_end) + 1):
+			var k := (y - t0) / maxf(bot - t0, 1.0)  # 0 at the upper level .. 1 at the lower
+			var ends := smoothstep(0.0, 0.16, k) * (1.0 - smoothstep(0.84, 1.0, k))
+			var shade := (0.04 + 0.2 * k) * ends * drop
+			var swell := fposmod((y + _noise(i, 60, 7) * 4.0) / 11.0, 1.0)
+			if swell < 0.12 and _noise(i, y + 90, 6) > 0.5:
+				shade += 0.05 * ends * drop  # soft lumps in the turf hint at the slope
 			var b: float = BAYER[(y & 3) * 4 + (i & 3)] / 16.0 - 0.5
-			var a := floorf((0.03 + 0.16 * k + b * 0.05) * 24.0) / 24.0
-			if a > 0.0:
-				_put(i, y, Color(0.04, 0.12, 0.06, a))
+			shade = floorf((shade + b * 0.05) * 24.0) / 24.0
+			if shade > 0.0:
+				_put(i, y, Color(0.04, 0.12, 0.06, clampf(shade, 0.0, 0.5)))
 
 
 ## How far a ramp's gully runs back into the high ground, in px.
@@ -637,8 +645,9 @@ func paint_terrain(t: Terrain) -> void:
 func _paint_foot(w: int) -> void:
 	for i in w:
 		var b := int(_bottom[i])
+		var f := _face_ratio(i)  # a face sinking into a grass slope throws less shadow
 		for k in 6:
-			_blend(i, b + 1 + k, Color(0.08, 0.16, 0.1, 0.26 - k * 0.04))
+			_blend(i, b + 1 + k, Color(0.08, 0.16, 0.1, (0.26 - k * 0.04) * f))
 
 
 ## Top edge / foot of the face (global y) at a global x, for snapping waterfalls and props.
@@ -680,6 +689,8 @@ func grass_skirt_points() -> PackedVector2Array:
 			continue
 		if _ramp_index(x, 3.0) >= 0:
 			continue
+		if rng.randf() > _face_ratio(i) * 1.4:
+			continue  # the tall grass at the foot thins out where the face sinks into a grass slope
 		out.append(to_global(Vector2(x + rng.randi_range(-1, 1), _bottom[i] + rng.randi_range(0, 2))))
 		if rng.randf() < 0.6:
 			out.append(to_global(Vector2(x + rng.randi_range(-1, 1), _bottom[i] + rng.randi_range(3, 5))))
