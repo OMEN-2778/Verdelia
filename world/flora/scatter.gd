@@ -28,7 +28,9 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	if not get_children().any(func(c: Node) -> bool: return c.name != "Area"):
-		_generate(false)
+		# deferred: the Terrain (and its lakes and rivers) builds on a deferred call too, and
+		# placements must see the finished map
+		_generate.call_deferred(false)
 
 
 func _generate(persist: bool) -> void:

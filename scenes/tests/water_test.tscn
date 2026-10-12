@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
+[ext_resource type="Script" path="res://world/water/water_layer.gd" id="water"]
+[ext_resource type="Script" path="res://world/water/water_shape.gd" id="shape"]
+[ext_resource type="Script" path="res://world/water/river.gd" id="river"]
+[ext_resource type="Script" path="res://world/grass/grass_field.gd" id="grass"]
+[ext_resource type="Shader" path="res://shaders/grade.gdshader" id="grade"]
+
+[sub_resource type="ShaderMaterial" id="grade_mat"]
+shader = ExtResource("grade")
+shader_parameter/contrast = 1.0
+shader_parameter/lift = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/tint = Color(1, 1, 1, 1)
+shader_parameter/vignette = 0.12
+shader_parameter/bloom_strength = 0.35
+shader_parameter/bloom_threshold = 0.78
+shader_parameter/warm = Color(1, 0.925, 0.667, 0.2)
+shader_parameter/cool = Color(0.078, 0.196, 0.314, 0.35)
+shader_parameter/cloud_strength = 0.0
+
+[node name="WaterTest" type="Node2D"]
+
+[node name="Terrain" type="Sprite2D" parent="."]
+script = ExtResource("terrain")
+map_size_px = Vector2i(960, 480)
+
+[node name="Water" type="Sprite2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("water")
+terrain = NodePath("../Terrain")
+
+[node name="Lake" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(150, 190, 230, 160, 320, 170, 370, 220, 350, 300, 280, 330, 190, 320, 130, 270)
+
+[node name="Beach" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(620, 90, 720, 70, 820, 100, 840, 170, 760, 210, 650, 190)
+shore = 1
+beach_width = 16.0
+
+[node name="Pond" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(680, 330, 740, 320, 790, 350, 770, 400, 700, 410, 665, 375)
+shore = 2
+rocks = 9
+
+[node name="River" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("river")
+terrain = NodePath("../Terrain")
+points = PackedVector2Array(430, -10, 450, 80, 420, 170, 470, 260, 520, 340, 500, 420, 530, 490)
+widths = PackedFloat32Array(22, 24, 30, 26, 18, 30, 34)
+speeds = PackedFloat32Array(0.4, 0.45, 0.5, 0.9, 1.0, 0.5, 0.4)
+
+[node name="Grass" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("grass")
+terrain = NodePath("../Terrain")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(740, 250)
+
+[node name="Grade" type="CanvasLayer" parent="."]
+
+[node name="Screen" type="ColorRect" parent="Grade"]
+material = SubResource("grade_mat")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

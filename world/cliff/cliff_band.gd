@@ -55,7 +55,7 @@ func _ready() -> void:
 	add_to_group("grass_exclude")
 	add_to_group("grass_skirt")
 	centered = false
-	z_index = -9
+	z_index = -8
 	generate()
 
 
@@ -262,6 +262,17 @@ func _paint_foot(w: int) -> void:
 				var dy := (y - b) / (r * 0.8)
 				if dx * dx + dy * dy <= 1.0:
 					_put(xx, y, _q(ROCK, 0.35 - 0.4 * dx - 0.5 * dy, xx, y, 2))
+
+
+## Top edge / foot of the face (global y) at a global x, for snapping waterfalls and props.
+func top_at(world_x: float) -> float:
+	var i := clampi(int(to_local(Vector2(world_x, 0)).x) - _x0, 0, _top.size() - 1)
+	return to_global(Vector2(0, _top[i])).y
+
+
+func bottom_at(world_x: float) -> float:
+	var i := clampi(int(to_local(Vector2(world_x, 0)).x) - _x0, 0, _bottom.size() - 1)
+	return to_global(Vector2(0, _bottom[i])).y
 
 
 func grass_excludes(world: Vector2) -> bool:

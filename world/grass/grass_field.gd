@@ -105,7 +105,12 @@ func _build_chunk(key: Vector2i, rect: Rect2, skirts: Array, excluders: Array) -
 func _pick(p: Vector2, rng: RandomNumberGenerator, excluders: Array) -> int:
 	if _excluded(p, excluders):
 		return -1
+	var wet := terrain.water_at(to_global(p))
+	if wet > 0.3:
+		return -1  # no grass in the water (shore grass comes from the bank edge below)
 	var s := terrain.sample(p)
+	if wet > 0.12:
+		return _rand(rng, "meadow") if rng.randf() < 0.7 else -1  # a fringe of grass on the bank
 	if s.g > 0.4:
 		return -1  # tilled soil: crops are placed on the ridges separately
 	if s.r > 0.62:

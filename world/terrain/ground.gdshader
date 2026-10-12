@@ -20,6 +20,12 @@ uniform vec4 dirt1 : source_color = vec4(0.655, 0.514, 0.310, 1.0);
 uniform vec4 dirt2 : source_color = vec4(0.765, 0.616, 0.388, 1.0);
 uniform vec4 dirt3 : source_color = vec4(0.847, 0.710, 0.478, 1.0);
 
+group_uniforms sand;
+uniform vec4 sand0 : source_color = vec4(0.757, 0.651, 0.443, 1.0);
+uniform vec4 sand1 : source_color = vec4(0.851, 0.761, 0.553, 1.0);
+uniform vec4 sand2 : source_color = vec4(0.914, 0.843, 0.651, 1.0);
+uniform vec4 sand3 : source_color = vec4(0.957, 0.910, 0.749, 1.0);
+
 group_uniforms tilled;
 uniform vec4 till0 : source_color = vec4(0.373, 0.267, 0.157, 1.0);
 uniform vec4 till1 : source_color = vec4(0.478, 0.353, 0.212, 1.0);
@@ -83,6 +89,14 @@ void fragment() {
 		float v = 0.38 + wear * 0.24 + (vnoise(pix, 6.0) - 0.5) * 0.5 - (edge < 0.58 ? 0.25 : 0.0) + bay * 0.25;
 		vec4 D[4] = vec4[4](dirt0, dirt1, dirt2, dirt3);
 		col = D[clamp(int(v * 4.0), 0, 3)];
+		if (d.b > 0.5 && d.g < 0.5) {  // beach sand: lighter, finer, the odd shell or pebble
+			vec4 S[4] = vec4[4](sand0, sand1, sand2, sand3);
+			float sv = 0.45 + (vnoise(pix, 5.0) - 0.5) * 0.5 + (vnoise(pix, 17.0) - 0.5) * 0.3 + bay * 0.3 - (edge < 0.58 ? 0.2 : 0.0);
+			col = S[clamp(int(sv * 4.0), 0, 3)];
+			float hs = hash(pix * 0.73 + 11.0);
+			if (hs < 0.004) col = vec4(1.0, 0.96, 0.92, 1.0);
+			else if (hs < 0.008) col = vec4(0.62, 0.58, 0.52, 1.0);
+		}
 	}
 	// tilled soil: mounded rows, lit on top, shadowed in the furrow; watered soil is darker
 	float tg = d.g + (vnoise(pix + 77.0, 9.0) - 0.5) * 0.28 + bay * 0.08;

@@ -73,4 +73,25 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 
 旧版的一次性烘焙演示（`art/vale`、`scripts/vale`）已经被这套系统取代并删除。
 
+## 水体（演示场景 `scenes/water_demo.tscn`）
+
+所有水都画进 `Terrain` 的水数据里，再由一个 `WaterLayer` 统一绘制。所以湖、河、瀑布下的水潭可以连成一片，水深按离岸距离自动算出。演示视频：`docs/art/water-demo.mp4`；截图：`water-waterfall.png`、`water-pond.png`、`water-rapids.png`、`water-beach.png`。
+
+| 节点 | 作用 | 怎么用 |
+|---|---|---|
+| `WaterLayer`（`world/water/`） | 绘制所有水面：浅滩露出沙底、卵石和沙纹，越深越蓝；近岸有焦散光纹，随深度变淡；水面有波纹和闪光；静水岸边有拍岸白沫，急流处翻白 | 每张地图放一个，指定 `terrain`。颜色和效果都在材质参数里调：`clarity`（清澈度）、`wave_speed`、`wave_density`、`caustic_strength`、`caustic_size`、`shore_waves`、`rapids_threshold`、`sparkle`，以及 shoal / shallow / mid / deep 四档水色 |
+| `WaterShape` | 湖、池塘、水坑 | 加一个名为 `Shape` 的 Polygon2D 子节点画轮廓（或直接填 `polygon`）。`shore` 选岸的类型：`GRASS` 草岸（深色岸线，岸边草变稀）、`SAND` 沙滩（宽度由 `beach_width` 决定，水边是湿沙）、`ROCK` 石岸（沿岸放 `rocks` 块半浸在水里的石头）、`SAND_AND_ROCK` 两者都有 |
+| `River` | 河、溪流、急流 | `points` 是河道中线（自动平滑），`width` / `widths` 设宽度（可以逐点设），`speed` / `speeds` 设流速（逐点）。流速超过 `rapids_threshold` 的河段会翻起白浪。`bank_sand` 给两岸加沙，`meander` 让河岸宽窄有点起伏 |
+| `Waterfall` | 岩壁上的瀑布；短的可以当河里的小跌水 | 指定 `cliff`（一个 CliffBand），瀑布会自动贴到崖顶、高度取岩壁高度；不指定时用 `height`，6–12 像素就是小跌水。`width`、`speed` 可调，`mist` 开关水雾。瀑布周围不长草 |
+
+画水的其他方式：
+
+- 地面刷子里多了第 5 个"水"刷子。擦除刷子也会擦掉水。
+- 可以给 `Terrain.water_mask` 一张灰度图，白色的格子就是水。
+- 游戏里挖池塘、填水调用 `set_cell(cell, Terrain.Kind.WATER)`，填回草地用 `Kind.GRASS`。
+- 新的地面类型 `Kind.SAND` 是沙滩。
+- `Terrain.water_at(世界坐标)` 返回 0–1 的水量，用来判断能不能走、能不能钓鱼。`kind_at()` 遇到水返回 `Kind.WATER`。
+
+草、`Scatter` 散布的树和石头都会避开水面；水边一圈长矮草过渡。
+
 更新记录见 [CHANGELOG.md](CHANGELOG.md)。

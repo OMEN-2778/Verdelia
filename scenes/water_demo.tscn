@@ -1,0 +1,206 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
+[ext_resource type="TileSet" path="res://world/terrain/terrain_brushes.tres" id="brushes"]
+[ext_resource type="Script" path="res://world/water/water_layer.gd" id="water"]
+[ext_resource type="Script" path="res://world/water/water_shape.gd" id="shape"]
+[ext_resource type="Script" path="res://world/water/river.gd" id="river"]
+[ext_resource type="Script" path="res://world/water/waterfall.gd" id="fall"]
+[ext_resource type="Script" path="res://world/cliff/cliff_band.gd" id="cliff"]
+[ext_resource type="Script" path="res://world/grass/grass_field.gd" id="grass"]
+[ext_resource type="Script" path="res://world/flora/scatter.gd" id="scatter"]
+[ext_resource type="Script" path="res://world/demo/demo_walker.gd" id="walker"]
+[ext_resource type="Script" path="res://world/fx/butterflies.gd" id="flies"]
+[ext_resource type="Script" path="res://world/fx/sky_light.gd" id="sky"]
+[ext_resource type="Shader" path="res://shaders/grade.gdshader" id="grade"]
+[ext_resource type="Texture2D" path="res://art/library/props/mage.png" id="mage"]
+[ext_resource type="Texture2D" path="res://art/library/fx/shadow.png" id="shadow"]
+[ext_resource type="Texture2D" path="res://art/library/fx/cloud.png" id="cloud"]
+[ext_resource type="Texture2D" path="res://art/library/fx/shaft.png" id="shaft"]
+
+[sub_resource type="ShaderMaterial" id="grade_mat"]
+shader = ExtResource("grade")
+shader_parameter/contrast = 1.0
+shader_parameter/lift = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/tint = Color(1, 1, 1, 1)
+shader_parameter/vignette = 0.12
+shader_parameter/bloom_strength = 0.35
+shader_parameter/bloom_threshold = 0.78
+shader_parameter/warm = Color(1, 0.925, 0.667, 0.2)
+shader_parameter/cool = Color(0.078, 0.196, 0.314, 0.35)
+shader_parameter/cloud_strength = 0.0
+
+[sub_resource type="CanvasItemMaterial" id="additive"]
+blend_mode = 1
+
+[node name="WaterDemo" type="Node2D"]
+
+[node name="Terrain" type="Sprite2D" parent="." node_paths=PackedStringArray("paint_layer")]
+script = ExtResource("terrain")
+map_size_px = Vector2i(960, 480)
+paint_layer = NodePath("../PaintLayer")
+
+[node name="PaintLayer" type="TileMapLayer" parent="."]
+tile_set = ExtResource("brushes")
+
+[node name="Water" type="Sprite2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("water")
+terrain = NodePath("../Terrain")
+
+[node name="Cliff" type="Sprite2D" parent="."]
+script = ExtResource("cliff")
+points = PackedVector2Array(0, 92, 420, 98, 960, 86)
+face = 38
+seed = 7
+
+[node name="UpperRiver" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("river")
+terrain = NodePath("../Terrain")
+points = PackedVector2Array(330, -12, 352, 30, 392, 64, 422, 104)
+width = 22.0
+speed = 0.7
+
+[node name="Pool" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(378, 118, 470, 116, 490, 160, 470, 196, 410, 202, 372, 170)
+
+[node name="MainRiver" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("river")
+terrain = NodePath("../Terrain")
+points = PackedVector2Array(432, 190, 470, 240, 452, 290, 400, 330, 330, 352, 270, 372)
+widths = PackedFloat32Array(26, 24, 20, 22, 28, 34)
+speeds = PackedFloat32Array(0.45, 0.6, 0.95, 0.9, 0.5, 0.35)
+
+[node name="Lake" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(70, 330, 180, 318, 280, 350, 306, 420, 240, 472, 110, 476, 40, 424)
+shore = 3
+beach_width = 18.0
+rocks = 7
+seed = 4
+
+[node name="EastPond" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(700, 250, 780, 236, 830, 270, 820, 330, 760, 352, 704, 320)
+shore = 2
+rocks = 11
+seed = 9
+
+[node name="Stream" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("river")
+terrain = NodePath("../Terrain")
+points = PackedVector2Array(812, 316, 860, 352, 910, 344, 972, 372)
+width = 14.0
+speed = 0.4
+bank_sand = 6.0
+
+[node name="Puddle1" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(586, 404, 610, 398, 622, 412, 600, 424, 582, 418)
+
+[node name="Puddle2" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("shape")
+terrain = NodePath("../Terrain")
+polygon = PackedVector2Array(632, 428, 650, 424, 660, 436, 640, 444)
+
+[node name="Grass" type="Node2D" parent="." node_paths=PackedStringArray("terrain", "player")]
+script = ExtResource("grass")
+terrain = NodePath("../Terrain")
+player = NodePath("../Props/Player")
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Falls" type="Node2D" parent="Props" node_paths=PackedStringArray("cliff")]
+position = Vector2(422, 98)
+script = ExtResource("fall")
+width = 24
+cliff = NodePath("../../Cliff")
+
+[node name="Cascade" type="Node2D" parent="Props"]
+position = Vector2(458, 268)
+script = ExtResource("fall")
+width = 20
+height = 8
+speed = 1.4
+
+[node name="FarTrees" type="Node2D" parent="Props"]
+y_sort_enabled = true
+script = ExtResource("scatter")
+area = Rect2(-6, 14, 972, 22)
+items = PackedStringArray("tree:oak_far", "tree:pine_far", "bush:green")
+weights = PackedFloat32Array(5, 3, 2)
+count = 36
+min_distance = 18.0
+seed = 5
+
+[node name="Woods" type="Node2D" parent="Props" node_paths=PackedStringArray("terrain")]
+y_sort_enabled = true
+script = ExtResource("scatter")
+area = Rect2(0, 140, 960, 340)
+items = PackedStringArray("tree:oak", "tree:birch", "tree:pine", "tree:blossom", "tree:sapling", "bush:green", "bush:flower", "bush:violet", "rock", "prop:res://art/third_party/grassland/Bush6.png@sway=0.5", "prop:res://art/third_party/grassland/Flower3.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Flower9.png@skirt=0@shadow=0")
+weights = PackedFloat32Array(4, 2, 2, 1, 2, 3, 2, 1, 2, 2, 3, 3)
+count = 44
+min_distance = 30.0
+seed = 13
+terrain = NodePath("../../Terrain")
+clearance = 14.0
+
+[node name="Player" type="Node2D" parent="Props"]
+position = Vector2(560, 420)
+script = ExtResource("walker")
+waypoints = PackedVector2Array(560, 420, 520, 230, 500, 170, 520, 230, 600, 300, 680, 380, 860, 300, 900, 200, 680, 380, 560, 420, 320, 300, 300, 230, 320, 300, 560, 420)
+speed = 58.0
+
+[node name="Shadow" type="Sprite2D" parent="Props/Player"]
+texture = ExtResource("shadow")
+
+[node name="Body" type="Sprite2D" parent="Props/Player"]
+texture = ExtResource("mage")
+hframes = 4
+offset = Vector2(0, -10)
+
+[node name="Camera" type="Camera2D" parent="Props/Player"]
+limit_left = 0
+limit_top = 0
+limit_right = 960
+limit_bottom = 480
+position_smoothing_enabled = true
+position_smoothing_speed = 3.0
+
+[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+z_index = 6
+script = ExtResource("flies")
+player = NodePath("../Props/Player")
+count = 20
+bounds = Rect2(10, 130, 940, 340)
+
+[node name="Clouds" type="Node2D" parent="."]
+z_index = 8
+script = ExtResource("sky")
+area = Vector2(960, 480)
+cloud_texture = ExtResource("cloud")
+shaft_texture = ExtResource("shaft")
+
+[node name="Shafts" type="Node2D" parent="."]
+z_index = 9
+material = SubResource("additive")
+script = ExtResource("sky")
+shafts = true
+area = Vector2(960, 480)
+cloud_texture = ExtResource("cloud")
+shaft_texture = ExtResource("shaft")
+
+[node name="Grade" type="CanvasLayer" parent="."]
+
+[node name="Screen" type="ColorRect" parent="Grade"]
+material = SubResource("grade_mat")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
