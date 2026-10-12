@@ -1641,6 +1641,413 @@
    ]
   }
  ],
+ "buildings": [
+  {
+   "id": "cabin_red",
+   "name": "\u7ea2\u9876\u6728\u5c4b",
+   "file": "buildings/cabin_red.png",
+   "night": "buildings/cabin_red_night.png",
+   "kind": "house",
+   "anchor": [
+    47,
+    93
+   ],
+   "footprint": [
+    -40,
+    -30,
+    80,
+    30
+   ],
+   "door": [
+    0,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     20,
+     -91
+    ]
+   ],
+   "size": [
+    94,
+    98
+   ]
+  },
+  {
+   "id": "cabin_blue",
+   "name": "\u84dd\u9876\u5c0f\u6728\u5c4b",
+   "file": "buildings/cabin_blue.png",
+   "night": "buildings/cabin_blue_night.png",
+   "kind": "house",
+   "anchor": [
+    39,
+    93
+   ],
+   "footprint": [
+    -32,
+    -30,
+    64,
+    30
+   ],
+   "door": [
+    10,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     15,
+     -91
+    ]
+   ],
+   "size": [
+    78,
+    98
+   ]
+  },
+  {
+   "id": "cottage",
+   "name": "\u8305\u8349\u77f3\u5c4b",
+   "file": "buildings/cottage.png",
+   "night": "buildings/cottage_night.png",
+   "kind": "house",
+   "anchor": [
+    40,
+    74
+   ],
+   "footprint": [
+    -32,
+    -26,
+    64,
+    26
+   ],
+   "door": [
+    10,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     -21,
+     -72
+    ]
+   ],
+   "size": [
+    80,
+    79
+   ]
+  },
+  {
+   "id": "townhouse",
+   "name": "\u6728\u7b4b\u697c\u623f",
+   "file": "buildings/townhouse.png",
+   "night": "buildings/townhouse_night.png",
+   "kind": "house",
+   "anchor": [
+    35,
+    94
+   ],
+   "footprint": [
+    -27,
+    -30,
+    54,
+    30
+   ],
+   "door": [
+    -11,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [],
+   "size": [
+    70,
+    99
+   ]
+  },
+  {
+   "id": "townhouse_rose",
+   "name": "\u7c89\u5899\u697c\u623f",
+   "file": "buildings/townhouse_rose.png",
+   "night": "buildings/townhouse_rose_night.png",
+   "kind": "house",
+   "anchor": [
+    45,
+    94
+   ],
+   "footprint": [
+    -27,
+    -30,
+    54,
+    30
+   ],
+   "door": [
+    11,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [],
+   "size": [
+    90,
+    99
+   ]
+  },
+  {
+   "id": "shop_grocer",
+   "name": "\u852c\u679c\u94fa",
+   "file": "buildings/shop_grocer.png",
+   "night": "buildings/shop_grocer_night.png",
+   "kind": "shop",
+   "anchor": [
+    49,
+    88
+   ],
+   "footprint": [
+    -42,
+    -26,
+    84,
+    26
+   ],
+   "door": [
+    18,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     -30,
+     -86
+    ]
+   ],
+   "size": [
+    98,
+    93
+   ]
+  },
+  {
+   "id": "shop_bakery",
+   "name": "\u9762\u5305\u5e97",
+   "file": "buildings/shop_bakery.png",
+   "night": "buildings/shop_bakery_night.png",
+   "kind": "shop",
+   "anchor": [
+    49,
+    88
+   ],
+   "footprint": [
+    -42,
+    -26,
+    84,
+    26
+   ],
+   "door": [
+    -18,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     28,
+     -86
+    ]
+   ],
+   "size": [
+    98,
+    93
+   ]
+  },
+  {
+   "id": "shop_potion",
+   "name": "\u836f\u6c34\u94fa",
+   "file": "buildings/shop_potion.png",
+   "night": "buildings/shop_potion_night.png",
+   "kind": "shop",
+   "anchor": [
+    49,
+    88
+   ],
+   "footprint": [
+    -42,
+    -26,
+    84,
+    26
+   ],
+   "door": [
+    18,
+    0
+   ],
+   "door_size": [
+    14,
+    22
+   ],
+   "chimney": [
+    [
+     -30,
+     -86
+    ]
+   ],
+   "size": [
+    98,
+    93
+   ]
+  },
+  {
+   "id": "inn",
+   "name": "\u65c5\u5e97",
+   "file": "buildings/inn.png",
+   "night": "buildings/inn_night.png",
+   "kind": "house",
+   "anchor": [
+    57,
+    106
+   ],
+   "footprint": [
+    -50,
+    -32,
+    100,
+    32
+   ],
+   "door": [
+    0,
+    0
+   ],
+   "door_size": [
+    18,
+    22
+   ],
+   "chimney": [
+    [
+     -33,
+     -104
+    ],
+    [
+     33,
+     -104
+    ]
+   ],
+   "size": [
+    114,
+    112
+   ]
+  },
+  {
+   "id": "stall_fruit",
+   "name": "\u6c34\u679c\u644a",
+   "file": "buildings/stall_fruit.png",
+   "night": "buildings/stall_fruit_night.png",
+   "kind": "stall",
+   "anchor": [
+    26,
+    46
+   ],
+   "footprint": [
+    -22,
+    -12,
+    44,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    52,
+    49
+   ]
+  },
+  {
+   "id": "stall_fish",
+   "name": "\u9c7c\u644a",
+   "file": "buildings/stall_fish.png",
+   "night": "buildings/stall_fish_night.png",
+   "kind": "stall",
+   "anchor": [
+    26,
+    46
+   ],
+   "footprint": [
+    -22,
+    -12,
+    44,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    52,
+    49
+   ]
+  },
+  {
+   "id": "stall_bread",
+   "name": "\u9762\u5305\u644a",
+   "file": "buildings/stall_bread.png",
+   "night": "buildings/stall_bread_night.png",
+   "kind": "stall",
+   "anchor": [
+    26,
+    46
+   ],
+   "footprint": [
+    -22,
+    -12,
+    44,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    52,
+    49
+   ]
+  },
+  {
+   "id": "stall_veg",
+   "name": "\u83dc\u644a",
+   "file": "buildings/stall_veg.png",
+   "night": "buildings/stall_veg_night.png",
+   "kind": "stall",
+   "anchor": [
+    26,
+    46
+   ],
+   "footprint": [
+    -22,
+    -12,
+    44,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    52,
+    49
+   ]
+  }
+ ],
  "tufts": {
   "cell": [
    9,

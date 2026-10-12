@@ -1,12 +1,13 @@
 class_name MapWorld
 extends Node2D
 ## Builds a living world from a MapData: ground (Terrain), water (WaterLayer), grass, trees,
-## bushes, rocks and flowers, cliffs with their ramps, and everything that blocks walking. The map
+## bushes, rocks and flowers, buildings, cliffs with their ramps, and everything that blocks walking. The map
 ## editor edits it live through the paint_* / add_* / remove_* calls; the game just load_map()s.
 ##
 ## Walking is worked out from what is drawn: water blocks (a shallow rim along the shore stays
 ## walkable), cliffs block except at ramps, trees block at the trunk and bushes and rocks at the
-## base, and the passage grid can block any cell or open a water cell (a bridge).
+## base, buildings at their walls, and the passage grid can block any cell or open a water cell (a
+## bridge).
 
 signal rebuilt
 
@@ -126,16 +127,28 @@ func add_object(o: Dictionary) -> void:
 	_obj_nodes.append(_make_object(o))
 
 
-## Removes objects whose base lies in any of `cells`; returns how many.
-func remove_objects_in(cells: Array) -> int:
+## Removes objects whose base lies in any of `cells` (buildings: anywhere on their walls); returns
+## how many. `buildings` false leaves buildings alone (the plant eraser).
+func remove_objects_in(cells: Array, buildings := true) -> int:
 	var hit := {}
 	for c in cells:
 		hit[c] = true
+	var cp := float(data.cell_px)
 	var removed := 0
 	for i in range(data.objects.size() - 1, -1, -1):
 		var o: Dictionary = data.objects[i]
-		var c := Vector2i(floori(o.x / data.cell_px), floori(o.y / data.cell_px))
-		if hit.has(c):
+		var on := false
+		if o.kind == "building":
+			if not buildings:
+				continue
+			var r := building_rect(o)
+			for c in hit:
+				if r.intersects(Rect2(Vector2(c) * cp, Vector2(cp, cp))):
+					on = true
+					break
+		else:
+			on = hit.has(Vector2i(floori(o.x / cp), floori(o.y / cp)))
+		if on:
 			_obj_nodes[i].queue_free()
 			_obj_nodes.remove_at(i)
 			data.objects.remove_at(i)
@@ -145,9 +158,37 @@ func remove_objects_in(cells: Array) -> int:
 
 func object_near(p: Vector2, radius: float) -> bool:
 	for o in data.objects:
-		if Vector2(o.x, o.y).distance_to(p) < radius:
+		if o.kind == "building":
+			if building_rect(o).grow(radius * 0.5).has_point(p):
+				return true
+		elif Vector2(o.x, o.y).distance_to(p) < radius:
 			return true
 	return false
+
+
+## The ground a building stands on, in world px.
+static func building_rect(o: Dictionary) -> Rect2:
+	var r := WorldBuilding.footprint_of(o.id)
+	r.position += Vector2(o.x, o.y)
+	return r
+
+
+## Index of the building whose picture covers `p`, or -1.
+func building_at(p: Vector2) -> int:
+	for i in range(data.objects.size() - 1, -1, -1):
+		var o: Dictionary = data.objects[i]
+		if o.kind == "building":
+			var r := WorldBuilding.sprite_rect_of(o.id)
+			r.position += Vector2(o.x, o.y)
+			if r.has_point(p):
+				return i
+	return -1
+
+
+func remove_object(i: int) -> void:
+	_obj_nodes[i].queue_free()
+	_obj_nodes.remove_at(i)
+	data.objects.remove_at(i)
 
 
 func add_cliff(c: Dictionary) -> void:
@@ -253,6 +294,10 @@ func _make_object(o: Dictionary) -> Node2D:
 			r.library_item = "rock"
 			r.skirt = 0.7
 			n = r
+		"building":
+			var h := WorldBuilding.new()
+			h.building = o.id
+			n = h
 		_:
 			var f := WorldProp.new()
 			f.texture = load(o.id)

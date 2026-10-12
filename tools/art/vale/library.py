@@ -4,10 +4,11 @@
 Writes art/library/:
   trees/<id>_trunk.png, <id>_crown_<k>.png   per variant (crown layers sway independently)
   bushes/<id>.png, rocks/<id>.png
+  buildings/<id>.png, <id>_night.png         town buildings (buildings.py) and what glows at night
   tufts.png                                  grass tuft atlas (8x16 cells), see TUFT_* below
   manifest.json                              everything Godot needs: anchors, sizes, sway, groups
 
-Re-run after changing flora.py:  python3 tools/art/vale/library.py
+Re-run after changing flora.py or buildings.py:  python3 tools/art/vale/library.py
 """
 import json
 import math
@@ -17,6 +18,7 @@ from pathlib import Path
 from PIL import Image
 
 import flora
+import buildings
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "art/library"
@@ -33,7 +35,29 @@ TREES = {  # species: (variants, scale range)
 BUSHES = {"green": 6, "flower": 4, "berry": 4, "pink": 3, "violet": 3}
 ROCKS = 8
 
-# grass tufts, ported from stardust-vale's per-blade drawing (3 tones by height, tip highlight)
+# town buildings (buildings.build specs); "name" is what the map editor shows
+BUILDINGS = [
+    {"id": "cabin_red", "name": "红顶木屋", "type": "cabin", "seed": 3, "roof_colour": "rust", "shutters": "green",
+     "flowers": True, "moss": 6},
+    {"id": "cabin_blue", "name": "蓝顶小木屋", "type": "cabin", "seed": 8, "roof_colour": "slate", "width": 64,
+     "windows": (0.24,), "door_at": 0.66, "shutters": "blue", "chimney": 0.7, "moss": 3},
+    {"id": "cottage", "name": "茅草石屋", "type": "cottage", "seed": 4},
+    {"id": "townhouse", "name": "木筋楼房", "type": "townhouse", "seed": 6, "roof_colour": "slate", "shutters": "red"},
+    {"id": "townhouse_rose", "name": "粉墙楼房", "type": "townhouse", "seed": 9, "roof_colour": "teal", "plaster": "rose",
+     "lower": "planks", "door_at": 0.7, "sign": "bread"},
+    {"id": "shop_grocer", "name": "蔬果铺", "type": "shop", "seed": 12, "paint": "sage", "awning": "red", "sign": "apple",
+     "goods": ["apple", "orange", "cabbage", "pumpkin"], "sack": True},
+    {"id": "shop_bakery", "name": "面包店", "type": "shop", "seed": 13, "paint": "cream", "awning": "yellow", "sign": "bread",
+     "goods": ["bread"], "roof_colour": "rust", "door_at": 0.28},
+    {"id": "shop_potion", "name": "药水铺", "type": "shop", "seed": 14, "paint": "blue", "awning": "purple", "sign": "potion",
+     "goods": ["potion_r", "potion_b", "potion_g"], "roof_colour": "plum", "barrel": False},
+    {"id": "inn", "name": "旅店", "type": "inn", "seed": 15, "roof_colour": "rust"},
+    {"id": "stall_fruit", "name": "水果摊", "type": "stall", "seed": 21, "canopy": "red", "goods": ["apple", "orange", "cabbage"]},
+    {"id": "stall_fish", "name": "鱼摊", "type": "stall", "seed": 22, "canopy": "blue", "goods": ["fish", "fish"], "hang": "fish"},
+    {"id": "stall_bread", "name": "面包摊", "type": "stall", "seed": 23, "canopy": "yellow", "goods": ["bread", "pumpkin"],
+     "hang": "bread"},
+    {"id": "stall_veg", "name": "菜摊", "type": "stall", "seed": 24, "canopy": "green", "goods": ["grape", "cabbage", "apple"]},
+]
 TUFT_COLOURS = ["#357a36", "#5fae4a", "#a6de72", "#e4f7a8"]
 CROP_COLOURS = ["#5fae4a", "#a6de72", "#d6f39a", "#f0fbd0"]
 FLOWERS = ["#ffffff", "#ffe066", "#ffc4e1"]
@@ -262,7 +286,7 @@ def save_fx():
 
 def main():
     rnd = random.Random(2778)
-    for sub in ("trees", "bushes", "rocks"):
+    for sub in ("trees", "bushes", "rocks", "buildings"):
         d = OUT / sub
         d.mkdir(parents=True, exist_ok=True)
         for old in d.glob("*.png*"):
@@ -303,6 +327,14 @@ def main():
         im = flora.rock(seed, w, int(w * rnd.uniform(0.6, 0.75)))
         im.save(OUT / "rocks" / f"rock_{v}.png")
         manifest["rocks"].append({"id": f"rock_{v}", "file": f"rocks/rock_{v}.png", "size": [im.width, im.height]})
+    manifest["buildings"] = []
+    for spec in BUILDINGS:
+        im, night, info = buildings.build(spec)
+        bid = spec["id"]
+        im.save(OUT / "buildings" / f"{bid}.png")
+        night.save(OUT / "buildings" / f"{bid}_night.png")
+        manifest["buildings"].append({"id": bid, "name": spec["name"], "file": f"buildings/{bid}.png",
+                                      "night": f"buildings/{bid}_night.png", **info})
     manifest["tufts"] = build_tufts(rnd)
     (OUT / "props").mkdir(exist_ok=True)
     for v in (0, 1, 2):

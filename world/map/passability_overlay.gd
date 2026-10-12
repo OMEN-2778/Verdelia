@@ -1,13 +1,14 @@
 class_name PassabilityOverlay
 extends Node2D
 ## Shows where characters can and cannot walk: every collision shape under `world` in translucent
-## red (water, cliffs, trunks, rocks, hand-blocked cells), cells opened by hand in green, and the
-## spawn point. Redraw after edits with refresh().
+## red (water, cliffs, trunks, rocks, house walls, hand-blocked cells), cells opened by hand in
+## green, doorways in yellow, and the spawn point. Redraw after edits with refresh().
 
 @export var world: MapWorld
 
 const BLOCK := Color(1.0, 0.25, 0.2, 0.38)
 const OPEN := Color(0.3, 1.0, 0.45, 0.35)
+const DOOR := Color(1.0, 0.85, 0.25, 0.6)
 
 
 func _ready() -> void:
@@ -38,7 +39,10 @@ func _draw_shapes(n: Node) -> void:
 			var xf: Transform2D = global_transform.affine_inverse() * (c as Node2D).global_transform
 			draw_set_transform_matrix(xf)
 			var sh: Shape2D = c.shape
-			if sh is RectangleShape2D:
+			if c.get_parent() is Area2D:
+				if sh is RectangleShape2D:
+					draw_rect(Rect2(-sh.size / 2.0, sh.size), DOOR)
+			elif sh is RectangleShape2D:
 				draw_rect(Rect2(-sh.size / 2.0, sh.size), BLOCK)
 			elif sh is CircleShape2D:
 				draw_circle(Vector2.ZERO, sh.radius, BLOCK)

@@ -10,7 +10,9 @@ extends Node
 ## nothing jumps or pauses. At night fireflies come out; a small clock shows the time.
 ##
 ## Put one in a scene and point it at the scene's full-screen grade (`grade`), and optionally the
-## cloud and shaft layers. Nodes in the group "daytime_only" (butterflies...) fade out at night.
+## cloud and shaft layers. Nodes in the group "daytime_only" (butterflies...) fade out at night;
+## nodes in "night_lamps" (lit house windows) are shown from dusk to dawn, and the grade keeps them
+## bright (lamp_glow).
 
 @export var cycle_minutes := 12.0  ## real minutes for a whole day
 @export_range(0.0, 24.0) var start_hour := 6.0  ## used when the clock has not started yet
@@ -99,6 +101,7 @@ func _apply(delta: float) -> void:
 	var sun_water: Color = k[6]
 	var day: float = clampf(k[10], 0.0, 1.0)
 	var night := 1.0 - smoothstep(0.22, 0.5, day)
+	var lamps := 1.0 - smoothstep(0.3, 0.75, day)  # lamps are lit a little before dark
 	# the sun climbs on the left in the morning and sets on the right; the moon does the same at night
 	var arc := sky_arc()  # 0 rising .. 1 setting
 	var sun_x := -cos(arc * PI)  # -1 left .. +1 right
@@ -112,6 +115,7 @@ func _apply(delta: float) -> void:
 		m.set_shader_parameter("contrast", k[4])
 		m.set_shader_parameter("lift", k[5])
 		m.set_shader_parameter("warm_origin", Vector2(0.5 + sun_x * 0.62, -0.08 - (1.0 - height) * 0.1))
+		m.set_shader_parameter("lamp_glow", lamps)
 	RenderingServer.global_shader_parameter_set("day_sun", sun_water)
 	RenderingServer.global_shader_parameter_set("day_sky", k[11])
 	if shafts:
@@ -124,6 +128,8 @@ func _apply(delta: float) -> void:
 		clouds.set("cloud_alpha", k[8])
 	for n in get_tree().get_nodes_in_group("daytime_only"):
 		(n as CanvasItem).modulate.a = smoothstep(0.35, 0.75, day)
+	for n in get_tree().get_nodes_in_group("night_lamps"):
+		(n as CanvasItem).visible = lamps > 0.01
 	_shadow_tick -= delta
 	if _shadow_tick <= 0.0:
 		_shadow_tick = 0.1

@@ -1,12 +1,13 @@
 extends Node
 ## Standalone map editor: paint ground, water, plants and cliffs with brushes of different shapes,
-## erase, undo, save and open maps, see where characters can walk, and try the map on foot.
+## place buildings, erase, undo, save and open maps, see where characters can walk, and try the map
+## on foot.
 ##
 ## Mouse: left paints, right erases (or tick "橡皮擦"), middle button or Space + drag pans, the
 ## wheel zooms. Keys: Ctrl+Z undo, Ctrl+Y redo, E eraser, [ ] brush size, Esc leaves play mode.
 
-const LAYERS := ["地面", "水体", "植被", "岩壁", "通行"]
-enum Layer { GROUND, WATER, PLANTS, CLIFF, PASSAGE }
+const LAYERS := ["地面", "水体", "植被", "岩壁", "通行", "建筑"]
+enum Layer { GROUND, WATER, PLANTS, CLIFF, PASSAGE, BUILDING }
 
 const TOOLS := {
 	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4]],
@@ -20,9 +21,10 @@ const TOOLS := {
 	],
 	Layer.CLIFF: [["画岩壁", "draw"], ["土坡", 0], ["石阶", 1], ["草坡", 2]],
 	Layer.PASSAGE: [["阻挡", MapData.Passage.BLOCKED], ["木桥", MapData.Passage.OPEN], ["出生点", "spawn"]],
+	Layer.BUILDING: [],  # filled from the building library in select_layer()
 }
 const SHAPES := [["圆形", "circle"], ["方形", "square"], ["菱形", "diamond"], ["横椭圆", "hellipse"], ["竖椭圆", "vellipse"], ["喷枪", "spray"], ["直线", "line"], ["矩形", "rect"], ["填充", "fill"]]
-const LAYER_TINT := [Color(0.95, 0.8, 0.4), Color(0.4, 0.75, 1.0), Color(0.5, 1.0, 0.5), Color(0.9, 0.7, 0.5), Color(1.0, 0.5, 0.45)]
+const LAYER_TINT := [Color(0.95, 0.8, 0.4), Color(0.4, 0.75, 1.0), Color(0.5, 1.0, 0.5), Color(0.9, 0.7, 0.5), Color(1.0, 0.5, 0.45), Color(1.0, 0.85, 0.6)]
 const MAX_UNDO := 60
 
 var world: MapWorld
@@ -261,6 +263,9 @@ func begin_stroke(p: Vector2, erase: bool) -> void:
 	if layer == Layer.CLIFF:
 		_cliff_points = [p]
 		return
+	if layer == Layer.BUILDING:
+		_building_click(p.round(), erase)
+		return
 	if shape in ["line", "rect"]:
 		return
 	if shape == "fill":
@@ -274,6 +279,8 @@ func begin_stroke(p: Vector2, erase: bool) -> void:
 
 func continue_stroke(p: Vector2) -> void:
 	_stroke_area = _stroke_area.expand(p)
+	if layer == Layer.BUILDING:
+		return
 	if layer == Layer.CLIFF:
 		if str(tool) == "draw" and not _erasing and (_cliff_points.is_empty() or p.distance_to(_cliff_points[-1]) > 6.0):
 			_cliff_points.append(p)
@@ -296,6 +303,8 @@ func end_stroke(p: Vector2) -> void:
 	_stroke_area = _stroke_area.expand(p)
 	if layer == Layer.CLIFF:
 		_finish_cliff(p)
+	elif layer == Layer.BUILDING:
+		pass
 	elif shape == "line":
 		_apply(_line_cells(_cell(_press_world), _cell(p)), p)
 	elif shape == "rect":
@@ -331,7 +340,7 @@ func _apply(cells: Array, p: Vector2) -> void:
 			world.paint_passage(cells, MapData.Passage.AUTO if _erasing else int(tool))
 		Layer.PLANTS:
 			if _erasing:
-				world.remove_objects_in(cells)
+				world.remove_objects_in(cells, false)
 			else:
 				_scatter(cells, p)
 
@@ -466,6 +475,57 @@ func _place(item: String, pos: Vector2) -> void:
 	world.add_object({"kind": kind, "id": id, "x": pos.x, "y": pos.y})
 
 
+# ------------------------------------------------------------------ buildings
+
+## Left click places the selected building with its doorstep at `p`; right click (or the
+## eraser) removes the building under the cursor.
+func _building_click(p: Vector2, erase: bool) -> void:
+	if erase:
+		var i := world.building_at(p)
+		if i >= 0:
+			var o: Dictionary = world.data.objects[i]
+			_stroke_area = WorldBuilding.sprite_rect_of(o.id)
+			_stroke_area.position += Vector2(o.x, o.y)
+			world.remove_object(i)
+		return
+	var id := str(tool)
+	if not can_place_building(id, p):
+		_flash("这里放不下：建筑不能压在水、岩壁、别的建筑上，也不能出地图")
+		return
+	var r := WorldBuilding.footprint_of(id)
+	r.position += p
+	# clear plants and rocks off the ground it stands on and its doorstep
+	var cp := float(world.data.cell_px)
+	var cells: Array = []
+	for y in range(floori(r.position.y / cp), ceili((r.end.y + 6.0) / cp)):
+		for x in range(floori(r.position.x / cp), ceili(r.end.x / cp)):
+			cells.append(Vector2i(x, y))
+	world.remove_objects_in(cells, false)
+	world.add_object({"kind": "building", "id": id, "x": p.x, "y": p.y})
+	_stroke_area = WorldBuilding.sprite_rect_of(id)
+	_stroke_area.position += p
+
+
+func can_place_building(id: String, p: Vector2) -> bool:
+	var d := world.data
+	var r := WorldBuilding.footprint_of(id)
+	r.position += p
+	if r.size == Vector2.ZERO:
+		return false
+	var cp := float(d.cell_px)
+	for y in range(floori(r.position.y / cp), ceili((r.end.y + 4.0) / cp)):
+		for x in range(floori(r.position.x / cp), ceili(r.end.x / cp)):
+			var c := Vector2i(x, y)
+			if not d.has_cell(c) or d.water_at(c):
+				return false
+			if world.cliff_at((Vector2(c) + Vector2(0.5, 0.5)) * cp) >= 0:
+				return false
+	for o in d.objects:
+		if o.kind == "building" and MapWorld.building_rect(o).grow(2.0).intersects(r):
+			return false
+	return true
+
+
 # ------------------------------------------------------------------ cliffs
 
 func _finish_cliff(p: Vector2) -> void:
@@ -548,6 +608,9 @@ func _draw_cursor() -> void:
 	var cp := float(world.data.cell_px)
 	var col: Color = Color(1, 0.35, 0.3) if (eraser or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)) else LAYER_TINT[layer]
 	cursor.draw_set_transform(Vector2.ZERO)
+	if layer == Layer.BUILDING:
+		_draw_building_cursor(p.round(), col)
+		return
 	if layer == Layer.CLIFF:
 		if _painting and str(tool) == "draw" and not _erasing:
 			var pts := PackedVector2Array(_cliff_points)
@@ -577,6 +640,32 @@ func _draw_cursor() -> void:
 		for side in [[Vector2i(0, -1), r.position, Vector2(r.end.x, r.position.y)], [Vector2i(0, 1), Vector2(r.position.x, r.end.y), r.end], [Vector2i(-1, 0), r.position, Vector2(r.position.x, r.end.y)], [Vector2i(1, 0), Vector2(r.end.x, r.position.y), r.end]]:
 			if not cells.has(c + side[0]):
 				cursor.draw_line(side[1], side[2], col, w * 2.0)
+
+
+func _draw_building_cursor(p: Vector2, col: Color) -> void:
+	var w := 1.0 / camera.zoom.x
+	if eraser or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		var i := world.building_at(p)
+		if i >= 0:
+			var o: Dictionary = world.data.objects[i]
+			var r := WorldBuilding.sprite_rect_of(o.id)
+			r.position += Vector2(o.x, o.y)
+			cursor.draw_rect(r, Color(col, 0.25))
+			cursor.draw_rect(r, col, false, w * 2.0)
+		cursor.draw_circle(p, 3.0, Color(col, 0.7))
+		return
+	var id := str(tool)
+	var e := FloraLibrary.building(id)
+	if e.is_empty():
+		return
+	var ok := can_place_building(id, p)
+	var tint := Color(1, 1, 1, 0.6) if ok else Color(1, 0.4, 0.35, 0.5)
+	cursor.draw_texture(FloraLibrary.texture(e.file), p - Vector2(e.anchor[0], e.anchor[1]), tint)
+	var fp := WorldBuilding.footprint_of(id)
+	fp.position += p
+	cursor.draw_rect(fp, Color(col if ok else Color(1, 0.35, 0.3), 0.9), false, w * 2.0)
+	if e.get("door") != null:
+		cursor.draw_circle(p + Vector2(e.door[0], 3.0), 2.0, Color(1.0, 0.85, 0.25, 0.9))
 
 
 # ================================================================== ui
@@ -722,6 +811,8 @@ func select_layer(i: int) -> void:
 	_tool_box.add_child(grid)
 	var g := ButtonGroup.new()
 	var list: Array = TOOLS[i]
+	if i == Layer.BUILDING:
+		list = FloraLibrary.manifest().get("buildings", []).map(func(e: Dictionary) -> Array: return [e.name, e.id])
 	tool = list[1][1] if i == Layer.GROUND else list[0][1]
 	for t in list:
 		var b := _toggle(grid, t[0], g, typeof(t[1]) == typeof(tool) and t[1] == tool)
@@ -773,6 +864,8 @@ func _refresh_hint() -> void:
 			extra = "画岩壁：按住左键横着拖出岩壁顶边。土坡/石阶/草坡：在岩壁上单击开一个坡道，宽度随笔刷大小。右键单击岩壁：先删坡道，再删岩壁。"
 		Layer.PASSAGE:
 			extra = "阻挡：画出看不见的墙。木桥：在水面上铺一座能走的木桥。出生点：试玩时角色出现的位置。橡皮擦恢复成自动判断。"
+		Layer.BUILDING:
+			extra = "单击放一座建筑（光标点 = 门口台阶），会自动清掉脚下的植物；红色表示这里放不下。右键单击建筑把它删掉。墙不能穿过，黄点是门口（集市摊位没有门）。"
 	_hint.text = extra + "\n\n" + base
 
 

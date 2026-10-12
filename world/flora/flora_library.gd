@@ -28,6 +28,13 @@ static func rock(pick: int) -> Dictionary:
 	return list[posmod(pick, list.size())]
 
 
+static func building(id: String) -> Dictionary:
+	for e: Dictionary in manifest().get("buildings", []):
+		if e.id == id:
+			return e
+	return {}
+
+
 static func texture(rel: String) -> Texture2D:
 	return load(ROOT + rel)
 

@@ -1,7 +1,7 @@
 class_name MapData
 extends RefCounted
 ## Everything a map is made of, independent of how it is drawn: a grid of ground cells, a grid of
-## water cells, a grid of walking overrides, placed objects (trees, bushes, rocks, flowers...),
+## water cells, a grid of walking overrides, placed objects (trees, bushes, rocks, flowers, buildings...),
 ## cliffs (with their ramps) and the spawn point. The map editor writes it, MapWorld builds a
 ## playable world from it, and it is saved as a small JSON file (grids as base64).
 
@@ -16,7 +16,8 @@ var cell_px := 8
 var ground := PackedByteArray()
 var water := PackedByteArray()
 var passage := PackedByteArray()
-## {kind: "tree" | "bush" | "rock" | "flower", id: String, x: float, y: float}
+## {kind: "tree" | "bush" | "rock" | "flower" | "building", id: String, x: float, y: float}
+## (a building's x, y is the middle of its front wall's base, where the doorstep is)
 var objects: Array = []
 ## {points: [x, y, x, y, ...] (top edge, left to right), face: int, seed: int,
 ##  ramps: [x, half width, style, ...]} (style 0 earthen slope, 1 stone stairs, 2 grass slope)

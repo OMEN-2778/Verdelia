@@ -26,6 +26,18 @@ uniform vec4 cool : source_color = vec4(0.078, 0.196, 0.314, 0.0);
 // DayNight moves it with the sun.
 uniform vec2 warm_origin = vec2(0.0, 0.0);
 
+group_uniforms lamps;
+// Lamplight that stays bright through the night grade: lit windows (WorldHouse) are drawn in the
+// world, y-sorted like everything else, in colours whose blue channel is exactly 3/255. Those
+// pixels skip the darkening, get their warm colour back and glow onto their surroundings.
+// DayNight sets lamp_glow (0 by day .. 1 at night).
+uniform float lamp_glow : hint_range(0.0, 1.0) = 0.0;
+uniform vec3 lamp_halo_colour : source_color = vec3(1.0, 0.72, 0.36);
+
+bool is_lamp(vec3 s) {
+	return abs(s.b * 255.0 - 3.0) < 0.5 && s.r > 0.4;
+}
+
 group_uniforms clouds;
 uniform float cloud_strength : hint_range(0.0, 0.5) = 0.13;
 uniform float cloud_scale = 0.55;
@@ -33,16 +45,20 @@ uniform vec2 cloud_velocity = vec2(0.012, 0.005);
 
 void fragment() {
 	vec3 c = texture(screen_tex, SCREEN_UV).rgb;
+	vec3 raw = c;
 
 	vec3 bloom = vec3(0.0);
+	float halo = 0.0;
 	vec2 step_px = SCREEN_PIXEL_SIZE * bloom_radius;
 	for (int i = -2; i <= 2; i++) {
 		for (int j = -2; j <= 2; j++) {
 			vec3 s = texture(screen_tex, SCREEN_UV + vec2(float(i), float(j)) * step_px).rgb;
 			bloom += max(s - bloom_threshold, vec3(0.0));
+			halo += is_lamp(s) ? 1.0 : 0.0;
 		}
 	}
 	bloom /= 25.0;
+	halo /= 25.0;
 
 	vec2 aspect = vec2(SCREEN_PIXEL_SIZE.y / SCREEN_PIXEL_SIZE.x, 1.0);
 	float n = texture(cloud_noise, SCREEN_UV * aspect * cloud_scale + TIME * cloud_velocity).r;
@@ -62,6 +78,13 @@ void fragment() {
 	c = mix(vec3(luma), c, saturation);
 	c = (c - 0.5) * contrast + 0.5 + lift;
 	c *= tint;
+	if (lamp_glow > 0.0) {
+		if (is_lamp(raw)) {
+			c = mix(c, vec3(raw.r, raw.g, raw.g * 0.42 + 0.06), lamp_glow);
+		} else {
+			c += lamp_halo_colour * halo * lamp_glow * 0.75;
+		}
+	}
 	vec2 d = SCREEN_UV - 0.5;
 	c *= 1.0 - vignette * dot(d, d) * 2.0;
 	COLOR = vec4(c, 1.0);

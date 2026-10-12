@@ -18,6 +18,7 @@ var _stuck := 0.0
 
 
 func _ready() -> void:
+	add_to_group("player")  # houses fade when the player walks behind them
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	if get_node_or_null("Feet") == null:
 		var shape := CollisionShape2D.new()

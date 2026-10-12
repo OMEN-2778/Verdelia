@@ -1,7 +1,7 @@
 class_name MapRoute
 ## Walking routes on a built MapWorld: an A* grid (one node per cell) that knows what blocks the
 ## way (water without a bridge, hand-drawn walls, the cliff face outside its ramps, tree trunks,
-## bushes and rocks), so characters can be sent anywhere and find their way round.
+## bushes, rocks and buildings), so characters can be sent anywhere and find their way round.
 
 
 static func grid(world: MapWorld) -> AStarGrid2D:
@@ -24,6 +24,13 @@ static func grid(world: MapWorld) -> AStarGrid2D:
 			g.set_point_solid(c, solid)
 	for o in d.objects:
 		if o.kind == "flower":
+			continue
+		if o.kind == "building":
+			var hr := MapWorld.building_rect(o)
+			for y in range(floori(hr.position.y / cp), ceili(hr.end.y / cp)):
+				for x in range(floori(hr.position.x / cp), ceili(hr.end.x / cp)):
+					if g.is_in_boundsv(Vector2i(x, y)):
+						g.set_point_solid(Vector2i(x, y), true)
 			continue
 		var base := Vector2(o.x, o.y)
 		var r := 7.0 if o.kind == "tree" else 6.0
