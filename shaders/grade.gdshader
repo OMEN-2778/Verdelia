@@ -22,6 +22,9 @@ group_uniforms sun;
 // bottom-right. Alpha is the strength; 0 disables.
 uniform vec4 warm : source_color = vec4(1.0, 0.925, 0.667, 0.0);
 uniform vec4 cool : source_color = vec4(0.078, 0.196, 0.314, 0.0);
+// where the warm light comes from, in screen UV (0,0 = top-left); the cool side is opposite.
+// DayNight moves it with the sun.
+uniform vec2 warm_origin = vec2(0.0, 0.0);
 
 group_uniforms clouds;
 uniform float cloud_strength : hint_range(0.0, 0.5) = 0.13;
@@ -49,9 +52,11 @@ void fragment() {
 
 	vec2 screen_px = 1.0 / SCREEN_PIXEL_SIZE;
 	vec2 p = SCREEN_UV * screen_px;
-	float fw = max(0.0, 1.0 - length(p) / (length(screen_px) * 0.95)) * warm.a;
+	vec2 o = warm_origin * screen_px;
+	float fw = max(0.0, 1.0 - length(p - o) / (length(screen_px) * 0.95)) * warm.a;
 	c = 1.0 - (1.0 - c) * (1.0 - warm.rgb * fw);
-	float diag = dot(p, screen_px) / dot(screen_px, screen_px);
+	vec2 axis = (screen_px * 0.5 - o) * 2.0;
+	float diag = dot(p - o, axis) / max(dot(axis, axis), 1.0);
 	c *= mix(vec3(1.0), cool.rgb, clamp((diag - 0.45) / 0.55, 0.0, 1.0) * cool.a);
 	float luma = dot(c, vec3(0.299, 0.587, 0.114));
 	c = mix(vec3(luma), c, saturation);

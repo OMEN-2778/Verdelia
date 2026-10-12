@@ -22,3 +22,14 @@ renderer/rendering_method.mobile="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
+
+[shader_globals]
+
+day_sun={
+"type": "color",
+"value": Color(1, 1, 1, 1)
+}
+day_sky={
+"type": "color",
+"value": Color(0.48, 0.72, 0.95, 0.15)
+}

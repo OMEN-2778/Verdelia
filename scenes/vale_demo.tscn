@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3]
+[gd_scene load_steps=32 format=3]
 
 [ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
 [ext_resource type="Texture2D" path="res://art/demo_world/terrain_mask.png" id="mask"]
@@ -26,6 +26,8 @@
 [ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin4_grass_shadow.png" id="g_Ruin4_grass_shadow"]
 [ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin5_grass_shadow.png" id="g_Ruin5_grass_shadow"]
 [ext_resource type="Texture2D" path="res://art/third_party/grassland/Stone1_grass_shadow.png" id="g_Stone1_grass_shadow"]
+
+[ext_resource type="Script" path="res://world/fx/day_night.gd" id="daynight"]
 
 [sub_resource type="ShaderMaterial" id="grade_mat"]
 shader = ExtResource("grade")
@@ -230,7 +232,7 @@ angular_velocity_max = 60.0
 color_ramp = SubResource("petal_fade")
 color_initial_ramp = SubResource("petal_colours")
 
-[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player") groups=["daytime_only"]]
 z_index = 6
 script = ExtResource("flies")
 player = NodePath("../Props/Player")
@@ -261,3 +263,11 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+
+[node name="DayNight" type="Node" parent="." node_paths=PackedStringArray("grade", "clouds", "shafts")]
+script = ExtResource("daynight")
+cycle_minutes = 0.75
+start_hour = 4.5
+grade = NodePath("../Grade/Screen")
+clouds = NodePath("../Clouds")
+shafts = NodePath("../Shafts")

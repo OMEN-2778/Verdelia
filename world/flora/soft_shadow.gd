@@ -35,4 +35,7 @@ static func sprite(w: int, h: int, offset_x := 0.0) -> Sprite2D:
 	s.position = Vector2(roundf(offset_x), 0)
 	s.z_as_relative = false
 	s.z_index = -6
+	s.add_to_group("sun_shadows")  # DayNight swings and stretches them with the sun
+	s.set_meta("base", s.position)
+	s.set_meta("w", float(w))
 	return s

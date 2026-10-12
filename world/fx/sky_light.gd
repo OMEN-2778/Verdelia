@@ -6,6 +6,7 @@ extends Node2D
 @export var shafts := false
 @export var cloud_alpha := 0.17
 @export var shaft_colour := Color("#fff1c4")
+@export var shaft_angle := -0.42  ## radians; DayNight swings it with the sun
 @export var area := Vector2(426, 240)
 @export var cloud_texture: Texture2D
 @export var shaft_texture: Texture2D
@@ -41,6 +42,6 @@ func _draw() -> void:
 	var t := Wind.now()
 	for s in _shafts:
 		var a: float = 0.07 + 0.045 * sin(t * 0.35 + float(s.ph))
-		draw_set_transform(Vector2(s.x, -80), -0.42)
+		draw_set_transform(Vector2(s.x, -80), shaft_angle)
 		draw_texture_rect(shaft_texture, Rect2(-s.w / 2.0, 0, s.w, area.y + 300), false, Color(shaft_colour, a))
 	draw_set_transform(Vector2.ZERO)

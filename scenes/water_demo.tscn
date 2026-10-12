@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
 [ext_resource type="TileSet" path="res://world/terrain/terrain_brushes.tres" id="brushes"]
@@ -16,6 +16,8 @@
 [ext_resource type="Texture2D" path="res://art/library/fx/shadow.png" id="shadow"]
 [ext_resource type="Texture2D" path="res://art/library/fx/cloud.png" id="cloud"]
 [ext_resource type="Texture2D" path="res://art/library/fx/shaft.png" id="shaft"]
+
+[ext_resource type="Script" path="res://world/fx/day_night.gd" id="daynight"]
 
 [sub_resource type="ShaderMaterial" id="grade_mat"]
 shader = ExtResource("grade")
@@ -160,7 +162,7 @@ limit_bottom = 480
 position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 
-[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player")]
+[node name="Flies" type="Node2D" parent="." node_paths=PackedStringArray("player") groups=["daytime_only"]]
 z_index = 6
 script = ExtResource("flies")
 player = NodePath("../Props/Player")
@@ -191,3 +193,11 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+
+[node name="DayNight" type="Node" parent="." node_paths=PackedStringArray("grade", "clouds", "shafts")]
+script = ExtResource("daynight")
+cycle_minutes = 0.75
+start_hour = 4.5
+grade = NodePath("../Grade/Screen")
+clouds = NodePath("../Clouds")
+shafts = NodePath("../Shafts")

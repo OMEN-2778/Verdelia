@@ -67,6 +67,11 @@ uniform float caustic_size = 9.0;  // px per caustic cell (the whole web scales 
 uniform float caustic_reach : hint_range(0.05, 1.0) = 0.6;  // how far from the shore they show (1 = water_depth_cells)
 uniform float caustic_speed = 0.8;
 
+// set by DayNight: rgb = colour of the sun (or moon) on the water, a = how strongly it glitters
+global uniform vec4 day_sun;
+// set by DayNight: the sky colour the water reflects (a = how strongly it tints the water)
+global uniform vec4 day_sky;
+
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 #define DATA(p) texture(TEXTURE, ((p) + 0.5) / map_px)
 // water presence smoothed over a few px (hides the cell grid), plus two octaves of edge wobble;
@@ -282,8 +287,15 @@ void fragment() {
 		// sky reflections: long soft lighter patches drifting slowly, dithered into the base colour
 		float refl = vnoise((pix - drift * t * 0.6) * vec2(0.45, 1.3), 18.0) * 0.7 + vnoise(pix * vec2(0.6, 1.6) + vec2(t * 1.5, 0.0), 9.0) * 0.3;
 		float rv = refl + bay * 0.18;
-		if (rv > 1.0 - reflection_amount * 0.32) col = mix(col, sky_color.rgb, 0.8);
-		else if (rv > 1.0 - reflection_amount * 0.62) col = mix(col, reflection_color.rgb, 0.7);
+		// under a coloured sky (dawn, dusk, night) the water deepens to violet-blue and the sky shows
+		// in it as bright patches of its own colour; a plain day sky barely changes anything
+		float sky_amt = day_sky.a * smoothstep(0.2, 0.45, day_sky.a);
+		col = mix(col, vec3(0.24, 0.33, 0.64) * (0.7 + dot(col, vec3(0.3, 0.59, 0.11)) * 0.9), sky_amt * 0.6);
+		vec3 sky_hi = mix(sky_color.rgb, day_sky.rgb * 1.05, min(1.0, day_sky.a * 1.8));
+		vec3 sky_lo = mix(reflection_color.rgb, mix(col, day_sky.rgb, 0.6), min(1.0, day_sky.a * 1.6));
+		rv += sky_amt * 0.18;  // more of the sky shows when it is colourful
+		if (rv > 1.0 - reflection_amount * 0.32) col = mix(col, sky_hi, 0.8);
+		else if (rv > 1.0 - reflection_amount * 0.62) col = mix(col, sky_lo, 0.7);
 
 		// the translucent rim: lighter, see-through water over the wet bed (ground.gdshader)
 		float a = 1.0;
@@ -345,23 +357,27 @@ void fragment() {
 		// (it stays put as the camera moves). Bright and wide near the sun, narrowing and fading
 		// below; wave crests in it shine as streaks, and round sparkles with halos and star
 		// points flicker along it, thinning out to the odd speck outside.
-		float sun = sun_path(pix, SCREEN_UV, t) * smoothstep(0.4, 0.9, rim);
+		float sun = sun_path(pix, SCREEN_UV, t) * smoothstep(0.4, 0.9, rim) * day_sun.a;
+		vec3 sun_c = sun_color.rgb * day_sun.rgb;
+		vec3 halo_c = mix(sun_halo.rgb, sun_halo.rgb * day_sun.rgb, 0.7);
 		if (sun > 0.0) {
 			float sv = sun + bay * 0.45;
-			if (sv > 0.9) col = mix(col, sun_core.rgb, 0.85);
-			else if (sv > 0.6) col = mix(col, sun_core.rgb, 0.45);
-			else if (sv > 0.35) col = mix(col, sun_sheen.rgb, 0.6);
-			else if (sv > 0.18) col = mix(col, sun_sheen.rgb, 0.3);
+			vec3 core_c = mix(sun_core.rgb, sun_core.rgb * day_sun.rgb, 0.6);
+			vec3 sheen_c = mix(sun_sheen.rgb, sun_sheen.rgb * day_sun.rgb, 0.5);
+			if (sv > 0.9) col = mix(col, core_c, 0.85);
+			else if (sv > 0.6) col = mix(col, core_c, 0.45);
+			else if (sv > 0.35) col = mix(col, sheen_c, 0.6);
+			else if (sv > 0.18) col = mix(col, sheen_c, 0.3);
 			float crest = sin(pix.y * 1.25 + vnoise(pix * vec2(0.35, 1.0) + vec2(t * 2.5, 0.0), 7.0) * 7.0 - t * 2.2);
 			float brk = vnoise(pix * vec2(0.7, 1.0) + vec2(-t * 6.0, 0.0), 3.0);
-			if (crest > 0.9 && brk > 1.0 - sun * 0.45) col = mix(col, sun > 0.6 ? sun_color.rgb : sun_halo.rgb, 0.8);
-			else if (crest > 0.75 && brk > 1.0 - sun * 0.4) col = mix(col, sun_halo.rgb, 0.4);
+			if (crest > 0.9 && brk > 1.0 - sun * 0.45) col = mix(col, sun > 0.6 ? sun_c : halo_c, 0.8);
+			else if (crest > 0.75 && brk > 1.0 - sun * 0.4) col = mix(col, halo_c, 0.4);
 		}
-		float sp = sun_sparkles(pix, sun_path(pix, SCREEN_UV, t), t);
+		float sp = sun_sparkles(pix, sun_path(pix, SCREEN_UV, t) * day_sun.a, t);
 		if (rim > 0.6) {
-			if (sp > 0.75) col = sun_color.rgb;
-			else if (sp > 0.4) col = mix(col, sun_color.rgb, 0.7);
-			else if (sp > 0.0) col = mix(col, sun_halo.rgb, 0.65);
+			if (sp > 0.75) col = sun_c;
+			else if (sp > 0.4) col = mix(col, sun_c, 0.7);
+			else if (sp > 0.0) col = mix(col, halo_c, 0.65);
 		}
 
 		COLOR = vec4(col, a);
