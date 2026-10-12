@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/map/random_map_demo.gd" id="demo"]
+
+[node name="RandomMapDemo" type="Node2D"]
+script = ExtResource("demo")

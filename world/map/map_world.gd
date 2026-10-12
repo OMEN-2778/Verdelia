@@ -58,8 +58,7 @@ func _ready() -> void:
 	blockers = StaticBody2D.new()
 	blockers.name = "Blockers"
 	add_child(blockers)
-	if data == null:
-		load_data(MapData.create(Vector2i(120, 68)))
+	load_data(data if data != null else MapData.create(Vector2i(120, 68)))  # data may be set before entering the tree
 
 
 func load_map(path: String) -> bool:

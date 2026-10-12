@@ -108,6 +108,17 @@ func new_map(cells: Vector2i) -> void:
 	overlay.refresh()
 
 
+## A fresh random map (MapGenerator) to start from; undo brings back the previous map.
+func random_map(seed: int) -> void:
+	_snapshot()
+	var d := MapGenerator.generate(seed, world.data.size if world.data else Vector2i(140, 80))
+	world.load_data(d)
+	map_path = ""
+	camera.position = d.size_px() * 0.5
+	overlay.refresh()
+	_flash("随机地图，种子 %d" % seed)
+
+
 func open_map(path: String) -> bool:
 	var d := MapData.load_file(path)
 	if d == null:
@@ -590,6 +601,7 @@ func _build_ui() -> void:
 	bar.add_theme_constant_override("separation", 6)
 	top.add_child(bar)
 	_button(bar, "新建", func(): _new_dialog.popup_centered())
+	_button(bar, "随机生成", func(): random_map(randi() % 100000 + 1))
 	_button(bar, "打开", func(): _open_dialog.popup_centered_ratio(0.7))
 	_button(bar, "保存", func(): _on_save(false))
 	_button(bar, "另存为", func(): _on_save(true))

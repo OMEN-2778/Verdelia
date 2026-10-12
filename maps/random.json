@@ -1,0 +1,2543 @@
+{
+	"cell_px": 8,
+	"cliffs": [
+		{
+			"face": 42,
+			"points": [
+				0.0,
+				182.0,
+				82.0,
+				164.0,
+				182.0,
+				168.0,
+				290.0,
+				166.0,
+				367.0,
+				190.0,
+				439.0,
+				165.0,
+				510.0,
+				184.0,
+				614.0,
+				176.0,
+				710.0,
+				171.0,
+				810.0,
+				177.0,
+				918.0,
+				184.0,
+				1014.0,
+				170.0,
+				1105.0,
+				191.0,
+				1120.0,
+				176.0
+			],
+			"ramps": [
+				184.0,
+				12,
+				1,
+				538.0,
+				14,
+				0,
+				958.0,
+				17,
+				2
+			],
+			"seed": 673
+		}
+	],
+	"ground": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAQEBAQEBAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAAABAQAAAAAAAAAAAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQABAAAAAAEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAAAAAAAAQEBAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAAAAAQEAAAAAAAAAAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAQEAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAgICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAgICAgICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAICAgICAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAACAgICAAAAAgICAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAACAgICAgAAAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAgAAAgAAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAIAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAgICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQICAgAAAAAAAAAAAAAAAAACAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAICAgAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQACAgIAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAgAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAgAAAgAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+	"name": "随机地图 42",
+	"objects": [
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 4.0,
+			"y": 7.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 113.0,
+			"y": 7.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 149.0,
+			"y": 3.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 192.0,
+			"y": 4.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 212.0,
+			"y": 5.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 436.0,
+			"y": 5.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 539.0,
+			"y": 8.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 854.0,
+			"y": 9.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 878.0,
+			"y": 6.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 897.0,
+			"y": 9.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1020.0,
+			"y": 2.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 1065.0,
+			"y": 5.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 1086.0,
+			"y": 10.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1117.0,
+			"y": 7.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 27.0,
+			"y": 17.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 49.0,
+			"y": 16.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 242.0,
+			"y": 13.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 345.0,
+			"y": 18.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 363.0,
+			"y": 16.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 456.0,
+			"y": 13.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 484.0,
+			"y": 17.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 555.0,
+			"y": 19.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 610.0,
+			"y": 11.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 716.0,
+			"y": 18.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 747.0,
+			"y": 14.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 769.0,
+			"y": 17.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 788.0,
+			"y": 16.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 816.0,
+			"y": 11.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 827.0,
+			"y": 17.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 979.0,
+			"y": 12.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 112.0,
+			"y": 25.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 148.0,
+			"y": 21.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 169.0,
+			"y": 22.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 216.0,
+			"y": 24.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 283.0,
+			"y": 26.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 319.0,
+			"y": 27.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 392.0,
+			"y": 21.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 418.0,
+			"y": 27.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 435.0,
+			"y": 26.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 447.0,
+			"y": 24.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 530.0,
+			"y": 25.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 602.0,
+			"y": 26.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 845.0,
+			"y": 27.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 881.0,
+			"y": 23.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 946.0,
+			"y": 21.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 1020.0,
+			"y": 26.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 7.0,
+			"y": 36.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 49.0,
+			"y": 35.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 177.0,
+			"y": 35.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 247.0,
+			"y": 30.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 378.0,
+			"y": 32.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 798.0,
+			"y": 33.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 913.0,
+			"y": 30.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 977.0,
+			"y": 32.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1047.0,
+			"y": 32.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 97.0,
+			"y": 41.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 121.0,
+			"y": 43.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 196.0,
+			"y": 45.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 254.0,
+			"y": 46.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 318.0,
+			"y": 44.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 391.0,
+			"y": 46.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 429.0,
+			"y": 46.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 609.0,
+			"y": 45.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 858.0,
+			"y": 39.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1067.0,
+			"y": 44.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1089.0,
+			"y": 43.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 362.0,
+			"y": 52.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 471.0,
+			"y": 52.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 789.0,
+			"y": 50.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 817.0,
+			"y": 54.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 837.0,
+			"y": 47.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 995.0,
+			"y": 49.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1014.0,
+			"y": 49.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1042.0,
+			"y": 53.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 80.0,
+			"y": 57.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 133.0,
+			"y": 62.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 149.0,
+			"y": 60.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 514.0,
+			"y": 62.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 719.0,
+			"y": 59.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 749.0,
+			"y": 58.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 848.0,
+			"y": 61.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 881.0,
+			"y": 61.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1113.0,
+			"y": 58.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 9.0,
+			"y": 65.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 319.0,
+			"y": 72.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 347.0,
+			"y": 69.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 368.0,
+			"y": 70.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 495.0,
+			"y": 73.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 581.0,
+			"y": 69.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 823.0,
+			"y": 71.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 953.0,
+			"y": 70.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 973.0,
+			"y": 73.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1007.0,
+			"y": 71.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1025.0,
+			"y": 67.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 26.0,
+			"y": 81.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 65.0,
+			"y": 77.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 149.0,
+			"y": 80.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 777.0,
+			"y": 81.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 935.0,
+			"y": 78.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 44.0,
+			"y": 84.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 95.0,
+			"y": 90.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 198.0,
+			"y": 90.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 336.0,
+			"y": 87.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 682.0,
+			"y": 89.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 715.0,
+			"y": 91.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 736.0,
+			"y": 87.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 807.0,
+			"y": 91.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 845.0,
+			"y": 86.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 1034.0,
+			"y": 85.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1050.0,
+			"y": 83.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1113.0,
+			"y": 86.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 68.0,
+			"y": 98.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 306.0,
+			"y": 94.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 395.0,
+			"y": 93.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower6.png",
+			"kind": "flower",
+			"x": 600.0,
+			"y": 92.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 627.0,
+			"y": 93.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 696.0,
+			"y": 99.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 726.0,
+			"y": 98.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 790.0,
+			"y": 94.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 824.0,
+			"y": 97.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 1094.0,
+			"y": 95.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 24.0,
+			"y": 102.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 41.0,
+			"y": 109.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 180.0,
+			"y": 108.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 518.0,
+			"y": 105.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 583.0,
+			"y": 105.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 5.0,
+			"y": 112.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 67.0,
+			"y": 111.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1070.0,
+			"y": 117.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1088.0,
+			"y": 124.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 59.0,
+			"y": 135.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 367.0,
+			"y": 133.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 394.0,
+			"y": 134.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 10.0,
+			"y": 144.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 21.0,
+			"y": 142.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 41.0,
+			"y": 140.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 287.0,
+			"y": 139.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 439.0,
+			"y": 144.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 802.0,
+			"y": 144.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 827.0,
+			"y": 143.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 899.0,
+			"y": 140.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 1083.0,
+			"y": 144.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 460.0,
+			"y": 147.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1017.0,
+			"y": 150.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower9.png",
+			"kind": "flower",
+			"x": 1062.0,
+			"y": 152.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 356.0,
+			"y": 164.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 84.0,
+			"y": 252.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 47.0,
+			"y": 259.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 158.0,
+			"y": 262.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 68.0,
+			"y": 269.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 138.0,
+			"y": 266.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 408.0,
+			"y": 264.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 475.0,
+			"y": 268.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 616.0,
+			"y": 270.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 833.0,
+			"y": 269.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 997.0,
+			"y": 268.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 26.0,
+			"y": 276.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 87.0,
+			"y": 273.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 654.0,
+			"y": 273.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 6.0,
+			"y": 287.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 41.0,
+			"y": 281.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 252.0,
+			"y": 285.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 422.0,
+			"y": 285.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 675.0,
+			"y": 282.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 760.0,
+			"y": 284.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 954.0,
+			"y": 285.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 116.0,
+			"y": 294.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 602.0,
+			"y": 290.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 661.0,
+			"y": 292.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 750.0,
+			"y": 293.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 1053.0,
+			"y": 297.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 25.0,
+			"y": 307.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 221.0,
+			"y": 307.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 502.0,
+			"y": 303.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 544.0,
+			"y": 302.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 692.0,
+			"y": 300.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 895.0,
+			"y": 303.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 260.0,
+			"y": 308.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 276.0,
+			"y": 310.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 318.0,
+			"y": 309.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 342.0,
+			"y": 313.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 382.0,
+			"y": 313.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 529.0,
+			"y": 310.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 550.0,
+			"y": 312.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 672.0,
+			"y": 313.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 714.0,
+			"y": 309.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower9.png",
+			"kind": "flower",
+			"x": 1088.0,
+			"y": 315.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 13.0,
+			"y": 321.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 238.0,
+			"y": 319.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 392.0,
+			"y": 321.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 575.0,
+			"y": 322.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 651.0,
+			"y": 324.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 1051.0,
+			"y": 318.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 88.0,
+			"y": 328.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 170.0,
+			"y": 328.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 218.0,
+			"y": 334.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 959.0,
+			"y": 331.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 990.0,
+			"y": 332.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 30.0,
+			"y": 338.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 408.0,
+			"y": 339.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 426.0,
+			"y": 339.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 443.0,
+			"y": 342.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 473.0,
+			"y": 338.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 756.0,
+			"y": 338.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 840.0,
+			"y": 342.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1040.0,
+			"y": 342.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 1084.0,
+			"y": 342.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1102.0,
+			"y": 336.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower9.png",
+			"kind": "flower",
+			"x": 361.0,
+			"y": 347.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1060.0,
+			"y": 349.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 46.0,
+			"y": 356.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 63.0,
+			"y": 357.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 104.0,
+			"y": 358.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 165.0,
+			"y": 359.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 254.0,
+			"y": 356.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 411.0,
+			"y": 353.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 756.0,
+			"y": 360.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 891.0,
+			"y": 354.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1076.0,
+			"y": 355.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1103.0,
+			"y": 358.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 9.0,
+			"y": 365.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 334.0,
+			"y": 362.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 537.0,
+			"y": 362.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 725.0,
+			"y": 362.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 822.0,
+			"y": 363.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 845.0,
+			"y": 366.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 17.0,
+			"y": 379.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 74.0,
+			"y": 374.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 134.0,
+			"y": 375.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower6.png",
+			"kind": "flower",
+			"x": 239.0,
+			"y": 371.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 522.0,
+			"y": 372.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 755.0,
+			"y": 375.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 872.0,
+			"y": 372.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 1000.0,
+			"y": 377.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1101.0,
+			"y": 372.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 45.0,
+			"y": 381.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 192.0,
+			"y": 384.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower2.png",
+			"kind": "flower",
+			"x": 283.0,
+			"y": 381.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 390.0,
+			"y": 385.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 656.0,
+			"y": 382.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 833.0,
+			"y": 382.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1092.0,
+			"y": 386.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 18.0,
+			"y": 392.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 244.0,
+			"y": 390.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 304.0,
+			"y": 391.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 513.0,
+			"y": 394.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 828.0,
+			"y": 393.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 848.0,
+			"y": 391.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 940.0,
+			"y": 393.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 37.0,
+			"y": 405.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 174.0,
+			"y": 401.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 200.0,
+			"y": 399.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 529.0,
+			"y": 403.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 795.0,
+			"y": 399.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 932.0,
+			"y": 404.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1075.0,
+			"y": 403.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1096.0,
+			"y": 402.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 565.0,
+			"y": 414.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 849.0,
+			"y": 414.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 143.0,
+			"y": 423.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 242.0,
+			"y": 420.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 357.0,
+			"y": 423.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 513.0,
+			"y": 416.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 542.0,
+			"y": 423.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 793.0,
+			"y": 418.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1000.0,
+			"y": 422.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1084.0,
+			"y": 418.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 20.0,
+			"y": 426.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 160.0,
+			"y": 431.0
+		},
+		{
+			"id": "pink",
+			"kind": "bush",
+			"x": 187.0,
+			"y": 428.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 396.0,
+			"y": 430.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 828.0,
+			"y": 425.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 867.0,
+			"y": 429.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 898.0,
+			"y": 429.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 1064.0,
+			"y": 427.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 60.0,
+			"y": 440.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower6.png",
+			"kind": "flower",
+			"x": 113.0,
+			"y": 438.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 323.0,
+			"y": 441.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 528.0,
+			"y": 440.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1011.0,
+			"y": 435.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower2.png",
+			"kind": "flower",
+			"x": 1075.0,
+			"y": 439.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1113.0,
+			"y": 441.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 26.0,
+			"y": 447.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 43.0,
+			"y": 443.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 175.0,
+			"y": 444.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower9.png",
+			"kind": "flower",
+			"x": 204.0,
+			"y": 447.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 365.0,
+			"y": 443.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 579.0,
+			"y": 446.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 309.0,
+			"y": 457.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 435.0,
+			"y": 455.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 510.0,
+			"y": 455.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 600.0,
+			"y": 460.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 817.0,
+			"y": 454.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 842.0,
+			"y": 457.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 140.0,
+			"y": 468.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 175.0,
+			"y": 468.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 505.0,
+			"y": 473.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 330.0,
+			"y": 482.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 379.0,
+			"y": 495.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 486.0,
+			"y": 495.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 405.0,
+			"y": 502.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 431.0,
+			"y": 510.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 1103.0,
+			"y": 521.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 23.0,
+			"y": 528.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 35.0,
+			"y": 532.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 13.0,
+			"y": 540.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 68.0,
+			"y": 534.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 924.0,
+			"y": 537.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1017.0,
+			"y": 537.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 1047.0,
+			"y": 536.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 133.0,
+			"y": 546.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 161.0,
+			"y": 547.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 895.0,
+			"y": 547.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 1075.0,
+			"y": 545.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1115.0,
+			"y": 549.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 815.0,
+			"y": 554.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 927.0,
+			"y": 555.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 130.0,
+			"y": 565.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 320.0,
+			"y": 565.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 840.0,
+			"y": 561.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1045.0,
+			"y": 564.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 183.0,
+			"y": 570.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 251.0,
+			"y": 570.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 421.0,
+			"y": 577.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 570.0,
+			"y": 573.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 634.0,
+			"y": 574.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 654.0,
+			"y": 570.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 951.0,
+			"y": 572.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 32.0,
+			"y": 584.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 89.0,
+			"y": 579.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 170.0,
+			"y": 585.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 727.0,
+			"y": 579.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 796.0,
+			"y": 579.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 894.0,
+			"y": 586.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 926.0,
+			"y": 583.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1088.0,
+			"y": 578.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 26.0,
+			"y": 594.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 187.0,
+			"y": 591.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 228.0,
+			"y": 591.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 269.0,
+			"y": 592.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 500.0,
+			"y": 589.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 616.0,
+			"y": 593.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower1.png",
+			"kind": "flower",
+			"x": 745.0,
+			"y": 587.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 970.0,
+			"y": 591.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 7.0,
+			"y": 600.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 40.0,
+			"y": 601.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 61.0,
+			"y": 600.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 252.0,
+			"y": 599.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 386.0,
+			"y": 597.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 453.0,
+			"y": 601.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 528.0,
+			"y": 604.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 558.0,
+			"y": 600.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 589.0,
+			"y": 604.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 629.0,
+			"y": 600.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 651.0,
+			"y": 602.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 757.0,
+			"y": 601.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 779.0,
+			"y": 598.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 818.0,
+			"y": 604.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower5.png",
+			"kind": "flower",
+			"x": 859.0,
+			"y": 597.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 909.0,
+			"y": 599.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 936.0,
+			"y": 604.0
+		},
+		{
+			"id": "blossom",
+			"kind": "tree",
+			"x": 985.0,
+			"y": 604.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 108.0,
+			"y": 609.0
+		},
+		{
+			"id": "",
+			"kind": "rock",
+			"x": 133.0,
+			"y": 613.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 181.0,
+			"y": 613.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 203.0,
+			"y": 611.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 429.0,
+			"y": 612.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 471.0,
+			"y": 612.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 489.0,
+			"y": 607.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 741.0,
+			"y": 607.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 880.0,
+			"y": 605.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1044.0,
+			"y": 610.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1067.0,
+			"y": 610.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 1107.0,
+			"y": 605.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 53.0,
+			"y": 614.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 232.0,
+			"y": 616.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 368.0,
+			"y": 622.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 549.0,
+			"y": 620.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 571.0,
+			"y": 621.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 619.0,
+			"y": 622.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 721.0,
+			"y": 615.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 818.0,
+			"y": 622.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 899.0,
+			"y": 621.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 944.0,
+			"y": 621.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 1025.0,
+			"y": 616.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 6.0,
+			"y": 623.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 41.0,
+			"y": 629.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 77.0,
+			"y": 629.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 115.0,
+			"y": 627.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 163.0,
+			"y": 623.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 278.0,
+			"y": 628.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 524.0,
+			"y": 630.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 645.0,
+			"y": 628.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 664.0,
+			"y": 626.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 677.0,
+			"y": 627.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 699.0,
+			"y": 631.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 759.0,
+			"y": 624.0
+		},
+		{
+			"id": "res://art/third_party/grassland/Flower3.png",
+			"kind": "flower",
+			"x": 799.0,
+			"y": 627.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 1034.0,
+			"y": 630.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1055.0,
+			"y": 628.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1098.0,
+			"y": 627.0
+		},
+		{
+			"id": "green",
+			"kind": "bush",
+			"x": 1112.0,
+			"y": 627.0
+		},
+		{
+			"id": "violet",
+			"kind": "bush",
+			"x": 180.0,
+			"y": 637.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 202.0,
+			"y": 633.0
+		},
+		{
+			"id": "flower",
+			"kind": "bush",
+			"x": 286.0,
+			"y": 640.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 312.0,
+			"y": 634.0
+		},
+		{
+			"id": "pine",
+			"kind": "tree",
+			"x": 330.0,
+			"y": 637.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 458.0,
+			"y": 633.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 491.0,
+			"y": 638.0
+		},
+		{
+			"id": "berry",
+			"kind": "bush",
+			"x": 570.0,
+			"y": 634.0
+		},
+		{
+			"id": "oak",
+			"kind": "tree",
+			"x": 618.0,
+			"y": 640.0
+		},
+		{
+			"id": "birch",
+			"kind": "tree",
+			"x": 838.0,
+			"y": 634.0
+		},
+		{
+			"id": "sapling",
+			"kind": "tree",
+			"x": 874.0,
+			"y": 637.0
+		}
+	],
+	"passage": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+	"size": [
+		140,
+		80
+	],
+	"spawn": [
+		625.283752441406,
+		364.733184814453
+	],
+	"version": 1,
+	"water": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAQABAQAAAAAAAAAAAAAAAAAAAQAAAAEAAQEBAQEAAAEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAQEAAQEBAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAAEBAQEAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAEBAQEBAQEBAQEBAQEBAAABAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAAAAAQEBAQAAAAAAAQEBAQEBAAEBAQAAAQAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAEBAQAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAEBAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAAEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAABAQEBAQABAQEBAQAAAAAAAAEBAQEBAQEAAAEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAEBAQEBAQEBAQEBAQEBAAAAAAAAAQAAAAAAAAABAQEBAQEBAQAAAAABAQEBAQEBAQEBAQEBAQAAAAABAQEBAAAAAAAAAAABAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAQEBAQEBAQEBAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAQEBAQEBAQEBAQAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAEAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAAABAQEAAQEBAQEBAAAAAAAAAAAAAAAAAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAEBAQEBAAAAAAAAAAAAAQEBAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+}
