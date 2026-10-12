@@ -3,7 +3,7 @@ class_name CliffBand
 extends Sprite2D
 ## A layered sandstone cliff generated along a polyline (the top edge, left to right, in local
 ## coordinates). The face height wanders, rock spurs push down into the meadow and recesses cut
-## back, strata are irregular with cracks and weathering, grass hangs off the lip in uneven clumps
+## back; the face is soft, earthy and line-free, its layers only gently different tones; grass hangs off the lip in uneven clumps
 ## and only the odd vine trails down. Openings (cave mouths with a stone frame) can be cut in, and
 ## ramps cut through the face so the upper level can be reached: an earthen slope or stone stairs.
 ## The face blocks walking (a StaticBody2D is generated along it) except where a ramp cuts through.
@@ -169,27 +169,21 @@ func _paint_face(w: int) -> void:
 			var f := (y - s0) / maxf(s1 - s0, 1.0)
 			var above: float = seen[k]
 			var below: float = seen[k + 1]
-			# broad, uneven light: big facets, smaller lumps, a gentle darkening toward the foot
-			var v := 0.6 + (_noise(i, y, 13) - 0.5) * 0.42 + (_noise(i + 7, y, 5) - 0.5) * 0.26 + (_noise(i, y, 2) - 0.5) * 0.12
-			v -= 0.14 * (y - t) / maxf(hgt, 1.0)
-			# each ledge is lit along its upper lip and shaded under its overhang, where the parting shows
-			v += (0.1 - f * 0.26) * maxf(above, below * 0.5)
-			var lip := 0.1 + _noise(i, y + 600, 4) * 0.12
-			if f < lip and above > 0.5 and _noise(i, k * 31 + 700, 6) > 0.32:
-				v += 0.24
-			if f > 0.9 and below > 0.5 and _noise(i, k * 29 + 800, 5) > 0.3:
-				v -= 0.22
-			# rain streaks running down the face
+			# soft earthy face: broad lumps of light and shade, a gentle darkening toward the foot, and
+			# the layers only as slightly different tones that melt into one another (no lines)
+			var v := 0.6 + (_noise(i, y, 13) - 0.5) * 0.3 + (_noise(i + 7, y, 5) - 0.5) * 0.14 + (_noise(i, y, 2) - 0.5) * 0.06
+			v -= 0.16 * (y - t) / maxf(hgt, 1.0)
+			var tone := (_hash(k, seed + 3) - 0.5) * 0.12  # each layer a touch lighter or darker
+			var next_tone := (_hash(k + 1, seed + 3) - 0.5) * 0.12
+			v += lerpf(tone, next_tone, smoothstep(0.7, 1.0, f) * below * 0.5)
+			v += (0.05 - f * 0.08) * maxf(above, 0.3)  # a hint of the ledge catching light, no edge
 			var streak := _noise(i, y * 0.12 + 400.0, 4)
-			if streak > 0.74:
-				v -= 0.12
-			elif streak < 0.18:
-				v += 0.06
+			if streak > 0.78:
+				v -= 0.05
+			elif streak < 0.16:
+				v += 0.04
 			var col := _q(ROCK, v, i, y)
-			if f < 0.08 and k > 0 and above > 0.5 and _noise(i, y + 300, 9) > 0.64:
-				col = Color(MOSS[1 + (i + y) % 3])
 			_put(i, y, col)
-	_paint_cracks(w)
 	# a few rounded outcrops bulging from the face
 	var x := _rng.randf_range(20, 80)
 	while x < w:
@@ -205,48 +199,6 @@ func _paint_face(w: int) -> void:
 					if dx * dx + dy * dy > 0.8 and dx + dy > 0.4:
 						_put(xx, yy, Color(ROCK[1]))
 		x += _rng.randf_range(60, 150)
-
-
-## Cracks that wander down the face in any direction, crossing layers, now and then forking;
-## dark with a lit lower-right edge, scattered unevenly with long stretches of sound rock.
-func _paint_cracks(w: int) -> void:
-	var count := w / 15
-	for n in count:
-		var x := _rng.randf_range(0, w - 1)
-		if _noise(x, 900, 60) < 0.3:
-			continue  # sound stretches of rock
-		var t := _top[int(x)]
-		var hgt := _bottom[int(x)] - t
-		var y := t + hgt * _rng.randf_range(0.08, 0.6)
-		var drift := _rng.randf_range(-0.8, 0.8)
-		var length := int(_rng.randf_range(3.0, maxf(6.0, hgt * 0.75))) if _rng.randf() < 0.6 else _rng.randi_range(2, 5)  # long fissures and short fractures
-		_crack(x, y, drift, length, true)
-
-
-func _crack(x: float, y: float, drift: float, length: int, can_fork: bool) -> void:
-	for step in length:
-		var ix := int(roundf(x))
-		var iy := int(roundf(y))
-		if ix < 1 or ix >= _bottom.size() - 1 or iy >= _bottom[ix] - 1:
-			return
-		var yy := iy - _y0
-		if yy < 0 or yy >= _img.get_height():
-			return
-		var c := _img.get_pixel(ix, yy)
-		if c.a > 0.5 and c.r > c.g:
-			_img.set_pixel(ix, yy, c.darkened(0.5))
-			if can_fork and length > 8 and step < length * 0.4:
-				var c0 := _img.get_pixel(ix - 1, yy)  # the fissure is wider where it opens
-				if c0.a > 0.5 and c0.r > c0.g:
-					_img.set_pixel(ix - 1, yy, c0.darkened(0.3))
-			var c2 := _img.get_pixel(ix + 1, yy)
-			if c2.a > 0.5 and c2.r > c2.g:
-				_img.set_pixel(ix + 1, yy, c2.lightened(0.14))
-		y += 1.0
-		x += drift + _rng.randf_range(-0.45, 0.45)
-		drift = clampf(drift + _rng.randf_range(-0.15, 0.15), -1.1, 1.1)
-		if can_fork and step > 2 and _rng.randf() < 0.07:
-			_crack(x, y, -drift * 0.8 + _rng.randf_range(-0.3, 0.3), _rng.randi_range(2, 6), false)
 
 
 ## Grass lip of uneven thickness, with clumps of grass hanging over the edge.
