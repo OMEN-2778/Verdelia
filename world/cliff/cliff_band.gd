@@ -115,10 +115,21 @@ func _paint_face(w: int) -> void:
 		var t := int(_top[i])
 		var b := int(_bottom[i])
 		var hgt := float(b - t)
-		var n_strata := 2 + int(_noise(i, 40, 70) * 2.99)  # 2-4 layers, changing along the cliff
+		# always the same layers, but each one's thickness swells and thins smoothly along the
+		# cliff, so a layer pinches out gradually instead of the strata jumping at a seam
+		var n_strata := 4
+		var thick := []
+		var total := 0.0
+		for k in n_strata:
+			var th := 0.06 + pow(_noise(i, 40 + k * 13, 55), 1.6) + 0.35 * _noise(i, 90 + k * 11, 17)
+			thick.append(th)
+			total += th
 		var bounds := [float(t)]
+		var acc := 0.0
 		for k in range(1, n_strata):
-			bounds.append(t + hgt * k / n_strata + (_noise(i, 50 + k * 7, 18) - 0.5) * 9)
+			acc += thick[k - 1] / total
+			var y_k: float = t + hgt * acc + (_noise(i, 50 + k * 7, 18) - 0.5) * 3.0
+			bounds.append(clampf(y_k, bounds[k - 1], float(b)))
 		bounds.append(float(b))
 		for y in range(t, b):
 			var k := 0
