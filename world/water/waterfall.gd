@@ -28,6 +28,7 @@ extends Node2D
 
 const PAD := 12
 const SPLASH := 12
+const TOP := 10  # river surface above the lip that the fall draws too, fading in
 
 var _sprite: Sprite2D
 var _fall_h := 0  # height actually used (snapped to the cliff when `cliff` is set)
@@ -43,7 +44,7 @@ func _ready() -> void:
 ## fall, so whatever feeds it (a river, a lake) meets the fall over its whole width.
 func paint_terrain(t: Terrain) -> void:
 	var top := global_position
-	var c0 := t.cell_at(top + Vector2(-width * 0.5 + 3.0, -5.0))
+	var c0 := t.cell_at(top + Vector2(-width * 0.5 + 3.0, -TOP - 2.0))
 	var c1 := t.cell_at(top + Vector2(width * 0.5 - 3.0, 3.0))
 	for cy in range(c0.y, c1.y + 1):
 		for cx in range(c0.x, c1.x + 1):
@@ -65,13 +66,13 @@ func _build() -> void:
 		_fall_h = int(cliff.bottom_at(global_position.x) - top) + 2
 		cliff.add_spillway(self)
 	var w := width + PAD * 2
-	var h := _fall_h + SPLASH
+	var h := _fall_h + SPLASH + TOP
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
 	img.fill(Color.WHITE)
 	_sprite = Sprite2D.new()
 	_sprite.texture = ImageTexture.create_from_image(img)
 	_sprite.centered = false
-	_sprite.position = Vector2(-w / 2, 0)
+	_sprite.position = Vector2(-w / 2, -TOP)
 	_sprite.z_as_relative = false
 	_sprite.z_index = -7  # over the cliff face, under the props
 	var m := ShaderMaterial.new()
@@ -79,6 +80,7 @@ func _build() -> void:
 	m.set_shader_parameter("size", Vector2(w, h))
 	m.set_shader_parameter("pad", float(PAD))
 	m.set_shader_parameter("fall_h", float(_fall_h))
+	m.set_shader_parameter("top_pad", float(TOP))
 	m.set_shader_parameter("speed", speed)
 	m.set_shader_parameter("seed", float(hash(global_position) % 997))
 	_sprite.material = m

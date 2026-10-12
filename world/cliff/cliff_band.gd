@@ -186,57 +186,72 @@ func _paint_face(w: int) -> void:
 			_put(i, y, col)
 
 
-## Grass lip of uneven thickness, with clumps of grass hanging over the edge.
+## The brink: the meadow's turf runs to the edge (same colours as the ground) over a thin band
+## of dark topsoil laced with roots, which throws a soft brown shadow onto the face. A few loose
+## grass blades and root ends hang over; the GrassField grows real tufts along the brink.
+const TOPSOIL := [Color("#4a3624"), Color("#5f4630"), Color("#6f5236")]
+
+
 func _paint_lip(w: int) -> void:
-	var i := 0
-	while i < w:
+	for i in w:
 		var t := int(_top[i])
-		var f := _face_ratio(i)  # the lip thins out and fades where the face sinks into a grass slope
-		var lip := 1 + int(_noise(i, 7, 9) * 4.0 * f)
-		var tuft := _rng.randf() < 0.35
-		if f > 0.12 + _noise(i, 11, 3) * 0.12:
-			for j in lip:
-				_put(i, t - j, Color(LEAF[3 if j == lip - 1 else 2]))
-			if tuft:
-				_put(i, t - lip, Color(LEAF[5]))
-			_blend(i, t + 1, Color(0.08, 0.12, 0.06, 0.45 * f))
-			_blend(i, t + 2, Color(0.08, 0.12, 0.06, 0.22 * f))
-		i += 1
-	# hanging clumps: irregular widths and lengths, separated by bare stretches
-	var x := _rng.randf_range(0, 12)
+		var f := _face_ratio(i)  # everything here fades where the face sinks into a grass slope
+		if f < 0.1 + _noise(i, 11, 3) * 0.1:
+			continue
+		# turf: one or two rows in the meadow's tones, darkest right at the edge; the edge is ragged,
+		# here a tuft of turf overhanging a pixel, there a bite where the soil shows through
+		var turf := 1 + int(_noise(i, 7, 6) > 0.55)
+		var nb := _noise(i, 23, 3)
+		if nb > 0.78 and f > 0.6:
+			_put(i, t + 1, Color(MEADOW[0]))  # overhang
+		elif nb < 0.16:
+			_put(i, t, TOPSOIL[1])  # bite
+			turf = 0
+		for j in turf:
+			var c := Color(MEADOW[1] if j > 0 else MEADOW[0])
+			if _hash(i, 31 + j) < 0.25:
+				c = Color(MEADOW_BLADE)
+			_put(i, t - j, c)
+		# topsoil: a dark band of uneven depth, with paler root specks
+		var soil := int(roundf((1.0 + _noise(i, 17, 5) * 2.4) * f))
+		for j in soil:
+			var c2: Color = TOPSOIL[mini(j, 2)]
+			if _hash(i * 3 + j, 77) < 0.12:
+				c2 = Color("#8a6a48")  # a root end in the soil
+			_put(i, t + 1 + j, c2)
+		# soft shadow of the overhang on the face just below
+		for k in 3:
+			_blend(i, t + 1 + soil + k, Color(0.16, 0.1, 0.05, (0.28 - k * 0.09) * f))
+	# a few loose blades hanging over the edge, bent down, in the meadow's colours
+	var x := _rng.randf_range(0, 6)
 	while x < w:
-		var cw := _rng.randi_range(3, 11)
-		var depth := _rng.randf_range(2, 7) * hanging_grass
-		for k in cw:
-			var xx := int(x) + k
-			if xx >= w:
-				break
-			var t := int(_top[xx])
-			var n_px := int(depth * (1.0 - absf(k - cw / 2.0) / (cw / 2.0 + 1)) + _rng.randf_range(0, 2.5))
-			n_px = int(n_px * clampf((_face_ratio(xx) - 0.2) / 0.5, 0.0, 1.0))  # none on a sunken face
-			for j in n_px:
-				var c := Color(LEAF[2 if j < n_px - 1 else (1 if _rng.randf() < 0.5 else 3)])
-				if j == 0:
-					c = Color(LEAF[4])
-				_put(xx, t + 1 + j, c)
-			if _rng.randf() < 0.04 * hanging_grass:
-				_put(xx, t + 1 + n_px, Color(FLOWERS[_rng.randi() % 3]))
-		x += cw + _rng.randf_range(4, 30) / maxf(hanging_grass, 0.2)
+		var xi := int(x)
+		var f2 := _face_ratio(mini(xi, w - 1))
+		if f2 > 0.4:
+			var t2 := int(_top[xi])
+			var n := _rng.randi_range(2, 4)
+			var lean := 1 if _rng.randf() < 0.5 else -1
+			for j in n:
+				var c3 := Color(MEADOW[1] if j < n - 1 else MEADOW[2])
+				_put(xi + (lean if j >= 2 else 0), t2 + 1 + j, c3)
+		x += _rng.randf_range(3.0, 11.0) / maxf(hanging_grass, 0.2)
 
 
+## Fine roots trailing a little way down the face from the topsoil (no curtains of moss).
 func _paint_vines(w: int) -> void:
-	var count := int(w / 100.0 * vines + 0.5)
+	var count := int(w / 100.0 * (vines * 3.0 + 1.0) + 0.5)
 	for n in count:
 		var x := _rng.randf_range(4, w - 4)
+		if _face_ratio(int(x)) < 0.5:
+			continue
 		var t := _top[int(x)]
-		var length := _rng.randf_range(5, minf(16, (_bottom[int(x)] - t) * 0.6))
+		var length := _rng.randf_range(3, minf(9, (_bottom[int(x)] - t) * 0.3))
 		var vx := x
 		for j in int(length):
-			vx += sin(j * 0.6 + x) * 0.25
-			_put(int(vx), int(t) + 2 + j, Color(LEAF[2]))
-			if j % 3 == 1:
-				var side := 1 if (j / 3) % 2 == 0 else -1
-				_put(int(vx) + side, int(t) + 2 + j, Color(LEAF[4]))
+			vx += sin(j * 0.9 + x) * 0.45
+			var c := Color("#5a4029") if j < length - 2 else Color("#7a5a3c")
+			_put(int(vx), int(t) + 3 + j, c)
+
 
 
 ## A waterfall pours over the edge here: no grass lip across its width, so the river above runs
@@ -256,8 +271,10 @@ func _clear_spillways() -> void:
 		for i in range(cx - half, cx + half + 1):
 			if i < 0 or i >= _top.size():
 				continue
-			for y in range(int(_top[i]) - 8, int(_top[i]) + 1):
-				_put(i, y, Color(0, 0, 0, 0))
+			for y in range(int(_top[i]) - 8, int(_top[i]) + 5):
+				var yy := y - _y0
+				if y <= int(_top[i]) or (yy >= 0 and yy < _img.get_height() and _img.get_pixel(i, yy).r < 0.45):
+					_put(i, y, Color(0, 0, 0, 0))  # turf, topsoil and its roots, not the rock
 
 
 func _paint_opening(cx: int, half: int) -> void:
@@ -669,8 +686,8 @@ func grass_excludes(world: Vector2) -> bool:
 	var rk := _ramp_index(p.x, 2.0)
 	if rk >= 0 and int(ramps[rk].z) != 2 and p.y > _top[i] - _notch_len() - 2 and p.y <= _top[i]:
 		return true  # the gully floor of a path or stairs
-	if not (p.y > _top[i] - 1 and p.y < _bottom[i] + 1):
-		return false
+	if not (p.y > _top[i] + 1.5 and p.y < _bottom[i] + 1):
+		return false  # above the face, and the brink itself, grow grass
 	var k := _ramp_index(p.x, -2.0)
 	return not (k >= 0 and int(ramps[k].z) == 2)  # grass slopes grow the meadow's tufts
 
