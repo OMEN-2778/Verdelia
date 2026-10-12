@@ -63,7 +63,7 @@ uniform vec4 sun_sheen : source_color = vec4(0.400, 0.667, 0.835, 1.0);  // wate
 
 group_uniforms caustics;
 uniform float caustic_strength : hint_range(0.0, 1.0) = 0.8;
-uniform float caustic_size = 22.0;  // px per caustic cell
+uniform float caustic_size = 14.0;  // px per caustic cell (the whole web scales with it)
 uniform float caustic_reach : hint_range(0.05, 1.0) = 0.6;  // how far from the shore they show (1 = water_depth_cells)
 uniform float caustic_speed = 0.8;
 
@@ -119,9 +119,10 @@ float cell_border(vec2 p, float t) {
 // a slowly drifting warp so the threads curve, with line widths that swell and pinch; where the
 // webs cross the light gathers into bright knots.
 float caustic(vec2 pix, float t) {
-	vec2 wp = pix + (vec2(vnoise(pix + vec2(t * 4.0, 0.0), 17.0), vnoise(pix + vec2(50.0, t * 3.0), 17.0)) - 0.5) * 9.0;
-	float w1 = 0.07 + 0.09 * vnoise(pix + vec2(9.0, t * 2.0), 23.0);
-	float w2 = 0.07 + 0.08 * vnoise(pix + vec2(t * 2.0, 40.0), 19.0);
+	float k = caustic_size / 22.0;  // the warp and width noise scale with the cells
+	vec2 wp = pix + (vec2(vnoise(pix + vec2(t * 4.0 * k, 0.0), 17.0 * k), vnoise(pix + vec2(50.0, t * 3.0 * k), 17.0 * k)) - 0.5) * 9.0 * k;
+	float w1 = 0.07 + 0.09 * vnoise(pix + vec2(9.0, t * 2.0 * k), 23.0 * k);
+	float w2 = 0.07 + 0.08 * vnoise(pix + vec2(t * 2.0 * k, 40.0), 19.0 * k);
 	float l1 = 1.0 - clamp(cell_border(wp / caustic_size, t) / w1, 0.0, 1.0);
 	float l2 = 1.0 - clamp(cell_border(wp / (caustic_size * 0.71) + vec2(3.7, 1.3), t * 1.3 + 2.0) / w2, 0.0, 1.0);
 	return l1 * 0.75 + l2 * 0.55;
