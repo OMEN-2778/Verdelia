@@ -1,10 +1,9 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
 [ext_resource type="TileSet" path="res://world/terrain/terrain_brushes.tres" id="brushes"]
 [ext_resource type="Script" path="res://world/water/water_layer.gd" id="water"]
-[ext_resource type="Script" path="res://world/water/water_shape.gd" id="shape"]
-[ext_resource type="Script" path="res://world/water/river.gd" id="river"]
+[ext_resource type="Script" path="res://world/water/water_body.gd" id="body"]
 [ext_resource type="Script" path="res://world/water/waterfall.gd" id="fall"]
 [ext_resource type="Script" path="res://world/cliff/cliff_band.gd" id="cliff"]
 [ext_resource type="Script" path="res://world/grass/grass_field.gd" id="grass"]
@@ -55,26 +54,22 @@ face = 38
 seed = 7
 
 [node name="UpperRiver" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("river")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
-points = PackedVector2Array(330, -12, 352, 30, 392, 64, 422, 104)
-width = 22.0
-speed = 0.7
+polygon = PackedVector2Array(318, -5, 320, -2, 324, 5, 330, 12, 335, 21, 341, 29, 346, 38, 352, 45, 358, 50, 366, 55, 373, 59, 379, 64, 383, 70, 387, 77, 391, 84, 396, 92, 402, 98, 407, 104, 412, 108, 413, 110, 431, 98, 430, 96, 426, 91, 422, 84, 416, 77, 409, 70, 403, 63, 396, 57, 390, 51, 383, 45, 378, 39, 372, 33, 367, 28, 363, 23, 359, 18, 354, 11, 349, 3, 346, -5, 343, -12, 341, -18)
 
 [node name="Pool" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("shape")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
 polygon = PackedVector2Array(378, 118, 470, 116, 490, 160, 470, 196, 410, 202, 372, 170)
 
 [node name="MainRiver" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("river")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
-points = PackedVector2Array(432, 190, 470, 240, 452, 290, 400, 330, 330, 352, 270, 372)
-widths = PackedFloat32Array(26, 24, 20, 22, 28, 34)
-speeds = PackedFloat32Array(0.45, 0.6, 0.95, 0.9, 0.5, 0.35)
+polygon = PackedVector2Array(422, 198, 427, 202, 433, 206, 440, 212, 445, 219, 450, 228, 453, 235, 455, 240, 457, 244, 458, 249, 458, 255, 455, 261, 452, 267, 448, 274, 444, 281, 441, 287, 437, 294, 433, 300, 426, 304, 419, 308, 411, 312, 404, 316, 397, 320, 391, 323, 384, 325, 376, 326, 368, 327, 359, 327, 351, 329, 343, 332, 336, 336, 328, 339, 319, 342, 310, 344, 301, 346, 292, 349, 284, 352, 277, 356, 270, 357, 265, 357, 264, 356, 276, 391, 276, 391, 281, 388, 286, 385, 293, 380, 301, 376, 309, 372, 318, 368, 327, 366, 336, 364, 343, 362, 351, 360, 358, 357, 366, 354, 375, 351, 383, 348, 391, 346, 400, 344, 408, 341, 417, 337, 424, 332, 432, 326, 438, 320, 444, 313, 450, 306, 455, 300, 461, 294, 467, 287, 472, 278, 476, 270, 479, 260, 480, 250, 479, 241, 477, 231, 473, 222, 468, 213, 463, 204, 457, 196, 451, 189, 446, 184, 443, 181)
 
 [node name="Lake" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("shape")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
 polygon = PackedVector2Array(70, 330, 180, 318, 280, 350, 306, 420, 240, 472, 110, 476, 40, 424)
 shore = 3
@@ -83,7 +78,7 @@ rocks = 7
 seed = 4
 
 [node name="EastPond" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("shape")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
 polygon = PackedVector2Array(700, 250, 780, 236, 830, 270, 820, 330, 760, 352, 704, 320)
 shore = 2
@@ -91,20 +86,19 @@ rocks = 11
 seed = 9
 
 [node name="Stream" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("river")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
-points = PackedVector2Array(812, 316, 860, 352, 910, 344, 972, 372)
-width = 14.0
-speed = 0.4
-bank_sand = 6.0
+polygon = PackedVector2Array(808, 321, 812, 324, 817, 329, 823, 336, 829, 343, 836, 350, 844, 356, 853, 359, 863, 360, 873, 358, 881, 356, 889, 353, 897, 351, 904, 350, 911, 349, 918, 350, 925, 354, 933, 358, 941, 364, 948, 370, 955, 374, 962, 377, 968, 379, 969, 379, 975, 366, 974, 366, 969, 364, 963, 360, 956, 355, 948, 349, 940, 344, 931, 340, 922, 337, 913, 336, 903, 337, 894, 339, 885, 342, 877, 345, 870, 346, 865, 346, 859, 345, 853, 342, 845, 338, 837, 333, 830, 327, 825, 321, 820, 315, 817, 310)
+shore = 1
+beach_width = 6.0
 
 [node name="Puddle1" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("shape")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
 polygon = PackedVector2Array(586, 404, 610, 398, 622, 412, 600, 424, 582, 418)
 
 [node name="Puddle2" type="Node2D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("shape")
+script = ExtResource("body")
 terrain = NodePath("../Terrain")
 polygon = PackedVector2Array(632, 428, 650, 424, 660, 436, 640, 444)
 
@@ -121,13 +115,6 @@ position = Vector2(422, 98)
 script = ExtResource("fall")
 width = 24
 cliff = NodePath("../../Cliff")
-
-[node name="Cascade" type="Node2D" parent="Props"]
-position = Vector2(458, 268)
-script = ExtResource("fall")
-width = 20
-height = 8
-speed = 1.4
 
 [node name="FarTrees" type="Node2D" parent="Props"]
 y_sort_enabled = true

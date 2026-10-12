@@ -1,9 +1,11 @@
 @tool
-class_name WaterShape
+class_name WaterBody
 extends Node2D
-## A lake or pond: the polygon of the child Polygon2D named "Shape" (or `polygon`) is painted as
-## water into the Terrain. The shore can stay grassy, become a sandy beach, or get rocks.
-## Put it under the y-sorted Props node if it has rocks, so they sort with everything else.
+## Any body of water (lake, pond, river, stream, puddle: they are all the same thing, only the
+## outline differs). The polygon of the child Polygon2D named "Shape" (or `polygon`) is painted as
+## water into the Terrain; overlapping bodies merge. The shore can stay grassy, become a sandy
+## beach, or get rocks. Put it under the y-sorted Props node if it has rocks, so they sort with
+## everything else.
 
 enum Shore { GRASS, SAND, ROCK, SAND_AND_ROCK }
 
@@ -68,6 +70,8 @@ func paint_terrain(t: Terrain) -> void:
 			var centre := t.global_position + (Vector2(cx, cy) + Vector2(0.5, 0.5)) * t.cell_px
 			if Geometry2D.is_point_in_polygon(centre, world):
 				t.paint_water(Vector2i(cx, cy))
+				if pad > 0.0:
+					t.paint_ground(Vector2i(cx, cy), Terrain.Kind.SAND)  # no grass peeking at the waterline
 			elif pad > 0.0 and _edge_distance(centre, world) < beach_width:
 				t.paint_ground(Vector2i(cx, cy), Terrain.Kind.SAND)
 

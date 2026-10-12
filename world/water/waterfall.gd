@@ -2,7 +2,7 @@
 class_name Waterfall
 extends Node2D
 ## A waterfall dropping `height` px from this node (the top of the fall, centred) into a pool.
-## Use it on a CliffBand (height = the face), or short (6-12 px) as a cascade step in a river.
+## Use it on a CliffBand (height = the face), or short (6-12 px) as a small step where water drops a level.
 ## Draws above the cliff, kicks up mist, and keeps grass away from the fall and the plume.
 
 @export var width := 26:

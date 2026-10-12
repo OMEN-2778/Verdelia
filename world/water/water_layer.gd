@@ -1,7 +1,7 @@
 @tool
 class_name WaterLayer
 extends Sprite2D
-## Draws all the water painted into `terrain` (WaterShape lakes, River, the water brush) with
+## Draws all the water painted into `terrain` (WaterBody nodes, the water brush, water_mask) with
 ## water.gdshader. One node per map; tweak the look in its material's shader parameters.
 
 @export var terrain: Terrain:

@@ -7,12 +7,11 @@ extends Sprite2D
 ## Authoring: paint with `paint_layer` (a TileMapLayer using terrain_brushes.tres: dirt, tilled,
 ## watered, grass/erase, water) and/or start from `mask` (an RGBA image, R=dirt G=tilled
 ## B=watered) and `water_mask` (grey, white = water). Nodes in the "terrain_painters" group
-## (WaterShape lakes, River) add their shapes through paint_terrain(terrain) on every rebuild.
+## (WaterBody) add their shapes through paint_terrain(terrain) on every rebuild.
 ## At runtime, gameplay calls set_cell() (e.g. hoeing, watering); `changed` tells the grass.
 ##
-## Water lives in its own texture (`water_texture`, one texel per cell): R = water, G = depth
-## (distance from the shore, 1 = `water_depth_cells` or more), B/A = flow direction * speed
-## (0.5 = still). WaterLayer draws it.
+## Water lives in its own texture (`water_texture`, one texel per cell): R = water, G = distance
+## from the shore (1 = `water_depth_cells` or more). WaterLayer draws it.
 
 signal changed(cell_rect: Rect2i)
 
@@ -35,13 +34,9 @@ const BRUSH_KINDS: Array[int] = [Kind.DIRT, Kind.TILLED, Kind.WATERED, Kind.GRAS
 	set(v):
 		water_mask = v
 		_queue_rebuild()
-@export var water_depth_cells := 5.0:  ## shore-to-deep distance, in cells
+@export var water_depth_cells := 5.0:  ## shore distance mapped to G = 1, in cells
 	set(v):
 		water_depth_cells = maxf(1.0, v)
-		_queue_rebuild()
-@export var still_drift := Vector2(0.12, 0.04):  ## gentle surface drift for lakes and ponds
-	set(v):
-		still_drift = v
 		_queue_rebuild()
 @export var paint_layer: TileMapLayer:
 	set(v):
@@ -56,7 +51,6 @@ var data: Image
 var water: Image
 var water_texture: ImageTexture
 var _tex: ImageTexture
-var _flow := {}  # cell -> Vector2, painted by rivers
 var _pending := false
 
 
@@ -83,8 +77,7 @@ func rebuild() -> void:
 	data = Image.create(n.x, n.y, false, Image.FORMAT_RGBA8)
 	data.fill(Color(0, 0, 0, 1))
 	water = Image.create(n.x, n.y, false, Image.FORMAT_RGBA8)
-	water.fill(Color(0, 0, 0.5, 0.5))
-	_flow.clear()
+	water.fill(Color(0, 0, 0, 1))
 	if mask:
 		var m := mask.get_image()
 		if m:
@@ -100,7 +93,7 @@ func rebuild() -> void:
 			for y in mini(wm.get_height(), n.y):
 				for x in mini(wm.get_width(), n.x):
 					if wm.get_pixel(x, y).v > 0.5:
-						water.set_pixel(x, y, Color(1, 0, 0.5, 0.5))
+						water.set_pixel(x, y, Color(1, 0, 0, 1))
 	if is_inside_tree():
 		for painter in get_tree().get_nodes_in_group("terrain_painters"):
 			painter.paint_terrain(self)
@@ -124,14 +117,10 @@ func set_cell(cell: Vector2i, kind: int) -> void:
 	changed.emit(Rect2i(cell, Vector2i.ONE))
 
 
-## For painters: mark a cell as water. flow: direction * speed (0..1); zero = still water.
-func paint_water(cell: Vector2i, flow := Vector2.ZERO) -> void:
-	if not _in(cell):
-		return
-	water.set_pixelv(cell, Color(1, 0, 0.5, 0.5))
-	if flow != Vector2.ZERO:
-		var old: Vector2 = _flow.get(cell, Vector2.ZERO)
-		_flow[cell] = flow if flow.length() > old.length() else old
+## For painters: mark a cell as water.
+func paint_water(cell: Vector2i) -> void:
+	if _in(cell):
+		water.set_pixelv(cell, Color(1, 0, 0, 1))
 
 
 ## For painters: set the ground kind of a cell (dirt for beaches, grass to clear...).
@@ -206,10 +195,10 @@ func _wpx(i: Vector2i) -> Color:
 
 func _write(cell: Vector2i, kind: int) -> void:
 	if kind == Kind.WATER:
-		water.set_pixelv(cell, Color(1, 0, 0.5, 0.5))
+		water.set_pixelv(cell, Color(1, 0, 0, 1))
 		return
 	if kind == Kind.GRASS and water:
-		water.set_pixelv(cell, Color(0, 0, 0.5, 0.5))  # the eraser also removes water
+		water.set_pixelv(cell, Color(0, 0, 0, 1))  # the eraser also removes water
 	var c := Color(0, 0, 0, 1)
 	match kind:
 		Kind.DIRT:
@@ -223,8 +212,7 @@ func _write(cell: Vector2i, kind: int) -> void:
 	data.set_pixelv(cell, c)
 
 
-## Depth = chamfer distance from the nearest dry cell; flow = painted river flow (smoothed) or the
-## gentle still-water drift.
+## G = chamfer distance from the nearest dry cell.
 func _compute_water() -> void:
 	var w := water.get_width()
 	var h := water.get_height()
@@ -261,19 +249,7 @@ func _compute_water() -> void:
 			if d <= 0.0:
 				continue
 			var depth := clampf((d - 0.5) / water_depth_cells, 0.0, 1.0)
-			var f := still_drift
-			var n := 0
-			var acc := Vector2.ZERO
-			for oy in range(-1, 2):
-				for ox in range(-1, 2):
-					var k := Vector2i(x + ox, y + oy)
-					if _flow.has(k):
-						acc += _flow[k]
-						n += 1
-			if n > 0:
-				f = acc / n
-			f = f.limit_length(1.0)
-			water.set_pixel(x, y, Color(1, depth, 0.5 + f.x * 0.5, 0.5 + f.y * 0.5))
+			water.set_pixel(x, y, Color(1, depth, 0, 1))
 
 
 func _upload() -> void:
