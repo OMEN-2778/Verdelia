@@ -28,7 +28,9 @@ func _ready() -> void:
 		add_child(shape)
 
 
-func _physics_process(dt: float) -> void:
+# Moves in _process (not _physics_process) so the walk and the following camera advance together on
+# every rendered frame: no stutter where the physics tick and the frame rate disagree.
+func _process(dt: float) -> void:
 	_t += dt
 	var dir := _keys()
 	if dir != Vector2.ZERO:
