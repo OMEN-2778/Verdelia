@@ -16,6 +16,7 @@ const LEAF := preload("res://art/library/fx/leaf.png")
 		variant = v
 		_rebuild()
 @export var falling_leaves := true
+@export var solid := true  ## the trunk blocks walking; the crown does not
 
 var _entry := {}
 
@@ -67,6 +68,16 @@ func _rebuild() -> void:
 		add_child(skirt)
 	if falling_leaves and not Engine.is_editor_hint():
 		add_child(_leaves(r))
+	if solid and not species.ends_with("_far"):
+		var body := StaticBody2D.new()
+		body.name = "Trunk"
+		var shape := CollisionShape2D.new()
+		var c := CircleShape2D.new()
+		c.radius = 2.5 + crown_w * 0.035
+		shape.shape = c
+		shape.position = Vector2(0, -1)
+		body.add_child(shape)
+		add_child(body)
 
 
 func grass_excludes(world: Vector2) -> bool:

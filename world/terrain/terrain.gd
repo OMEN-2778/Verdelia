@@ -118,6 +118,46 @@ func set_cell(cell: Vector2i, kind: int) -> void:
 	changed.emit(Rect2i(cell, Vector2i.ONE))
 
 
+## Batch edit (map editor brushes): set the ground of many cells at once, leaving water alone,
+## with a single upload. kind: Kind (not WATER).
+func set_ground_cells(cells: Array, kind: int) -> void:
+	var r := _bounds(cells)
+	if r.size == Vector2i.ZERO:
+		return
+	for c in cells:
+		if _in(c):
+			_write_ground(c, kind)
+	_upload()
+	changed.emit(r)
+
+
+## Batch edit: add or remove water on many cells, then recompute the depth once.
+func set_water_cells(cells: Array, on: bool) -> void:
+	var r := _bounds(cells)
+	if r.size == Vector2i.ZERO:
+		return
+	for c in cells:
+		if _in(c):
+			water.set_pixelv(c, Color(1, 0, 0, 1) if on else Color(0, 0, 0, 1))
+	_compute_water()
+	_upload()
+	changed.emit(r.grow(1))
+
+
+func _bounds(cells: Array) -> Rect2i:
+	var r := Rect2i()
+	var first := true
+	for c in cells:
+		if not _in(c):
+			continue
+		if first:
+			r = Rect2i(c, Vector2i.ONE)
+			first = false
+		else:
+			r = r.expand(c).expand(c + Vector2i.ONE)
+	return r
+
+
 ## For painters: mark a cell as water.
 func paint_water(cell: Vector2i) -> void:
 	if _in(cell):
@@ -200,6 +240,10 @@ func _write(cell: Vector2i, kind: int) -> void:
 		return
 	if kind == Kind.GRASS and water:
 		water.set_pixelv(cell, Color(0, 0, 0, 1))  # the eraser also removes water
+	_write_ground(cell, kind)
+
+
+func _write_ground(cell: Vector2i, kind: int) -> void:
 	var c := Color(0, 0, 0, 1)
 	match kind:
 		Kind.DIRT:

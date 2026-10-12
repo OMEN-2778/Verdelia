@@ -20,6 +20,7 @@ extends Node2D
 @export var shadow := true
 @export_range(0.0, 2.0) var skirt := 1.0  ## tall-grass density around the base (0 = none)
 @export var footprint := Vector2.ZERO  ## no-grass ellipse radii; zero = from the sprite size
+@export var solid := true  ## characters cannot walk through its base (small things never block)
 
 var _size := Vector2.ZERO
 
@@ -59,6 +60,8 @@ func _rebuild() -> void:
 		s.material = m
 	add_child(s)
 	WaterReflection.attach(self, [s] as Array[Sprite2D])
+	if solid and _size.x >= 12.0:
+		add_child(_base_body())
 	var front := TuftBatch.skirt(_skirt(true), global_position, FloraLibrary.pick_at(global_position, 17), _skirt_group())
 	if front:
 		add_child(front)
@@ -81,6 +84,22 @@ func grass_skirt_group() -> String:
 
 func _skirt_group() -> String:
 	return "meadow" if _size.y < 28.0 else "tall"
+
+
+## A low obstacle the size of the base: walk round it, or behind it (its top half stays free).
+func _base_body() -> StaticBody2D:
+	var f := _footprint()
+	var body := StaticBody2D.new()
+	body.name = "Base"
+	var shape := CollisionShape2D.new()
+	var cap := CapsuleShape2D.new()
+	cap.radius = maxf(2.0, f.y * 0.9)
+	cap.height = maxf(cap.radius * 2.0, f.x * 1.7)
+	shape.shape = cap
+	shape.rotation = PI / 2.0
+	shape.position = Vector2(0, -f.y * 0.6)
+	body.add_child(shape)
+	return body
 
 
 func _footprint() -> Vector2:
