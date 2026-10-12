@@ -8,7 +8,7 @@ var _phase := randf() * TAU
 
 
 func _process(_delta: float) -> void:
-	var t := Time.get_ticks_msec() / 1000.0
+	var t := Wind.now()
 	var daylight := 1.0
 	if day_cycle:
 		daylight = clampf((day_cycle.color.get_luminance() - 0.55) / 0.35, 0.0, 1.0)

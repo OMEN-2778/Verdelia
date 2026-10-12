@@ -26,7 +26,7 @@ RAMPS = {
     "oak": ["#132a1b", "#1f4427", "#2d6232", "#3f803b", "#5ba044", "#86c25a", "#b8e07e"],
     "birch": ["#22381c", "#335222", "#4a7229", "#649331", "#86b33f", "#b0d35f", "#dcef9a"],
     "pine": ["#0d211b", "#163327", "#204833", "#2c5f3f", "#3d784c", "#58955e", "#86b77e"],
-    "blossom": ["#4c2238", "#7a3456", "#a84a73", "#d06f97", "#ea9dbb", "#f8c8da", "#fff0f5"],
+    "blossom": ["#5a2f45", "#83465f", "#ad6684", "#d18aa6", "#e9adc3", "#f7d2de", "#fff3f6"],
     "bush": ["#122a1a", "#1d4325", "#2a5f2f", "#3b7c37", "#579b45", "#7fbd58", "#aedb7a"],
     "bark": ["#25170e", "#3d281a", "#5a3d26", "#7a5636", "#9a7249", "#b8916a"],
     "birchbark": ["#2b2724", "#6d6760", "#a7a198", "#d2cdc3", "#ebe7de", "#fbf9f3"],
@@ -301,6 +301,8 @@ def tree(kind, seed, scale=1.0):
     """
     if kind == "pine":
         return pine(seed, scale)
+    if kind == "blossom":
+        return blossom_tree(seed, scale)
     rnd = random.Random(seed)
     k = TREE_KINDS[kind]
     w, h = int(k["w"] * scale), int(k["h"] * scale)
@@ -373,6 +375,117 @@ def tree(kind, seed, scale=1.0):
         height = 1 - (mean_y - y0) / max(y1 - y0, 1)  # higher clumps sway more
         sway = 0.45 if g == -1 else 0.75 + height * 0.6
         layers.append((img.im, sway * (1.25 if kind == "sapling" else 1.0)))
+    outline(tr, bramp, lit_soft=False)
+    return tr.im, layers, (ax, ay)
+
+
+def clampf_ang(a):
+    """Keep a limb at least ~22 degrees above horizontal (angles measured with y down)."""
+    lo, hi = -math.pi + 0.38, -0.38
+    return min(max(a, lo), hi)
+
+
+def blossom_tree(seed, scale=1.0):
+    """A cherry in bloom: a short trunk forking into a few limbs that spread wide, carrying flat
+    clouds of blossom in uneven tiers with gaps where the dark branches show through; fine petal
+    texture, a mauve shaded underside with a few green leaves, airy edges and loose petals.
+    Each limb's blossom is its own sway layer, like tree()."""
+    rnd = random.Random(seed)
+    w, h = int(100 * scale), int(86 * scale)
+    ramp = RAMPS["blossom"]
+    bramp = RAMPS["bark"]
+    tr = Img(w, h)
+    ax, ay = w // 2, h - 4
+    tw = max(4, round(6.5 * scale))
+    lean = rnd.uniform(-0.2, 0.2)
+    fork_y = ay - h * rnd.uniform(0.24, 0.3)
+    trunk(tr, ax, ay, fork_y, tw, bramp, seed, lean=lean, roots=3)
+    fork = (ax + lean * 6 * scale, fork_y)
+    clouds = []  # (cx, cy, rx, ry, group)
+
+    def grow(x, y, ang, length, width, depth, group):
+        ex, ey = x + math.cos(ang) * length, y + math.sin(ang) * length
+        branch(tr, x, y, ex, ey, width, max(0.6, width * 0.6), bramp, seed + len(clouds) * 13 + depth)
+        if depth == 0:
+            r = rnd.uniform(9.0, 13.0) * scale
+            clouds.append((ex, ey - r * 0.1, r, r * rnd.uniform(0.5, 0.62), group))
+            if rnd.random() < 0.55:  # a smaller cluster drooping under the tip breaks the flat underside
+                sr = r * rnd.uniform(0.45, 0.6)
+                clouds.append((ex + rnd.uniform(-r, r) * 0.5, ey + r * 0.42, sr, sr * 0.75, group))
+            return
+        if depth == 1 and rnd.random() < 0.7:  # a smaller cloud on the limb ties the canopy together
+            r = rnd.uniform(7.0, 9.5) * scale
+            clouds.append((ex, ey - 2, r, r * 0.55, group))
+        for c in range(2):
+            off = math.radians(rnd.uniform(18, 34)) * (1 if c else -1)
+            # limbs reach outwards more than up: an umbrella, not a ball
+            nang = ang + off
+            nang = -math.pi / 2 + (nang + math.pi / 2) * 1.12
+            nang = clampf_ang(nang)
+            grow(ex, ey, nang, length * rnd.uniform(0.62, 0.78), width * 0.6, depth - 1, group)
+
+    limbs = rnd.choice([3, 3, 4])
+    for g in range(limbs):
+        spread = math.radians(rnd.uniform(62, 74))
+        base_ang = -math.pi / 2 + (g - (limbs - 1) / 2) * spread / max(1, (limbs - 1) / 2) * 0.62 + rnd.uniform(-0.12, 0.12)
+        grow(fork[0], fork[1] + rnd.uniform(0, 3), base_ang, h * rnd.uniform(0.2, 0.26), tw * 0.45, 2, g)
+    # a few clouds high in the middle to round off the top, on their own sway layer
+    tips = clouds[:]
+    mx = sum(c[0] for c in tips) / len(tips)
+    top = min(c[1] - c[3] for c in tips)
+    for k in range(rnd.randint(2, 3)):
+        r = rnd.uniform(9.0, 12.0) * scale
+        clouds.append((mx + rnd.uniform(-14, 14) * scale, top + r * 0.55 + rnd.uniform(0, 5), r, r * 0.55, -1))
+    fixed = []
+    for cx, cy, rx, ry, g in clouds:
+        fixed.append((min(max(cx, rx + 3), w - rx - 3), max(cy, ry + 3), rx, ry, g))
+    clouds = fixed
+    x0 = min(c[0] - c[2] for c in clouds)
+    x1 = max(c[0] + c[2] for c in clouds)
+    y0 = min(c[1] - c[3] for c in clouds)
+    y1 = max(c[1] + c[3] for c in clouds)
+    bounds = ((x0 + x1) / 2, (y0 + y1) / 2 - (y1 - y0) * 0.1, (x1 - x0) / 2, (y1 - y0) / 2)
+
+    groups = sorted({c[4] for c in clouds}, key=lambda g: (g != -1, sum(c[1] for c in clouds if c[4] == g)
+                                                           / max(1, sum(1 for c in clouds if c[4] == g))))
+    imgs = []
+    for g in groups:
+        ell = [(cx, cy, rx, ry) for cx, cy, rx, ry, gg in clouds if gg == g]
+        img = Img(w, h)
+        foliage(img, ell, ramp, seed + 50 + g * 7, cluster_r=(2.4, 3.8), density=1.6, bounds=bounds)
+        prnd = random.Random(seed + 90 + g)
+        # each cloud: a mauve shaded underside with a few green leaves, a lit top
+        for cx, cy, rx, ry in ell:
+            for y in range(int(cy - ry) - 1, int(cy + ry) + 2):
+                for x in range(int(cx - rx) - 1, int(cx + rx) + 2):
+                    px = img.get(x, y)
+                    if not px[3]:
+                        continue
+                    dx, dy = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
+                    if dx * dx + dy * dy > 1.05:
+                        continue
+                    if dy > 0.4 and prnd.random() < 0.4:
+                        img.set(x, y, hexc(ramp[2 if dy > 0.75 else 3]))
+                        if prnd.random() < 0.08:
+                            img.set(x, y, hexc("#6f9a4c" if prnd.random() < 0.6 else "#4f7a3c"))
+                    elif dy < -0.45 and dx < 0.3 and prnd.random() < 0.18:
+                        img.set(x, y, hexc(ramp[-1] if prnd.random() < 0.4 else ramp[-2]))
+        # airy edge: loose petals just outside the silhouette
+        for cx, cy, rx, ry in ell:
+            for _ in range(int(rx * 1.4)):
+                a = prnd.uniform(0, math.tau)
+                d = prnd.uniform(1.0, 1.25)
+                px, py = cx + math.cos(a) * rx * d, cy + math.sin(a) * ry * d
+                if not img.get(px, py)[3]:
+                    img.set(px, py, hexc(ramp[prnd.choice([3, 4, 5])]))
+        imgs.append((g, ell, img))
+    union = [[any(im.px[x, y][3] for _, _, im in imgs) for x in range(w)] for y in range(h)]
+    layers = []
+    for g, ell, img in imgs:
+        silhouette_outline(img, ramp, union)
+        mean_y = sum(e[1] for e in ell) / len(ell)
+        height = 1 - (mean_y - y0) / max(y1 - y0, 1)
+        layers.append((img.im, 0.45 if g == -1 else 0.7 + height * 0.5))
     outline(tr, bramp, lit_soft=False)
     return tr.im, layers, (ax, ay)
 

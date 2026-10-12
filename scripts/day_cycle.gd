@@ -18,7 +18,7 @@ func _process(delta: float) -> void:
 	time_of_day = fmod(time_of_day + delta / cycle_seconds, 1.0)
 	color = sky.sample(time_of_day)
 	var darkness := clampf((0.92 - color.get_luminance()) / 0.45, 0.0, 1.0)
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := Wind.now()
 	for light: PointLight2D in get_tree().get_nodes_in_group("night_lights"):
 		var day: float = light.get_meta("day_energy", 0.25)
 		var night: float = light.get_meta("night_energy", 1.3)

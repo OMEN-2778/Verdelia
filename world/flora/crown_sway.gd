@@ -16,6 +16,8 @@ func _process(_delta: float) -> void:
 	var gp := global_position - position + base
 	var wind := Wind.at(gp.x, gp.y, t)
 	var sw := (wind.x * 0.45 + sin(t * 1.1 + phase) * 0.35 + sin(t * 2.3 + phase * 1.7) * 0.18) * amount
-	position = base + Vector2(roundf(sw), roundf(absf(sw) * 0.2 + sin(t * 1.6 + phase) * 0.35 * amount))
+	# moves in steps of one screen pixel (1/3 of a world pixel): smooth, but never blurred
+	var off := Vector2(sw, absf(sw) * 0.2 + sin(t * 1.6 + phase) * 0.35 * amount)
+	position = base + (off * 3.0).round() / 3.0
 	var shimmer := 1.0 + 0.1 * wind.y
 	modulate = Color(shimmer, shimmer, shimmer * 0.97)

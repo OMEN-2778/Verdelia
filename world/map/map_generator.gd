@@ -182,6 +182,8 @@ static func generate(seed: int, cells := Vector2i(140, 80)) -> MapData:
 			if item == "":
 				continue
 			var kind := item.split(":")[0]
+			if kind == "tree" and _water_above(m, p, 6):
+				continue  # its trunk would stand up across the water in front of it
 			var spacing: float = {"tree": 17.0, "bush": 11.0, "rock": 10.0, "flower": 6.0}[kind]
 			if _crowded(placed, p, spacing):
 				continue
@@ -249,6 +251,15 @@ static func _free_spot(m: MapData, p: Vector2, cliff_y: Callable, face: int, ram
 		if absf(p.x - ramps[k]) < ramps[k + 1] + 16.0 and p.y > top - 60.0 and p.y < top + face + 50.0:
 			return false
 	return true
+
+
+static func _water_above(m: MapData, p: Vector2, cells_up: int) -> bool:
+	var c := Vector2i(int(p.x / m.cell_px), int(p.y / m.cell_px))
+	for k in range(1, cells_up + 1):
+		for dx in [-1, 0, 1]:
+			if m.water_at(c + Vector2i(dx, -k)):
+				return true
+	return false
 
 
 static func _crowded(placed: Dictionary, p: Vector2, spacing: float) -> bool:

@@ -669,26 +669,30 @@
      },
      {
       "file": "trees/blossom_0_crown_1.png",
-      "sway": 1.141
+      "sway": 1.024
      },
      {
       "file": "trees/blossom_0_crown_2.png",
-      "sway": 1.011
+      "sway": 1.014
      },
      {
       "file": "trees/blossom_0_crown_3.png",
-      "sway": 1.0
+      "sway": 0.876
+     },
+     {
+      "file": "trees/blossom_0_crown_4.png",
+      "sway": 0.847
      }
     ],
     "anchor": [
-     35,
-     72
+     42,
+     68
     ],
     "crown_rect": [
-     -35,
-     -71,
-     34,
-     -19
+     -42,
+     -67,
+     37,
+     -26
     ],
     "scale": 0.848,
     "leaf": "#f5b5cd"
@@ -703,26 +707,30 @@
      },
      {
       "file": "trees/blossom_1_crown_1.png",
-      "sway": 1.167
+      "sway": 0.994
      },
      {
       "file": "trees/blossom_1_crown_2.png",
-      "sway": 1.01
+      "sway": 0.981
      },
      {
       "file": "trees/blossom_1_crown_3.png",
-      "sway": 0.967
+      "sway": 0.92
+     },
+     {
+      "file": "trees/blossom_1_crown_4.png",
+      "sway": 0.869
      }
     ],
     "anchor": [
-     33,
-     67
+     39,
+     64
     ],
     "crown_rect": [
-     -32,
-     -64,
-     32,
-     -17
+     -37,
+     -56,
+     37,
+     -25
     ],
     "scale": 0.793,
     "leaf": "#f5b5cd"
@@ -737,26 +745,26 @@
      },
      {
       "file": "trees/blossom_2_crown_1.png",
-      "sway": 1.155
+      "sway": 1.003
      },
      {
       "file": "trees/blossom_2_crown_2.png",
-      "sway": 1.057
+      "sway": 0.98
      },
      {
       "file": "trees/blossom_2_crown_3.png",
-      "sway": 0.964
+      "sway": 0.887
      }
     ],
     "anchor": [
-     33,
-     67
+     39,
+     64
     ],
     "crown_rect": [
-     -33,
-     -66,
-     33,
-     -16
+     -35,
+     -57,
+     40,
+     -20
     ],
     "scale": 0.796,
     "leaf": "#f5b5cd"
@@ -771,26 +779,26 @@
      },
      {
       "file": "trees/blossom_3_crown_1.png",
-      "sway": 1.157
+      "sway": 1.055
      },
      {
       "file": "trees/blossom_3_crown_2.png",
-      "sway": 1.05
+      "sway": 0.89
      },
      {
       "file": "trees/blossom_3_crown_3.png",
-      "sway": 1.042
+      "sway": 0.848
      }
     ],
     "anchor": [
-     39,
-     79
+     46,
+     76
     ],
     "crown_rect": [
-     -39,
-     -74,
-     38,
-     -23
+     -44,
+     -76,
+     41,
+     -30
     ],
     "scale": 0.933,
     "leaf": "#f5b5cd"
@@ -805,26 +813,30 @@
      },
      {
       "file": "trees/blossom_4_crown_1.png",
-      "sway": 1.111
+      "sway": 1.008
      },
      {
       "file": "trees/blossom_4_crown_2.png",
-      "sway": 1.027
+      "sway": 0.924
      },
      {
       "file": "trees/blossom_4_crown_3.png",
-      "sway": 1.022
+      "sway": 0.862
+     },
+     {
+      "file": "trees/blossom_4_crown_4.png",
+      "sway": 0.858
      }
     ],
     "anchor": [
-     30,
-     61
+     36,
+     58
     ],
     "crown_rect": [
-     -30,
-     -53,
-     31,
-     -20
+     -34,
+     -58,
+     36,
+     -25
     ],
     "scale": 0.73,
     "leaf": "#f5b5cd"
