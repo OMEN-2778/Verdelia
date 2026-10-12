@@ -55,6 +55,7 @@ var _pending := false
 
 
 func _ready() -> void:
+	add_to_group("terrain")
 	centered = false
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	z_index = -10
@@ -266,6 +267,8 @@ func _upload() -> void:
 	var m := material as ShaderMaterial
 	if m:
 		m.set_shader_parameter("map_px", Vector2(data.get_size() * cell_px))
+		m.set_shader_parameter("water_data", water_texture)
+		m.set_shader_parameter("has_water", true)
 
 
 func _queue_rebuild() -> void:

@@ -45,7 +45,9 @@ func _rebuild() -> void:
 	var r: Array = _entry.crown_rect
 	var crown_w: float = r[2] - r[0]
 	add_child(SoftShadow.sprite(int(crown_w * 0.72), int(maxf(5.0, crown_w * 0.16)), crown_w * 0.12))
-	add_child(_sprite(_entry.trunk, anchor))
+	var trunk := _sprite(_entry.trunk, anchor)
+	add_child(trunk)
+	var mirrored: Array[Sprite2D] = [trunk]
 	var k := 0
 	var ph := float(FloraLibrary.pick_at(global_position, 3) % 628) / 100.0
 	for layer: Dictionary in _entry.crowns:
@@ -54,7 +56,9 @@ func _rebuild() -> void:
 		s.phase = ph + k * 0.9
 		s.amount = float(layer.sway) * (0.5 if species.ends_with("_far") else 1.0)
 		add_child(s)
+		mirrored.append(s)
 		k += 1
+	WaterReflection.attach(self, mirrored)
 	var front := PackedVector2Array()
 	for p in _root_grass():
 		front.append(p - global_position)

@@ -58,6 +58,7 @@ func _rebuild() -> void:
 		m.set_shader_parameter("amount", sway)
 		s.material = m
 	add_child(s)
+	WaterReflection.attach(self, [s] as Array[Sprite2D])
 	var front := TuftBatch.skirt(_skirt(true), global_position, FloraLibrary.pick_at(global_position, 17), _skirt_group())
 	if front:
 		add_child(front)

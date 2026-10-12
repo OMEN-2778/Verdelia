@@ -75,13 +75,26 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 
 ## 水体（演示场景 `scenes/water_demo.tscn`）
 
-水只有一种：湖、池塘、河、溪、水坑都是同一种水体，区别只在轮廓形状。所有水画进 `Terrain` 的水数据，再由一个 `WaterLayer` 统一绘制，相邻或重叠的水面会连成一片。演示视频：`docs/art/water-demo.mp4`；截图：`water-waterfall.png`、`water-pond.png`、`water-stream.png`、`water-beach.png`。
+水只有一种：湖、池塘、河、溪、水坑都是同一种水体，区别只在轮廓形状。所有水画进 `Terrain` 的水数据，再由一个 `WaterLayer` 统一绘制，相邻或重叠的水面会连成一片。演示视频：`docs/art/water-demo.mp4`；截图：`water-lake-sun.png`、`water-lake.png`、`water-waterfall.png`、`water-pond.png`、`water-stream.png`、`water-beach.png`。
+
+水面效果：
+
+- **颜色**：岸边是澄澈的浅蓝，往水中央细微地过渡到深蓝。
+- **天空倒影**：几块浅色的天光，慢慢飘动。
+- **水波**：几条白色细线顺着漂，每条下面带一道暗影；偶尔有水圈荡开。
+- **太阳波光**：屏幕中央那片水上波光粼粼，镜头移动时它一直留在屏幕中央；别处偶尔有星形闪光。
+- **焦散**：近岸水底有一张弯曲的光网，线条有粗有细，交汇处更亮，往深处慢慢散掉。
+- **岸边**：上岸露出泥土岸壁，并在水面投下阴影；下岸和两侧是一圈半透明的浅水，能看到下面湿润的泥底，还有一道来回拍岸的白沫。
+- **倒影**：岸边的树、灌木和石头会在水里留下上下颠倒的倒影，随水波轻轻晃动，越远越淡。
 
 | 节点 | 作用 | 怎么用 |
 |---|---|---|
-| `WaterLayer`（`world/water/`） | 绘制所有水面：统一的深蓝色，几条素净的白线缓缓漂移，近岸有细细的焦散光纹 | 每张地图放一个，指定 `terrain`。材质参数：`water_color`（水色）；波纹线的 `drift`（漂移方向和速度）、`line_density`（多少）、`line_spacing`、`line_length`、`line_life`、`line_opacity`；焦散的 `caustic_strength`、`caustic_size`、`caustic_reach`（离岸多远还能看到）、`caustic_speed` |
-| `WaterBody` | 任意一块水 | 加一个名为 `Shape` 的 Polygon2D 子节点画轮廓（或直接填 `polygon`）。河就画成长条形。`shore` 选岸：`GRASS` 草岸（深色岸线）、`SAND` 沙岸（宽度由 `beach_width` 决定，水边是湿沙）、`ROCK` 石岸（沿岸放 `rocks` 块半浸水的石头）、`SAND_AND_ROCK` 两者都有 |
-| `Waterfall` | 岩壁上的瀑布 | 指定 `cliff`（一个 CliffBand），瀑布会自动贴到崖顶、高度取岩壁高度；不指定时用 `height`。`width`、`speed` 可调，`mist` 开关水雾。瀑布周围不长草 |
+| `WaterLayer`（`world/water/`） | 绘制所有水面 | 每张地图放一个，指定 `terrain`。材质参数：<br>颜色 `water_color`（深水）、`clear_color`（近岸）、`gradient_reach`（渐变范围）<br>天光 `reflection_amount`<br>水波线 `drift`、`line_density`、`line_length`、`line_opacity`<br>水圈 `ripple_rings`<br>星形闪光 `sparkle`<br>太阳 `sun_center`（在屏幕上的位置）、`sun_radius`、`sun_glitter`<br>焦散 `caustic_strength`、`caustic_size`、`caustic_reach`、`caustic_speed`<br>岸边 `bank_height`（岸壁高度）、`bank_shadow`、`rim_width`（半透明浅水宽度）、`rim_opacity`、`foam_amount` |
+| `WaterBody` | 任意一块水 | 加一个名为 `Shape` 的 Polygon2D 子节点画轮廓（或直接填 `polygon`），河就画成长条形。`shore` 选岸：<br>`GRASS` 草岸<br>`SAND` 沙岸（宽度由 `beach_width` 决定）<br>`ROCK` 石岸（沿岸放 `rocks` 块半浸水的石头）<br>`SAND_AND_ROCK` 两者都有 |
+| `Waterfall` | 岩壁上的瀑布 | 指定 `cliff`（一个 CliffBand）后会自动贴到崖顶，高度取岩壁高度；不指定时用 `height`。`width`、`speed` 可调，`mist` 开关水雾。瀑布周围不长草 |
+| `WaterReflection` | 倒影 | `WorldTree` 和 `WorldProp` 会自动加，只有下方有水时才显示，不用手动处理。浓淡、晃动幅度和消失距离在 `reflection.gdshader` 里调 |
+
+地面着色器（`ground.gdshader`）配合水体画三样东西：浅水下的湿泥、水边一条湿泥带（沙岸是湿沙）、外面一圈颜色更深的湿草。范围由 `damp_reach` 控制。
 
 画水的其他方式：
 

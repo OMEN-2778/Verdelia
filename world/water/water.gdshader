@@ -1,8 +1,11 @@
-// Pixel-art water for every water body on the map: one flat colour, a few plain wave lines
-// drifting across it, and fine caustics near the shore.
+// Pixel-art water for every water body on the map. One deep base colour, brought to life by
+// slowly drifting sky reflections, wave lines with a shadowed trough, twinkling sun glints and
+// lapping foam. The shore reads as a step down: along upper shores the earth bank face shows and
+// throws a shadow on the water; elsewhere a thin translucent rim lets the wet bed show through,
+// with caustics playing on it. Ground.gdshader draws the matching mud bed and damp ground.
 // TEXTURE = Terrain.water_texture, one texel per cell: R = water, G = distance from the shore
 // (0 at the shore, 1 = Terrain.water_depth_cells away). ground_data = Terrain's ground data
-// (R = dirt/sand), used to pick the shore style: wet sand next to beaches, a dark bank by grass.
+// (R = dirt/sand, B without G = sand), used to colour the bank face.
 shader_type canvas_item;
 
 uniform sampler2D ground_data : filter_linear;
@@ -10,27 +13,62 @@ uniform vec2 map_px = vec2(960.0, 480.0);
 uniform float seed = 0.0;
 
 group_uniforms colours;
-uniform vec4 water_color : source_color = vec4(0.169, 0.420, 0.639, 1.0);
+uniform vec4 water_color : source_color = vec4(0.169, 0.420, 0.639, 1.0);  // open water
+uniform vec4 clear_color : source_color = vec4(0.243, 0.580, 0.741, 1.0);  // clearer water nearer the shore
+uniform float gradient_reach : hint_range(0.05, 1.0) = 0.7;  // how far in the clear blue fades to deep (1 = water_depth_cells)
+uniform vec4 reflection_color : source_color = vec4(0.231, 0.502, 0.725, 1.0);  // sky in the water
+uniform vec4 sky_color : source_color = vec4(0.384, 0.635, 0.812, 1.0);  // brightest bits of sky
+uniform vec4 rim_color : source_color = vec4(0.318, 0.639, 0.718, 1.0);  // translucent shallow rim
 uniform vec4 line_color : source_color = vec4(0.839, 0.949, 0.988, 1.0);
-uniform vec4 caustic_color : source_color = vec4(0.627, 0.851, 0.922, 1.0);
-uniform vec4 bank : source_color = vec4(0.157, 0.290, 0.204, 1.0);
-uniform vec4 wet_sand : source_color = vec4(0.706, 0.580, 0.384, 1.0);
+uniform vec4 caustic_color : source_color = vec4(0.627, 0.886, 0.906, 1.0);
+uniform vec4 caustic_glow : source_color = vec4(0.420, 0.737, 0.851, 1.0);  // softer edge of the light
+uniform vec4 foam_color : source_color = vec4(0.925, 0.976, 0.984, 1.0);
+uniform vec4 glint_color : source_color = vec4(1.0, 0.988, 0.906, 1.0);
+uniform vec4 bank_lip : source_color = vec4(0.169, 0.361, 0.180, 1.0);  // turf overhanging the bank
+uniform vec4 bank_top : source_color = vec4(0.416, 0.329, 0.204, 1.0);  // earth bank face, lit lip
+uniform vec4 bank_face : source_color = vec4(0.318, 0.247, 0.157, 1.0);
+uniform vec4 bank_foot : source_color = vec4(0.212, 0.180, 0.129, 1.0);  // wet foot of the face
+uniform vec4 sand_face : source_color = vec4(0.698, 0.592, 0.396, 1.0);
 
-group_uniforms waves;
-uniform vec2 drift = vec2(3.0, 0.0);  // px per second the wave lines travel
-uniform float line_density : hint_range(0.0, 1.0) = 0.35;  // share of cells that hold a line
-uniform vec2 line_spacing = vec2(26.0, 9.0);  // px between possible lines (x, y)
-uniform float line_length = 10.0;  // px, longest line
+group_uniforms shore;
+uniform float rim_width : hint_range(0.05, 1.0) = 0.42;  // how far in the translucent rim reaches
+uniform float rim_opacity : hint_range(0.0, 1.0) = 0.42;  // opacity right at the waterline
+uniform float bank_height = 4.0;  // px of earth face showing along upper shores
+uniform float bank_shadow = 4.0;  // px of shadow the face throws on the water
+uniform float foam_amount : hint_range(0.0, 1.0) = 0.7;
+uniform float foam_speed = 1.0;
+
+group_uniforms surface;
+uniform vec2 drift = vec2(3.0, 0.0);  // px per second the wave lines and reflections travel
+uniform float reflection_amount : hint_range(0.0, 1.0) = 0.6;
+uniform float line_density : hint_range(0.0, 1.0) = 0.4;  // share of cells that hold a line
+uniform vec2 line_spacing = vec2(24.0, 8.0);  // px between possible lines (x, y)
+uniform float line_length = 11.0;  // px, longest line
 uniform float line_life = 4.0;  // seconds a line takes to appear, stretch and fade
-uniform float line_opacity : hint_range(0.0, 1.0) = 0.55;
+uniform float line_opacity : hint_range(0.0, 1.0) = 0.65;
+uniform float sparkle : hint_range(0.0, 0.2) = 0.015;  // sun glints
+uniform float ripple_rings : hint_range(0.0, 1.0) = 0.35;  // how often rings spread on the water
+uniform float ring_size = 9.0;  // px, widest ring
+
+group_uniforms sun;
+uniform vec2 sun_center = vec2(0.5, 0.46);  // on screen (0..1): the glitter stays here as the camera moves
+uniform vec2 sun_radius = vec2(0.3, 0.24);  // size of the glittering patch, in screen fractions
+uniform float sun_glitter : hint_range(0.0, 1.0) = 0.7;
+uniform vec4 sun_color : source_color = vec4(1.0, 0.973, 0.851, 1.0);
+uniform vec4 sun_sheen : source_color = vec4(0.416, 0.682, 0.839, 1.0);  // water brightened by the sun
 
 group_uniforms caustics;
-uniform float caustic_strength : hint_range(0.0, 1.0) = 0.6;
-uniform float caustic_size = 11.0;  // px per caustic cell
-uniform float caustic_reach : hint_range(0.05, 1.0) = 0.4;  // how far from the shore they show
-uniform float caustic_speed = 1.0;
+uniform float caustic_strength : hint_range(0.0, 1.0) = 0.8;
+uniform float caustic_size = 22.0;  // px per caustic cell
+uniform float caustic_reach : hint_range(0.05, 1.0) = 0.6;  // how far from the shore they show (1 = water_depth_cells)
+uniform float caustic_speed = 0.8;
 
+const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 #define DATA(p) texture(TEXTURE, ((p) + 0.5) / map_px)
+// water presence smoothed over a few px (hides the cell grid), plus two octaves of edge wobble;
+// ground.gdshader uses the identical test so the bed and wet strip line up with the water
+#define WV(p) ((DATA(p).r * 2.0 + DATA((p) + vec2(3.0, 3.0)).r + DATA((p) + vec2(-3.0, 3.0)).r + DATA((p) + vec2(3.0, -3.0)).r + DATA((p) - vec2(3.0, 3.0)).r) / 6.0)
+#define EDGE(p) (WV(p) + (vnoise(p, 13.0) - 0.5) * 0.3 + (vnoise((p) + 17.0, 5.0) - 0.5) * 0.2 + (vnoise((p) + 31.0, 2.5) - 0.5) * 0.1)
 
 float hash(vec2 p) {
 	p = fract(p * vec2(123.34, 456.21) + seed * 0.618);
@@ -51,8 +89,13 @@ float vnoise(vec2 p, float cell) {
 	return a + (b - a) * t.x + (c - a) * t.y + (a - b - c + d) * t.x * t.y;
 }
 
-// Animated Voronoi edges: bright where two cells meet, the web of caustic light.
-float caustic_layer(vec2 p, float t) {
+float bayer(vec2 p) {
+	ivec2 q = ivec2(mod(p, 4.0));
+	return BAYER[q.y * 4 + q.x] / 16.0 - 0.5;
+}
+
+// Distance to the nearest Voronoi cell border (F2 - F1); the sites drift with time.
+float cell_border(vec2 p, float t) {
 	vec2 i = floor(p);
 	vec2 f = fract(p);
 	float d1 = 8.0, d2 = 8.0;
@@ -60,17 +103,28 @@ float caustic_layer(vec2 p, float t) {
 		for (int x = -1; x <= 1; x++) {
 			vec2 g = vec2(float(x), float(y));
 			vec2 o = hash2(i + g);
-			o = 0.5 + 0.42 * sin(t + 6.2831 * o);
-			vec2 r = g + o - f;
-			float d = dot(r, r);
+			o = 0.5 + 0.4 * vec2(sin(t + 6.2831 * o.x), sin(t * 0.8 + 6.2831 * o.y));
+			float d = length(g + o - f);
 			if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) { d2 = d; }
 		}
 	}
-	return 1.0 - smoothstep(0.0, 0.12, sqrt(d2) - sqrt(d1));
+	return d2 - d1;
 }
 
-// A sparse field of 1px horizontal lines carried by `drift`. Each line grows from its centre,
-// holds, shrinks away, then reappears somewhere else in its cell.
+// Caustics: light focused by the moving surface onto the bed. Two webs of cell borders, bent by
+// a slowly drifting warp so the threads curve, with line widths that swell and pinch; where the
+// webs cross the light gathers into bright knots.
+float caustic(vec2 pix, float t) {
+	vec2 wp = pix + (vec2(vnoise(pix + vec2(t * 4.0, 0.0), 17.0), vnoise(pix + vec2(50.0, t * 3.0), 17.0)) - 0.5) * 9.0;
+	float w1 = 0.07 + 0.09 * vnoise(pix + vec2(9.0, t * 2.0), 23.0);
+	float w2 = 0.07 + 0.08 * vnoise(pix + vec2(t * 2.0, 40.0), 19.0);
+	float l1 = 1.0 - clamp(cell_border(wp / caustic_size, t) / w1, 0.0, 1.0);
+	float l2 = 1.0 - clamp(cell_border(wp / (caustic_size * 0.71) + vec2(3.7, 1.3), t * 1.3 + 2.0) / w2, 0.0, 1.0);
+	return l1 * 0.75 + l2 * 0.55;
+}
+
+// A sparse field of 1px horizontal wave lines carried by `drift`. Each line grows from its
+// centre, holds, shrinks away, then reappears elsewhere in its cell. 1 = core, 0.5 = soft end.
 float wave_line(vec2 pix) {
 	vec2 q = pix - drift * TIME;
 	float row = floor(q.y / line_spacing.y);
@@ -88,40 +142,167 @@ float wave_line(vec2 pix) {
 	}
 	float env = sin(3.14159 * fract(phase));
 	float half_len = floor(line_length * (0.45 + 0.55 * hash(id + 2.9)) * env * 0.5);
-	float cx = line_spacing.x * (0.25 + 0.5 * hash(id + 4.1));
-	return abs(floor(local.x) - floor(cx)) <= half_len && half_len >= 1.0 ? 1.0 : 0.0;
+	float dx = abs(floor(local.x) - floor(line_spacing.x * (0.25 + 0.5 * hash(id + 4.1))));
+	if (half_len < 1.0 || dx > half_len) {
+		return 0.0;
+	}
+	return dx >= half_len - 0.5 && half_len >= 2.0 ? 0.5 : 1.0;
+}
+
+// Ripple rings: now and then a flattened ring spreads from a point and fades (1 = bright, 0.5 = faint).
+float ring(vec2 pix, float t) {
+	float acc = 0.0;
+	for (int i = 0; i < 2; i++) {
+		vec2 off = vec2(float(i) * 23.0, float(i) * 17.0);
+		vec2 cell = floor((pix + off) / 44.0);
+		float phase = t / 2.6 + hash(cell + 5.5 + float(i));
+		vec2 id = cell + floor(phase) * 11.3;
+		if (hash(id + 0.7) > ripple_rings) continue;
+		vec2 c = cell * 44.0 - off + 8.0 + hash2(id) * 28.0;
+		float f = fract(phase);
+		float r = 1.5 + f * ring_size;
+		vec2 d = (pix - floor(c)) * vec2(1.0, 1.7);  // seen from above at an angle: flattened
+		float e = abs(length(d) - r);
+		if (e < 0.6 && hash(pix + floor(t * 6.0)) > f * 0.8) acc = max(acc, f < 0.45 ? 1.0 : 0.5);
+		else if (e < 0.6 + 1.0 && f < 0.3 && length(d) < r) acc = max(acc, 0.25);  // the dip inside
+	}
+	return acc;
+}
+
+// Sun glints: tiny stars that flare and die, gathered in slowly wandering patches of glitter.
+float glint(vec2 pix, float t) {
+	vec2 cell = floor(pix / 5.0);
+	float phase = t * 1.3 + hash(cell + 2.2) * 7.0;
+	vec2 id = cell + floor(phase) * 9.7;
+	float patch = smoothstep(0.5, 0.85, vnoise(pix + vec2(t * 5.0, t * 1.5), 34.0));
+	if (hash(id) > sparkle * patch * 4.0) {
+		return 0.0;
+	}
+	vec2 l = pix - cell * 5.0 - 2.0;
+	float k = sin(3.14159 * fract(phase));
+	float r = abs(l.x) + abs(l.y);
+	if (r < 0.5) return k > 0.25 ? 1.0 : 0.0;
+	if (r < 1.5 && (l.x == 0.0 || l.y == 0.0)) return k > 0.7 ? 0.6 : 0.0;
+	return 0.0;
 }
 
 void fragment() {
 	vec2 pix = floor(UV * map_px);
+	float bay = bayer(pix);
 	vec4 w = DATA(pix);
-	float edge = w.r + (vnoise(pix, 7.0) - 0.5) * 0.36;
+	float edge = EDGE(pix);
 	if (edge < 0.5) {
 		discard;
 	}
-	float shore = smoothstep(0.5, 0.8, edge);  // 0 at the waterline, 1 a few px in
-	vec3 col = water_color.rgb;
+	float t = TIME;
+	bool sandy = texture(ground_data, (pix + 0.5) / map_px).r > 0.4;
 
-	// caustics: thin lines of light in the shallow rim, fading out towards open water
-	float t = TIME * caustic_speed;
-	vec2 cp = (pix + vec2(t * 2.0, t * 1.3)) / caustic_size;
-	float c = max(caustic_layer(cp, t * 1.1), caustic_layer(cp * 1.43 + 3.7, t * 1.45 + 2.0) * 0.85);
-	float near = 1.0 - smoothstep(caustic_reach * 0.4, caustic_reach, w.g + (vnoise(pix, 9.0) - 0.5) * 0.15);
-	float cf = c * near * smoothstep(0.1, 0.45, shore);
-	if (cf > 0.8) col = mix(col, caustic_color.rgb, caustic_strength);
-
-	// waves: a few plain lines drifting across
-	if (shore > 0.5 && wave_line(pix) > 0.5) col = mix(col, line_color.rgb, line_opacity);
-
-	// the shore itself: wet sand next to beaches, a dark undercut bank line next to grass
-	float sand = texture(ground_data, (pix + 0.5) / map_px).r;
-	if (sand > 0.4) {
-		if (shore < 0.14) col = mix(wet_sand.rgb, col, 0.3);
-	} else if (shore < 0.07) {
-		col = bank.rgb;
-	} else if (shore < 0.15) {
-		col = mix(col, bank.rgb, 0.35);
+	// how far below the land above this pixel is: k = 1 means the pixel right above is land
+	float face_h = bank_height + (vnoise(vec2(pix.x, 0.0), 6.0) > 0.55 ? 1.0 : 0.0) - (vnoise(vec2(pix.x, 9.0), 4.0) > 0.8 ? 1.0 : 0.0);
+	float k_land = 99.0;
+	for (int k = 1; k <= 9; k++) {
+		if (float(k) > face_h + bank_shadow) break;
+		vec2 q = pix - vec2(0.0, float(k));
+		if (EDGE(q) < 0.5) {
+			k_land = float(k);
+			break;
+		}
 	}
+	// the earth bank face along upper shores: lit lip, face, dark wet foot
+	if (k_land <= face_h) {
+		vec3 c;
+		if (sandy) {
+			c = sand_face.rgb * (k_land <= 1.0 ? 1.0 : k_land >= face_h ? 0.72 : 0.86);
+		} else {
+			c = k_land <= 1.0 ? bank_lip.rgb : k_land <= 2.0 ? bank_top.rgb : k_land >= face_h ? bank_foot.rgb : bank_face.rgb;
+			if (k_land <= 1.0 && hash(pix + 5.0) < 0.3) c = bank_top.rgb;  // roots poking through the turf
+			if (k_land > 1.0 && k_land < face_h && hash(pix * 0.91) < 0.12) c *= 0.85;  // grit
+		}
+		COLOR = vec4(c, 1.0);
+	} else {
+		// 0 at the waterline; the depth term keeps open water solid wherever the edge noise dips
+		float rim = smoothstep(0.5, 0.5 + rim_width, edge + bay * 0.06 + max(w.g - 0.1, 0.0) * 5.0);
+		// a gentle gradient from clear blue near the shore to the deep blue of open water, dithered
+		float g = smoothstep(0.0, gradient_reach, w.g) + bay * 0.16;
+		g = floor(clamp(g, 0.0, 1.0) * 5.0 + 0.5) / 5.0;
+		vec3 col = mix(clear_color.rgb, water_color.rgb, g);
 
-	COLOR = vec4(col, 1.0);
+		// sky reflections: long soft lighter patches drifting slowly, dithered into the base colour
+		float refl = vnoise((pix - drift * t * 0.6) * vec2(0.45, 1.3), 18.0) * 0.7 + vnoise(pix * vec2(0.6, 1.6) + vec2(t * 1.5, 0.0), 9.0) * 0.3;
+		float rv = refl + bay * 0.18;
+		if (rv > 1.0 - reflection_amount * 0.32) col = mix(col, sky_color.rgb, 0.8);
+		else if (rv > 1.0 - reflection_amount * 0.62) col = mix(col, reflection_color.rgb, 0.7);
+
+		// the translucent rim: lighter, see-through water over the wet bed (ground.gdshader)
+		float a = 1.0;
+		if (rim < 1.0) {
+			float s = rim + bay * 0.3;
+			col = s < 0.35 ? rim_color.rgb : s < 0.7 ? mix(rim_color.rgb, col, 0.5) : col;
+			a = s < 0.35 ? rim_opacity : s < 0.7 ? mix(rim_opacity, 1.0, 0.5) : 1.0;
+		}
+
+		// caustics: thin lines of light playing on the bed in the shallow water
+		float ct = t * caustic_speed;
+		float c = caustic(pix, ct);
+		float near = 1.0 - smoothstep(caustic_reach * 0.35, caustic_reach, w.g + (vnoise(pix, 9.0) - 0.5) * 0.12);
+		float cv = near + bay * 0.6 > 0.35 ? c : 0.0;  // the web dissolves towards open water
+		if (cv > 0.95) {  // knots where the threads cross
+			col = mix(col, caustic_color.rgb, caustic_strength);
+			a = max(a, 0.9);
+		} else if (cv > 0.45) {  // the threads
+			col = mix(col, caustic_glow.rgb, caustic_strength * 0.85);
+			a = max(a, 0.75);
+		}
+
+		// shadow thrown by the bank face
+		if (k_land < 99.0) {
+			float sh = (k_land - face_h) / bank_shadow + bay * 0.35;
+			if (sh < 0.75) col *= 0.78;
+		}
+
+		// waves: drifting lines with a darker trough just below each one
+		if (rim > 0.6) {
+			float l = wave_line(pix);
+			if (l > 0.0) col = mix(col, line_color.rgb, line_opacity * (l > 0.75 ? 1.0 : 0.45));
+			else if (wave_line(pix - vec2(0.0, 1.0)) > 0.75) col *= 0.88;
+		}
+
+		// ripple rings
+		if (rim > 0.7) {
+			float rr = ring(pix, t);
+			if (rr > 0.9) col = mix(col, line_color.rgb, 0.6);
+			else if (rr > 0.4) col = mix(col, line_color.rgb, 0.3);
+			else if (rr > 0.0) col *= 0.93;
+		}
+
+		// lapping foam: a broken line that creeps up the shore and slides back
+		float lap = 0.16 + 0.12 * sin(t * 1.6 * foam_speed + vnoise(pix, 22.0) * 6.28);
+		float fn = vnoise(pix + vec2(t * 3.0 * foam_speed, 0.0), 4.0);
+		if (rim > lap - 0.12 && rim < lap && fn > 1.0 - foam_amount * 0.75) {
+			col = mix(col, foam_color.rgb, 0.75);
+			a = 1.0;
+		} else if (rim < 0.08 && fn > 1.0 - foam_amount * 0.5) {
+			col = mix(col, foam_color.rgb, 0.4);
+		}
+
+		// sun glints on open water
+		float gl = rim > 0.8 ? glint(pix, t) : 0.0;
+		if (gl > 0.0) col = mix(col, glint_color.rgb, gl);
+
+		// the sun on the water: a patch of glitter that stays in the middle of the screen. The
+		// water there is brighter, and wave crests catch the light in flickering dashes.
+		vec2 sd = (SCREEN_UV - sun_center) / sun_radius;
+		float sun = clamp(1.0 - dot(sd, sd), 0.0, 1.0) * sun_glitter * smoothstep(0.4, 0.9, rim);
+		if (sun > 0.0) {
+			if (sun + bay * 0.6 > 0.62) col = mix(col, sun_sheen.rgb, 0.45);
+			float crest = sin(pix.y * 1.4 + vnoise(pix * vec2(0.5, 1.0) + vec2(t * 3.0, 0.0), 6.0) * 7.0 - t * 2.4);
+			vec2 cell = floor((pix + vec2(t * 2.0, 0.0)) / vec2(3.0, 1.0));
+			float fl = hash(cell + floor(t * 7.0 + hash(cell) * 4.0) * 3.7);
+			float k = sun * sun;
+			if (crest > 0.7 && fl < k * 0.32) col = sun_color.rgb;
+			else if (crest > 0.45 && fl < k * 0.16) col = mix(col, sun_color.rgb, 0.5);
+		}
+
+		COLOR = vec4(col, a);
+	}
 }

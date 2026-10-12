@@ -3,6 +3,8 @@
 //   R = bare dirt / path, G = tilled soil, B = watered.
 // Grass is two value-noise octaves + 4x4 Bayer dithering; dirt and tilled soil get organic,
 // dithered edges from noise, paths are lighter where worn, tilled soil is drawn as mounded rows.
+// water_data (Terrain.water_texture) adds the wet bed under the water's translucent rim, a strip
+// of wet mud or wet sand at the waterline and darker, lusher damp grass around it.
 shader_type canvas_item;
 
 uniform vec2 map_px = vec2(426.0, 240.0);
@@ -41,6 +43,16 @@ uniform float blade_density = 0.0028;
 uniform float pebble_density = 0.0005;
 uniform float ridge_period = 8.0;
 
+group_uniforms water_edge;
+uniform sampler2D water_data : filter_linear;
+uniform bool has_water = false;
+uniform vec4 mud0 : source_color = vec4(0.235, 0.204, 0.141, 1.0);  // bed under the shallows
+uniform vec4 mud1 : source_color = vec4(0.318, 0.275, 0.180, 1.0);
+uniform vec4 mud2 : source_color = vec4(0.396, 0.341, 0.224, 1.0);  // wet mud at the waterline
+uniform vec4 damp : source_color = vec4(0.176, 0.396, 0.235, 1.0);  // damp grass near water
+uniform float damp_reach = 12.0;  // px of damp ground around the water
+uniform float wet_sand_darken = 0.78;
+
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
 float hash(vec2 p) {
@@ -65,6 +77,10 @@ float bayer(vec2 p) {
 
 // terrain data at a pixel (a macro: builtin samplers cannot be passed to functions)
 #define DATA(p) texture(TEXTURE, ((p) + 0.5) / map_px)
+#define WATER(p) texture(water_data, ((p) + 0.5) / map_px).r
+// same smoothed water edge as water.gdshader
+#define WV(p) ((WATER(p) * 2.0 + WATER((p) + vec2(3.0, 3.0)) + WATER((p) + vec2(-3.0, 3.0)) + WATER((p) + vec2(3.0, -3.0)) + WATER((p) - vec2(3.0, 3.0))) / 6.0)
+#define WEDGE(p) (WV(p) + (vnoise(p, 13.0) - 0.5) * 0.3 + (vnoise((p) + 17.0, 5.0) - 0.5) * 0.2 + (vnoise((p) + 31.0, 2.5) - 0.5) * 0.1)
 
 void fragment() {
 	vec2 pix = floor(UV * map_px);
@@ -110,6 +126,28 @@ void fragment() {
 		col = T[clamp(tone, 0, 4)];
 		float wet = d.b + (vnoise(pix + 5.0, 10.0) - 0.5) * 0.3 + bay * 0.05;
 		if (wet > 0.5) col.rgb *= wet_darken;
+	}
+	// around and under water (same edge test as water.gdshader, so the strips line up)
+	if (has_water) {
+		float we = WEDGE(pix);
+		bool sandy = d.r > 0.4 && d.b > 0.5 && d.g < 0.5;
+		if (we >= 0.5) {  // under the water: the bed, seen through the rim
+			float m = vnoise(pix, 5.0) + bay * 0.3;
+			col = sandy ? col * wet_sand_darken * 0.82 : (m < 0.55 ? mud0 : mud1);
+		} else if (we > 0.5 - 0.09 * vnoise(pix + 13.0, 6.0)) {  // wet strip at the waterline, uneven
+			col = sandy ? vec4(col.rgb * wet_sand_darken, 1.0) : (bay > -0.2 ? damp : mud2);
+		} else {
+			float r = damp_reach;
+			float wb = (WATER(pix + vec2(r, 0.0)) + WATER(pix - vec2(r, 0.0)) + WATER(pix + vec2(0.0, r)) + WATER(pix - vec2(0.0, r))
+				+ WATER(pix + vec2(r, r) * 0.7) + WATER(pix - vec2(r, r) * 0.7) + WATER(pix + vec2(r, -r) * 0.7) + WATER(pix + vec2(-r, r) * 0.7)) * 0.125;
+			float dm = max(we * 1.6, wb) + (vnoise(pix, 6.0) - 0.5) * 0.3 + bay * 0.2;
+			if (sandy) {
+				if (dm > 0.45) col.rgb *= mix(1.0, wet_sand_darken, 0.6);
+			} else if (d.r < 0.4) {
+				if (dm > 0.5) col = damp;
+				else if (dm > 0.22) col.rgb = mix(col.rgb, damp.rgb, 0.55);
+			}
+		}
 	}
 	COLOR = vec4(col.rgb, 1.0);
 }
