@@ -35,6 +35,49 @@ static func create(cells: Vector2i) -> MapData:
 	return m
 
 
+## A copy of this map at a new size (in cells), with everything moved by `offset` cells: the
+## old map's top-left lands on cell `offset` of the new one. Ground, water and walking cells
+## outside the old map start as grass; objects and cliffs that end up outside are dropped.
+func resized(cells: Vector2i, offset: Vector2i) -> MapData:
+	var m := MapData.create(cells)
+	m.name = name
+	m.cell_px = cell_px
+	for y in size.y:
+		for x in size.x:
+			var c := Vector2i(x, y) + offset
+			if m.has_cell(c):
+				var i := idx(Vector2i(x, y))
+				var j := m.idx(c)
+				m.ground[j] = ground[i]
+				m.water[j] = water[i]
+				m.passage[j] = passage[i]
+	var shift := Vector2(offset * cell_px)
+	var bound := Rect2(Vector2.ZERO, m.size_px())
+	for o in objects:
+		var p := Vector2(o.x, o.y) + shift
+		if bound.has_point(p):
+			var o2: Dictionary = o.duplicate(true)
+			o2.x = p.x
+			o2.y = p.y
+			m.objects.append(o2)
+	for cl in cliffs:
+		var c2: Dictionary = cl.duplicate(true)
+		var pts: Array = c2.points
+		for k in range(0, pts.size(), 2):
+			pts[k] += shift.x
+			pts[k + 1] += shift.y
+		var ramps: Array = c2.get("ramps", [])
+		for k in range(0, ramps.size(), 3):
+			ramps[k] += shift.x
+		var inside := false
+		for k in range(0, pts.size(), 2):
+			inside = inside or bound.has_point(Vector2(pts[k], pts[k + 1]))
+		if inside:
+			m.cliffs.append(c2)
+	m.spawn = (spawn + shift).clamp(Vector2.ZERO, m.size_px() - Vector2.ONE)
+	return m
+
+
 func size_px() -> Vector2:
 	return Vector2(size * cell_px)
 

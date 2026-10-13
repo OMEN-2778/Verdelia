@@ -67,6 +67,10 @@ var _overlay_btn: CheckButton
 var _play_btn: Button
 var _layer_buttons: Array = []
 var _new_dialog: ConfirmationDialog
+var _size_dialog: ConfirmationDialog
+var _size_w: SpinBox
+var _size_h: SpinBox
+var _size_anchor := Vector2i(1, 1)  # which way the map grows: 0 left/top, 1 both sides, 2 right/bottom
 var _new_w: SpinBox
 var _new_h: SpinBox
 var _open_dialog: FileDialog
@@ -98,6 +102,26 @@ func _ready() -> void:
 
 
 # ================================================================== map files
+
+## Grows or shrinks the map to `cells`, keeping what is drawn. anchor picks where the old map
+## sits in the new one per axis: 0 = left/top (it grows right/down), 1 = centred, 2 = right/bottom.
+func resize_map(cells: Vector2i, anchor := Vector2i(1, 1)) -> void:
+	var d := world.data
+	var extra := cells - d.size
+	var offset := Vector2i(extra.x * anchor.x / 2, extra.y * anchor.y / 2)
+	_snapshot()
+	world.load_data(d.resized(cells, offset))
+	camera.position += Vector2(offset * d.cell_px)
+	overlay.refresh()
+	_refresh_status()
+	_flash("地图大小改为 %d×%d 格" % [cells.x, cells.y])
+
+
+func _open_size_dialog() -> void:
+	_size_w.value = world.data.size.x
+	_size_h.value = world.data.size.y
+	_size_dialog.popup_centered()
+
 
 func new_map(cells: Vector2i) -> void:
 	var d := MapData.create(cells)
@@ -690,6 +714,7 @@ func _build_ui() -> void:
 	bar.add_theme_constant_override("separation", 6)
 	top.add_child(bar)
 	_button(bar, "新建", func(): _new_dialog.popup_centered())
+	_button(bar, "调整大小", _open_size_dialog)
 	_button(bar, "随机生成", func(): random_map(randi() % 100000 + 1))
 	_button(bar, "打开", func(): _open_dialog.popup_centered_ratio(0.7))
 	_button(bar, "保存", func(): _on_save(false))
@@ -921,6 +946,48 @@ func _build_dialogs(root: Control) -> void:
 	box.add_child(_new_h)
 	_new_dialog.confirmed.connect(func(): new_map(Vector2i(int(_new_w.value), int(_new_h.value))))
 	root.add_child(_new_dialog)
+
+	_size_dialog = ConfirmationDialog.new()
+	_size_dialog.title = "调整地图大小（保留已画的内容）"
+	var sbox := VBoxContainer.new()
+	_size_dialog.add_child(sbox)
+	var sgrid := GridContainer.new()
+	sgrid.columns = 2
+	sbox.add_child(sgrid)
+	var sw := Label.new()
+	sw.text = "宽（格，每格 8 像素）"
+	sgrid.add_child(sw)
+	_size_w = SpinBox.new()
+	_size_w.min_value = 20
+	_size_w.max_value = 600
+	sgrid.add_child(_size_w)
+	var sh := Label.new()
+	sh.text = "高（格）"
+	sgrid.add_child(sh)
+	_size_h = SpinBox.new()
+	_size_h.min_value = 20
+	_size_h.max_value = 600
+	sgrid.add_child(_size_h)
+	var tip := Label.new()
+	tip.text = "原来的地图放在哪里（点一个格子）：\n点中间 = 四周一起扩，点右下 = 往左上扩，点左上 = 往右下扩"
+	sbox.add_child(tip)
+	var agrid := GridContainer.new()
+	agrid.columns = 3
+	sbox.add_child(agrid)
+	var ag := ButtonGroup.new()
+	var arrows := ["↖", "↑", "↗", "←", "●", "→", "↙", "↓", "↘"]
+	for ay in 3:
+		for ax in 3:
+			var b := Button.new()
+			b.text = arrows[ay * 3 + ax]
+			b.toggle_mode = true
+			b.button_group = ag
+			b.custom_minimum_size = Vector2(40, 32)
+			b.button_pressed = ax == 1 and ay == 1
+			b.pressed.connect(func(): _size_anchor = Vector2i(ax, ay))
+			agrid.add_child(b)
+	_size_dialog.confirmed.connect(func(): resize_map(Vector2i(int(_size_w.value), int(_size_h.value)), _size_anchor))
+	root.add_child(_size_dialog)
 
 	# maps go in the project's maps/ folder when running from the project, else the user folder
 	var maps_dir := ProjectSettings.globalize_path("res://maps")
