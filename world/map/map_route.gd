@@ -12,12 +12,13 @@ static func grid(world: MapWorld) -> AStarGrid2D:
 	g.cell_size = Vector2(cp, cp)
 	g.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	g.update()
+	var decks := MapWorld.deck_cells(d)
 	for y in d.size.y:
 		for x in d.size.x:
 			var c := Vector2i(x, y)
 			var p := (Vector2(c) + Vector2(0.5, 0.5)) * cp
 			var solid := d.passage_at(c) == MapData.Passage.BLOCKED
-			if d.water_at(c) and d.passage_at(c) != MapData.Passage.OPEN:
+			if d.water_at(c) and d.passage_at(c) != MapData.Passage.OPEN and not decks.has(c):
 				solid = true
 			if not solid:
 				solid = _in_cliff(world, p)

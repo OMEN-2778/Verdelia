@@ -8,7 +8,7 @@ extends Node2D
 ## Walking is worked out from what is drawn: water blocks (a shallow rim along the shore stays
 ## walkable), cliffs block except at ramps, trees block at the trunk and bushes and rocks at the
 ## base, buildings at their walls, and the passage grid can block any cell or open a water cell (a
-## bridge).
+## bridge); a deck building (a pier, a stone bridge) makes the water under it walkable.
 
 signal rebuilt
 
@@ -18,7 +18,8 @@ const FLOWERS := [
 	"res://art/library/flowers/poppy.png", "res://art/library/flowers/forgetmenot.png",
 	"res://art/library/flowers/lavender.png", "res://art/library/flowers/dandelion.png",
 ]
-const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED, Terrain.Kind.PAVED]
+const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED, Terrain.Kind.PAVED,
+	Terrain.Kind.WOOD_FLOOR, Terrain.Kind.STONE_FLOOR]
 const SHORE_INSET := 3.0  ## px of shallow water along the shore you can still wade in
 
 var data: MapData
@@ -34,6 +35,7 @@ var _obj_nodes: Array = []  # parallel to data.objects
 var _cliff_nodes: Array = []  # parallel to data.cliffs
 var _ground_tex: ImageTexture
 var _water_tex: ImageTexture
+var _decks := {}  # cells under deck buildings (piers, bridges): walkable even over water
 
 
 func _ready() -> void:
@@ -138,6 +140,8 @@ func paint_passage(cells: Array, v: int) -> void:
 func add_object(o: Dictionary) -> void:
 	data.objects.append(o)
 	_obj_nodes.append(_make_object(o))
+	if _is_deck(o):
+		_rebuild_blockers()
 
 
 ## Removes objects whose base lies in any of `cells` (buildings: anywhere on their walls); returns
@@ -148,6 +152,7 @@ func remove_objects_in(cells: Array, buildings := true) -> int:
 		hit[c] = true
 	var cp := float(data.cell_px)
 	var removed := 0
+	var decks_gone := false
 	for i in range(data.objects.size() - 1, -1, -1):
 		var o: Dictionary = data.objects[i]
 		var on := false
@@ -162,10 +167,14 @@ func remove_objects_in(cells: Array, buildings := true) -> int:
 		else:
 			on = hit.has(Vector2i(floori(o.x / cp), floori(o.y / cp)))
 		if on:
+			if _is_deck(o):
+				decks_gone = true
 			_obj_nodes[i].queue_free()
 			_obj_nodes.remove_at(i)
 			data.objects.remove_at(i)
 			removed += 1
+	if decks_gone:
+		_rebuild_blockers()
 	return removed
 
 
@@ -199,9 +208,30 @@ func building_at(p: Vector2) -> int:
 
 
 func remove_object(i: int) -> void:
+	var deck := _is_deck(data.objects[i])
 	_obj_nodes[i].queue_free()
 	_obj_nodes.remove_at(i)
 	data.objects.remove_at(i)
+	if deck:
+		_rebuild_blockers()
+
+
+static func _is_deck(o: Dictionary) -> bool:
+	return o.kind == "building" and WorldBuilding.place_of(o.id) == "deck"
+
+
+## Cells whose middle lies on the footprint of a deck building (a pier, a bridge).
+static func deck_cells(d: MapData) -> Dictionary:
+	var out := {}
+	var cp := float(d.cell_px)
+	for o in d.objects:
+		if _is_deck(o):
+			var r := building_rect(o)
+			for y in range(floori(r.position.y / cp), ceili(r.end.y / cp)):
+				for x in range(floori(r.position.x / cp), ceili(r.end.x / cp)):
+					if r.has_point((Vector2(x, y) + Vector2(0.5, 0.5)) * cp):
+						out[Vector2i(x, y)] = true
+	return out
 
 
 func add_cliff(c: Dictionary) -> void:
@@ -274,7 +304,8 @@ func cliff_nodes() -> Array:
 
 func _ground_image() -> Image:
 	var img := Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
-	var cols := [Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 0)]
+	var cols := [Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 0),
+		Color(1, 0, 0, 0), Color(0, 1, 0, 0)]
 	for y in data.size.y:
 		for x in data.size.x:
 			img.set_pixel(x, y, cols[data.ground[y * data.size.x + x]])
@@ -356,6 +387,7 @@ func _rebuild_blockers() -> void:
 	for c in blockers.get_children():
 		c.free()
 	var cp := float(data.cell_px)
+	_decks = deck_cells(data)
 	# the map's edges: nobody walks off it (along the top, not onto the lip of a vista's meadow)
 	var full := data.size_px()
 	for r in [Rect2(-32, -32, full.x + 64, 38), Rect2(-32, full.y, full.x + 64, 32),
@@ -395,7 +427,7 @@ func _block_kind(c: Vector2i) -> int:
 	var p := data.passage_at(c)
 	if p == MapData.Passage.BLOCKED:
 		return 2
-	if p == MapData.Passage.OPEN:
+	if p == MapData.Passage.OPEN or _decks.has(c):
 		return 0
 	return 1 if data.water_at(c) else 0
 

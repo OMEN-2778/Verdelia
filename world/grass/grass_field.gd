@@ -111,6 +111,8 @@ func _pick(p: Vector2, rng: RandomNumberGenerator, excluders: Array) -> int:
 	var s := terrain.sample(p)
 	if wet > 0.12:
 		return _rand(rng, "meadow") if rng.randf() < 0.7 else -1  # a fringe of grass on the bank
+	if s.a < 0.8 and s.r + s.g > 0.3:
+		return -1  # indoor floors (floorboards, stone flags) and their edges
 	if s.g > 0.4:
 		return -1  # tilled soil: crops are placed on the ridges separately
 	if s.a < 0.35:
@@ -130,7 +132,8 @@ func _add_crops(rect: Rect2, rng: RandomNumberGenerator, items: Array) -> void:
 		var x := int(ceilf(rect.position.x / 8.0)) * 8
 		while x < rect.end.x:
 			var p := Vector2(x + rng.randi_range(-1, 1), y)
-			if terrain.sample(p).g > 0.62 and rng.randf() < 0.85:
+			var t := terrain.sample(p)
+			if t.g > 0.62 and t.a > 0.6 and rng.randf() < 0.85:
 				items.append([p.y, p.x, _rand(rng, "crop")])
 			x += 8
 		y += 8

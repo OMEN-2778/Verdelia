@@ -1,6 +1,7 @@
 // Procedural ground for the whole map, ported from stardust-vale's arena painter.
 // The sprite's TEXTURE is the terrain data (one texel per cell, linear filtered):
-//   R = bare dirt / path, G = tilled soil, B = watered, A = 0 where the ground is paved.
+//   R = bare dirt / path, G = tilled soil, B = watered, A = 0 where the ground is paved
+//   (A = 0 with R = 1: wooden floorboards, with G = 1: stone flags; floors keep hard cell edges).
 // Grass is two value-noise octaves + 4x4 Bayer dithering; dirt and tilled soil get organic,
 // dithered edges from noise, paths are lighter where worn, tilled soil is drawn as mounded rows.
 // Paving is a brick road laid by hand: rows that wander a little, bricks of uneven length with
@@ -63,6 +64,16 @@ uniform vec4 joint0 : source_color = vec4(0.333, 0.294, 0.247, 1.0);
 uniform vec4 joint1 : source_color = vec4(0.416, 0.373, 0.318, 1.0);
 uniform vec4 joint_moss : source_color = vec4(0.275, 0.420, 0.216, 1.0);
 
+group_uniforms floors;
+uniform float board_h = 4.0;  // px per floorboard
+uniform vec4 board0 : source_color = vec4(0.290, 0.184, 0.118, 1.0);  // gaps between boards
+uniform vec4 board1 : source_color = vec4(0.471, 0.314, 0.192, 1.0);
+uniform vec4 board2 : source_color = vec4(0.561, 0.380, 0.231, 1.0);
+uniform vec4 board3 : source_color = vec4(0.643, 0.443, 0.271, 1.0);
+uniform vec4 board4 : source_color = vec4(0.722, 0.522, 0.329, 1.0);
+uniform float flag_row = 7.0;  // px per row of stone flags
+uniform vec4 flag_joint : source_color = vec4(0.267, 0.247, 0.243, 1.0);
+
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
 float hash(vec2 p) {
@@ -118,8 +129,10 @@ void fragment() {
 	else if (hash(floor((pix - vec2(1.0, 1.0)) / vec2(3.0, 1.0)) * 2.17 + 3.0) < pebble_density) col.rgb *= 0.72;
 
 	vec4 d = DATA(pix);
+	vec4 cell = texelFetch(TEXTURE, ivec2(floor(UV * vec2(textureSize(TEXTURE, 0)))), 0);  // unblended, for floors
+	vec3 soil = d.rgb * d.a;  // paving and floors (A = 0) carry no soil
 	// dirt and paths
-	float edge = d.r + (vnoise(pix, 11.0) - 0.5) * 0.42 + bay * 0.12;
+	float edge = soil.r + (vnoise(pix, 11.0) - 0.5) * 0.42 + bay * 0.12;
 	if (edge > 0.5) {
 		float around = (DATA(pix + vec2(5.0, 0.0)).r + DATA(pix - vec2(5.0, 0.0)).r
 			+ DATA(pix + vec2(0.0, 5.0)).r + DATA(pix - vec2(0.0, 5.0)).r) * 0.25;
@@ -127,7 +140,7 @@ void fragment() {
 		float v = 0.38 + wear * 0.24 + (vnoise(pix, 6.0) - 0.5) * 0.5 - (edge < 0.58 ? 0.25 : 0.0) + bay * 0.25;
 		vec4 D[4] = vec4[4](dirt0, dirt1, dirt2, dirt3);
 		col = D[clamp(int(v * 4.0), 0, 3)];
-		if (d.b > 0.5 && d.g < 0.5) {  // beach sand: lighter, finer, the odd shell or pebble
+		if (soil.b > 0.5 && soil.g < 0.5) {  // beach sand: lighter, finer, the odd shell or pebble
 			vec4 S[4] = vec4[4](sand0, sand1, sand2, sand3);
 			float sv = 0.45 + (vnoise(pix, 5.0) - 0.5) * 0.5 + (vnoise(pix, 17.0) - 0.5) * 0.3 + bay * 0.3 - (edge < 0.58 ? 0.2 : 0.0);
 			col = S[clamp(int(sv * 4.0), 0, 3)];
@@ -137,7 +150,7 @@ void fragment() {
 		}
 	}
 	// tilled soil: mounded rows, lit on top, shadowed in the furrow; watered soil is darker
-	float tg = d.g + (vnoise(pix + 77.0, 9.0) - 0.5) * 0.28 + bay * 0.08;
+	float tg = soil.g + (vnoise(pix + 77.0, 9.0) - 0.5) * 0.28 + bay * 0.08;
 	if (tg > 0.5) {
 		float u = pix.y + (vnoise(pix + 33.0, 22.0) - 0.5) * 2.2 + sin(pix.x * 0.035 + seed) * 1.0;
 		float f = fract(u / ridge_period);
@@ -146,11 +159,11 @@ void fragment() {
 		if (tg < 0.56) tone = max(tone - 2, 0);  // a darker lip where the hoed soil meets the ground
 		vec4 T[5] = vec4[5](till0, till1, till2, till3, till4);
 		col = T[clamp(tone, 0, 4)];
-		float wet = d.b + (vnoise(pix + 5.0, 10.0) - 0.5) * 0.3 + bay * 0.05;
+		float wet = soil.b + (vnoise(pix + 5.0, 10.0) - 0.5) * 0.3 + bay * 0.05;
 		if (wet > 0.5) col.rgb *= wet_darken;
 	}
 	// brick paving
-	float pv = 1.0 - d.a;
+	float pv = (1.0 - d.a) * (1.0 - max(d.r, d.g));
 	float pe = pv + (vnoise(pix + 51.0, 7.0) - 0.5) * 0.5 + (vnoise(pix + 9.0, 3.0) - 0.5) * 0.18;
 	if (pe > 0.45) {
 		vec4 under = col;
@@ -200,8 +213,47 @@ void fragment() {
 			col = vec4(c, 1.0);
 		}
 	}
+	// indoor floors: whole cells, straight edges
+	bool indoor = cell.a < 0.5 && (cell.r > 0.5 || cell.g > 0.5);
+	if (cell.a < 0.5 && cell.r > 0.5) {
+		// floorboards running across, of uneven length, staggered row to row
+		float row = floor(pix.y / board_h);
+		float ly = pix.y - row * board_h;
+		float len = 18.0 + floor(hash(vec2(row, 1.3)) * 14.0);
+		float bx = pix.x + floor(hash(vec2(row, 7.9)) * len);
+		float k = floor(bx / len);
+		float lx = bx - k * len;
+		vec2 bid = vec2(k, row);
+		float hb = hash(bid * 1.91 + 4.2);
+		float v = 0.5 + (hb - 0.5) * 0.45 + (vnoise(pix + 400.0, 36.0) - 0.5) * 0.25;
+		v += (vnoise(vec2(pix.x * 0.25, pix.y * 2.0) + bid * 17.0, 3.0) - 0.5) * 0.45;  // grain along the board
+		if (ly < 1.0) v += 0.25;  // the lit near edge of each board
+		vec4 B[4] = vec4[4](board1, board2, board3, board4);
+		col = B[clamp(int((v + bay * 0.18) * 4.0), 0, 3)];
+		if (ly >= board_h - 1.0 || lx < 1.0) col = board0;  // gaps between boards and at their ends
+		else if (hb < 0.35 && (lx == 2.0 || lx == len - 3.0) && ly == 1.0) col = board1;  // nails on some boards
+		else if (hash(pix * 0.53 + bid) < 0.006) col = board1;  // knots
+	} else if (cell.a < 0.5 && cell.g > 0.5) {
+		// flagstones of uneven width in staggered rows, each with its own tone, lit top-left
+		float row = floor(pix.y / flag_row);
+		float ly = pix.y - row * flag_row;
+		float len = 8.0 + floor(hash(vec2(row, 3.1)) * 5.0);
+		float fx = pix.x + floor(hash(vec2(row, 5.7)) * len);
+		float k = floor(fx / len);
+		float lx = fx - k * len;
+		vec2 fid = vec2(k, row);
+		float h1 = hash(fid * 1.37 + 2.5), h2 = hash(fid * 2.71 + 8.1);
+		int fam = h1 < 0.55 ? 3 : h1 < 0.9 ? 0 : 1;  // cool grey mostly, some warm grey, a little beige
+		float v = 0.5 + (h2 - 0.5) * 0.35 + (vnoise(pix + fid * 9.0, 2.0) - 0.5) * 0.3 + bay * 0.12;
+		if (ly < 1.0 || lx < 1.0) col = flag_joint;
+		else {
+			if (ly < 2.0 || lx < 2.0) v += 0.22;
+			if (ly >= flag_row - 1.0 || lx >= len - 1.0) v -= 0.2;
+			col = vec4(STONE[fam * 4 + clamp(int(v * 4.0), 0, 3)], 1.0);
+		}
+	}
 	// around and under water (same edge test as water.gdshader, so the strips line up)
-	if (has_water) {
+	if (has_water && !indoor) {
 		float we = WEDGE(pix);
 		bool sandy = d.r > 0.4 && d.b > 0.5 && d.g < 0.5;
 		if (we >= 0.5) {  // under the water: the bed, seen through the rim

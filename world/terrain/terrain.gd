@@ -15,7 +15,7 @@ extends Sprite2D
 
 signal changed(cell_rect: Rect2i)
 
-enum Kind { GRASS, DIRT, TILLED, WATERED, WATER, SAND, PAVED }
+enum Kind { GRASS, DIRT, TILLED, WATERED, WATER, SAND, PAVED, WOOD_FLOOR, STONE_FLOOR }
 const BRUSH_KINDS: Array[int] = [Kind.DIRT, Kind.TILLED, Kind.WATERED, Kind.GRASS, Kind.WATER]  # terrain_brushes.png order
 
 @export var map_size_px := Vector2i(426, 240):
@@ -209,7 +209,7 @@ func kind_at(world: Vector2) -> int:
 		return Kind.WATER
 	var s := sample(world)
 	if s.a < 0.5:
-		return Kind.PAVED
+		return Kind.WOOD_FLOOR if s.r > 0.5 else (Kind.STONE_FLOOR if s.g > 0.5 else Kind.PAVED)
 	if s.g > 0.5:
 		return Kind.WATERED if s.b > 0.5 else Kind.TILLED
 	if s.r > 0.5:
@@ -258,6 +258,10 @@ func _write_ground(cell: Vector2i, kind: int) -> void:
 			c = Color(1, 0, 1, 1)  # dirt + "wet" bit without tilled = beach sand
 		Kind.PAVED:
 			c = Color(0, 0, 0, 0)  # alpha 0 = brick paving (over grass, which shows at its edges)
+		Kind.WOOD_FLOOR:
+			c = Color(1, 0, 0, 0)  # alpha 0 + red = floorboards (indoors: hard edges)
+		Kind.STONE_FLOOR:
+			c = Color(0, 1, 0, 0)  # alpha 0 + green = stone flags
 	data.set_pixelv(cell, c)
 
 

@@ -10,7 +10,7 @@ const LAYERS := ["地面", "水体", "植被", "岩壁", "通行", "建筑"]
 enum Layer { GROUND, WATER, PLANTS, CLIFF, PASSAGE, BUILDING }
 
 const TOOLS := {
-	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4], ["砖路", 5]],
+	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4], ["砖路", 5], ["木地板", 6], ["石板地", 7]],
 	Layer.WATER: [["水", 1]],
 	Layer.PLANTS: [
 		["混合树林", "mix_forest"], ["阔叶树", "tree:oak"], ["白桦", "tree:birch"], ["松树", "tree:pine"],
@@ -544,10 +544,13 @@ func can_place_building(id: String, p: Vector2) -> bool:
 	if r.size == Vector2.ZERO:
 		return false
 	var cp := float(d.cell_px)
-	for y in range(floori(r.position.y / cp), ceili((r.end.y + 4.0) / cp)):
+	var place := WorldBuilding.place_of(id)  # "" on land, "water" a boat, "deck" anywhere (a pier)
+	for y in range(floori(r.position.y / cp), ceili((r.end.y + (4.0 if place == "" else 0.0)) / cp)):
 		for x in range(floori(r.position.x / cp), ceili(r.end.x / cp)):
 			var c := Vector2i(x, y)
-			if not d.has_cell(c) or d.water_at(c):
+			if not d.has_cell(c):
+				return false
+			if (place == "" and d.water_at(c)) or (place == "water" and not d.water_at(c)):
 				return false
 			if world.cliff_at((Vector2(c) + Vector2(0.5, 0.5)) * cp) >= 0:
 				return false

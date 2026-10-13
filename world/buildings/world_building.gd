@@ -8,13 +8,15 @@ extends Node2D
 ## flat and does not); a house or shop has a Door area on its doorstep that reports who steps onto
 ## it (door_entered), ready for interiors. At night windows, lanterns and the forge light up and
 ## stay bright through the dark grade (the lamp mark in grade.gdshader), smoke rises from the
-## chimneys, a windmill's sails turn, and walking behind the building fades it so the player stays
-## in sight.
+## chimneys, animated parts move (a windmill's sails, a water wheel, a camp fire's flames), and
+## walking behind the building fades it so the player stays in sight. Some things are walked on
+## (rugs, a pier, a bridge's deck: not solid, drawn under everyone); `place` says where a thing
+## may stand ("water": a boat, "deck": over water or land).
 
 signal door_entered(body: Node2D)
 
 const FADE_ALPHA := 0.45
-const SAIL_FPS := 5.0  ## windmill sail frames per second (12 frames = a quarter turn)
+const ANIM_FPS := 5.0  ## frames per second of an animated part that names no rate of its own
 
 @export var building := "cabin_red":
 	set(v):
@@ -26,8 +28,10 @@ const SAIL_FPS := 5.0  ## windmill sail frames per second (12 frames = a quarter
 var _entry := {}
 var _sprite: Sprite2D
 var _lamps: Sprite2D
-var _sails: Sprite2D
+var _anims: Array = []  # [Sprite2D, fps]
 var _fade := 1.0
+var _solid := true
+var _rect := Rect2()  # the picture, relative to the base point
 var _t := 0.0
 
 
@@ -36,9 +40,14 @@ func _ready() -> void:
 	_rebuild()
 
 
-## Whether it blocks walking (everything but rugs).
+## Whether it blocks walking (everything but rugs, decks and the like).
 static func is_solid(id: String) -> bool:
 	return FloraLibrary.building(id).get("solid", true)
+
+
+## Where it may stand: "" on land, "water" on water (a boat), "deck" over water or land.
+static func place_of(id: String) -> String:
+	return FloraLibrary.building(id).get("place", "")
 
 
 ## Ground the building stands on (its walls or counter), relative to its base point.
@@ -70,40 +79,33 @@ func _rebuild() -> void:
 	var anchor := -Vector2(_entry.anchor[0], _entry.anchor[1])
 	var fp := footprint_of(building)
 	var solid := is_solid(building)
+	_solid = solid
+	_rect = sprite_rect_of(building)
 	_sprite = Sprite2D.new()
 	_sprite.name = "Building"
 	_sprite.texture = FloraLibrary.texture(_entry.file)
 	_sprite.centered = false
 	_sprite.position = anchor
-	if not solid:  # lies flat on the ground, under everyone walking over it
+	_anims.clear()
+	if not solid:  # lies flat on the ground (or is a deck), under everyone walking over it
 		_sprite.z_as_relative = false
 		_sprite.z_index = -5
 		add_child(_sprite)
+		_add_anims(-5)
 		_lamps = null
+		if _entry.get("night") != null:
+			_add_lamps(anchor, -5)
 		return
 	add_child(_shadow(fp))
 	add_child(_sprite)
-	if _entry.has("sails_file"):
-		_sails = Sprite2D.new()
-		_sails.name = "Sails"
-		_sails.texture = FloraLibrary.texture(_entry.sails_file)
-		_sails.hframes = int(_entry.sails_frames)
-		_sails.position = Vector2(_entry.sails[0], _entry.sails[1])
-		add_child(_sails)
-	_lamps = Sprite2D.new()
-	_lamps.name = "Lamps"
-	_lamps.texture = FloraLibrary.texture(_entry.night)
-	_lamps.centered = false
-	_lamps.position = anchor
-	_lamps.visible = false  # DayNight switches them on at dusk (group "night_lamps")
-	_lamps.add_to_group("night_lamps")
-	add_child(_lamps)
+	_add_anims(0)
+	_add_lamps(anchor, 0)
 	if smoke:
 		for c: Array in _entry.get("chimney", []):
 			add_child(_smoke(Vector2(c[0], c[1])))
 	var mirrored: Array[Sprite2D] = [_sprite]
-	if _sails:
-		mirrored.append(_sails)
+	for a: Array in _anims:
+		mirrored.append(a[0])
 	WaterReflection.attach(self, mirrored)
 	var body := StaticBody2D.new()
 	body.name = "Walls"
@@ -127,23 +129,58 @@ func _rebuild() -> void:
 		add_child(door)
 
 
+## Animated parts: every "<name>_frames" entry has its sheet in "<name>_file", the middle of a
+## frame at "<name>" and maybe a rate in "<name>_fps".
+func _add_anims(z: int) -> void:
+	for key: String in _entry:
+		if not key.ends_with("_frames"):
+			continue
+		var part := key.trim_suffix("_frames")
+		var a := Sprite2D.new()
+		a.name = part.capitalize()
+		a.texture = FloraLibrary.texture(_entry[part + "_file"])
+		a.hframes = int(_entry[key])
+		a.position = Vector2(_entry[part][0], _entry[part][1])
+		if z != 0:
+			a.z_as_relative = false
+			a.z_index = z
+		add_child(a)
+		_anims.append([a, float(_entry.get(part + "_fps", ANIM_FPS))])
+
+
+func _add_lamps(anchor: Vector2, z: int) -> void:
+	_lamps = Sprite2D.new()
+	_lamps.name = "Lamps"
+	_lamps.texture = FloraLibrary.texture(_entry.night)
+	_lamps.centered = false
+	_lamps.position = anchor
+	_lamps.visible = false  # DayNight switches them on at dusk (group "night_lamps")
+	_lamps.add_to_group("night_lamps")
+	if z != 0:
+		_lamps.z_as_relative = false
+		_lamps.z_index = z
+	add_child(_lamps)
+
+
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or _sprite == null or _lamps == null:
+	if Engine.is_editor_hint() or _sprite == null:
 		return
 	_t += delta
-	if _sails:
-		_sails.frame = int(_t * SAIL_FPS) % _sails.hframes
+	for a: Array in _anims:
+		a[0].frame = int(_t * a[1]) % a[0].hframes
+	if _lamps == null or not _solid:
+		return
 	# fade while a player is behind the building (above its base line, inside the picture)
 	var behind := false
-	var r := sprite_rect_of(building)
+	var r := _rect
 	for p in get_tree().get_nodes_in_group("player"):
 		var d: Vector2 = (p as Node2D).global_position - global_position
 		if d.y < -2.0 and d.y > r.position.y + 10.0 and d.x > r.position.x + 4.0 and d.x < r.end.x - 4.0:
 			behind = true
 	_fade = move_toward(_fade, FADE_ALPHA if behind else 1.0, delta * 3.0)
 	_sprite.modulate.a = _fade
-	if _sails:
-		_sails.modulate.a = _fade
+	for a: Array in _anims:
+		a[0].modulate.a = _fade
 	_lamps.modulate.a = 1.0 if _fade >= 1.0 else 0.0  # the lamp mark needs the exact colours
 
 
