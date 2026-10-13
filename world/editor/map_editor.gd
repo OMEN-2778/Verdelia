@@ -65,6 +65,7 @@ var _density_row: Control
 var _face_row: Control
 var _overlay_btn: CheckButton
 var _play_btn: Button
+var _vista_opt: OptionButton
 var _layer_buttons: Array = []
 var _new_dialog: ConfirmationDialog
 var _size_dialog: ConfirmationDialog
@@ -98,6 +99,7 @@ func _ready() -> void:
 	add_child(camera)
 	camera.make_current()
 	_build_ui()
+	world.rebuilt.connect(func(): _vista_opt.select(Vista.KINDS.keys().find(world.data.vista)))
 	new_map(Vector2i(120, 68))
 
 
@@ -245,7 +247,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	if player:
-		camera.position = camera.position.lerp(player.global_position, 1.0 - exp(-6.0 * delta))
+		var target := player.global_position
+		if world.data.vista != "":  # look out over the vista near the north edge, as in the game
+			var k := world.vista.update_look(target.y, delta)
+			var half := get_viewport().get_visible_rect().size.y * 0.5 / camera.zoom.y
+			target.y = maxf(target.y - Vista.LOOK_HEIGHT * 1.4 * k, half - Vista.LOOK_HEIGHT * k)
+		camera.position = camera.position.lerp(target, 1.0 - exp(-6.0 * delta))
 		return
 	var pan := Vector2.ZERO
 	if Input.is_key_pressed(KEY_LEFT): pan.x -= 1
@@ -727,6 +734,16 @@ func _build_ui() -> void:
 	_overlay_btn.text = "显示通行范围"
 	_overlay_btn.toggled.connect(_on_overlay_toggled)
 	bar.add_child(_overlay_btn)
+	bar.add_child(VSeparator.new())
+	var vl := Label.new()
+	vl.text = "远景"
+	bar.add_child(vl)
+	_vista_opt = OptionButton.new()
+	_vista_opt.tooltip_text = "地图北边（上边缘）外画出来的远景；试玩时走到上边缘，镜头会慢慢抬起眺望"
+	for k in Vista.KINDS:
+		_vista_opt.add_item(Vista.KINDS[k])
+	_vista_opt.item_selected.connect(_on_vista)
+	bar.add_child(_vista_opt)
 	_play_btn = _button(bar, "▶ 试玩", func(): stop_play() if player else start_play())
 	_status = Label.new()
 	_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -853,6 +870,15 @@ func select_layer(i: int) -> void:
 	_face_row.visible = i == Layer.CLIFF
 	_refresh_hint()
 	cursor.queue_redraw()
+
+
+func _on_vista(i: int) -> void:
+	var k: String = Vista.KINDS.keys()[i]
+	if k == world.data.vista:
+		return
+	_snapshot()
+	world.set_vista(k)
+	_flash("远景：" + Vista.KINDS[k])
 
 
 func _on_overlay_toggled(on: bool) -> void:

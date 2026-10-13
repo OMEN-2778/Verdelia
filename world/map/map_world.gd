@@ -1,7 +1,8 @@
 class_name MapWorld
 extends Node2D
 ## Builds a living world from a MapData: ground (Terrain), water (WaterLayer), grass, trees,
-## bushes, rocks and flowers, buildings, cliffs with their ramps, and everything that blocks walking. The map
+## bushes, rocks and flowers, buildings, cliffs with their ramps, the far view beyond the north
+## edge (Vista), and everything that blocks walking. The map
 ## editor edits it live through the paint_* / add_* / remove_* calls; the game just load_map()s.
 ##
 ## Walking is worked out from what is drawn: water blocks (a shallow rim along the shore stays
@@ -20,6 +21,7 @@ const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, 
 const SHORE_INSET := 3.0  ## px of shallow water along the shore you can still wade in
 
 var data: MapData
+var vista: Vista
 var terrain: Terrain
 var water_layer: WaterLayer
 var grass: GrassField
@@ -34,6 +36,10 @@ var _water_tex: ImageTexture
 
 
 func _ready() -> void:
+	vista = Vista.new()
+	vista.name = "Vista"
+	vista.kind = ""
+	add_child(vista)
 	terrain = Terrain.new()
 	terrain.name = "Terrain"
 	add_child(terrain)
@@ -93,6 +99,7 @@ func load_data(d: MapData) -> void:
 	terrain.rebuild()
 	_rebuild_blockers()
 	bridges.refresh()
+	vista.kind = data.vista
 	rebuilt.emit()
 
 
@@ -114,6 +121,11 @@ func paint_water(cells: Array, on: bool) -> void:
 			data.water[data.idx(c)] = 1 if on else 0
 			keep.append(c)
 	terrain.set_water_cells(keep, on)
+
+
+func set_vista(kind: String) -> void:
+	data.vista = kind
+	vista.kind = kind
 
 
 func paint_passage(cells: Array, v: int) -> void:
@@ -343,6 +355,16 @@ func _rebuild_blockers() -> void:
 	for c in blockers.get_children():
 		c.free()
 	var cp := float(data.cell_px)
+	# the map's edges: nobody walks off it (along the top, not onto the lip of a vista's meadow)
+	var full := data.size_px()
+	for r in [Rect2(-32, -32, full.x + 64, 38), Rect2(-32, full.y, full.x + 64, 32),
+			Rect2(-32, -32, 32, full.y + 64), Rect2(full.x, -32, 32, full.y + 64)]:
+		var edge := CollisionShape2D.new()
+		var er := RectangleShape2D.new()
+		er.size = r.size
+		edge.shape = er
+		edge.position = r.get_center()
+		blockers.add_child(edge)
 	for y in data.size.y:
 		var x := 0
 		while x < data.size.x:

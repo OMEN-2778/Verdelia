@@ -2,8 +2,12 @@ extends SceneTree
 ## Writes maps/town.json: a small sample town to try the buildings in (and to start from in the
 ## map editor). A brick-paved high street of houses, shops, the smithy, the inn, a manor and a
 ## tower; a busy market square of stalls, tents, a wagon and a well; a farm corner with the hero's
-## home, a barn, a windmill and a field; dirt lanes, a pond and woods round it all.
+## home, a barn, a windmill and a field; dirt lanes, a pond and woods round it all, with a clearing
+## at the north edge to look out over the mountain vista from.
 ##   godot --headless --path . --script res://tools/editor/make_town.gd
+
+
+const LOOKOUT := Rect2(470, 0, 300, 100)  ## a treeless clearing at the north edge, for the view
 
 
 func _init() -> void:
@@ -42,7 +46,7 @@ func _init() -> void:
 	var taken: Array = []
 	for i in 420:
 		var p := Vector2(rng.randf_range(8, 1192), rng.randf_range(10, 664))
-		if _clear(m, p, taken):
+		if _clear(m, p, taken) and not LOOKOUT.has_point(p):
 			var r := rng.randf()
 			var o := {"kind": "tree", "id": "oak" if r < 0.4 else ("birch" if r < 0.6 else ("pine" if r < 0.85 else "blossom")), "x": roundf(p.x), "y": roundf(p.y)}
 			if _hides_building(m, p):  # crowns would hide a building front: a bush instead
@@ -55,6 +59,7 @@ func _init() -> void:
 			m.objects.append({"kind": "flower", "id": MapWorld.FLOWERS[rng.randi() % MapWorld.FLOWERS.size()], "x": roundf(p.x), "y": roundf(p.y)})
 			taken.append(p)
 	m.spawn = Vector2(843, 494)  # on the hero's doorstep
+	m.vista = "mountains"
 	var err := m.save("res://maps/town.json")
 	print("maps/town.json: ", error_string(err), ", ", m.objects.size(), " objects")
 	quit()

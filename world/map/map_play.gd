@@ -1,6 +1,7 @@
 extends Node2D
 ## Plays a map made in the map editor: builds the world from the map file, puts the walking
-## character at the spawn point with a following camera, and runs the day.
+## character at the spawn point with a following camera, and runs the day. Walking up to the
+## north edge of a map with a vista eases the camera up to take in the view.
 ## The map comes from `map_path`, or from the command line: `-- --map=/path/to/map.json`.
 
 @export_file("*.json") var map_path := "res://maps/sample.json"
@@ -8,6 +9,7 @@ extends Node2D
 
 var world: MapWorld
 var player: CharacterBody2D
+var cam: Camera2D
 
 
 func _ready() -> void:
@@ -30,7 +32,7 @@ func _ready() -> void:
 	body.hframes = 4
 	body.offset = Vector2(0, -10)
 	player.add_child(body)
-	var cam := Camera2D.new()
+	cam = Camera2D.new()
 	cam.position_smoothing_enabled = true
 	cam.position_smoothing_speed = 4.0
 	var size := world.data.size_px()
@@ -61,3 +63,12 @@ func _ready() -> void:
 	day.start_hour = start_hour
 	day.grade = screen
 	add_child(day)
+
+
+func _process(delta: float) -> void:
+	if cam == null or world.data.vista == "":
+		return
+	# look out over the vista: the camera may rise above the map's edge and is pulled up to it
+	var k := world.vista.update_look(player.position.y, delta)
+	cam.limit_top = int(-Vista.LOOK_HEIGHT * k)
+	cam.position.y = -Vista.LOOK_HEIGHT * 1.4 * k  # (not offset: that would ignore the limit)

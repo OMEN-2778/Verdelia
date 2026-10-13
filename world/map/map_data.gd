@@ -23,6 +23,8 @@ var objects: Array = []
 ##  ramps: [x, half width, style, ...]} (style 0 earthen slope, 1 stone stairs, 2 grass slope)
 var cliffs: Array = []
 var spawn := Vector2(-1, -1)
+## The far view painted beyond the north edge (Vista.KINDS): "" none, "mountains"...
+var vista := ""
 
 
 static func create(cells: Vector2i) -> MapData:
@@ -42,6 +44,7 @@ func resized(cells: Vector2i, offset: Vector2i) -> MapData:
 	var m := MapData.create(cells)
 	m.name = name
 	m.cell_px = cell_px
+	m.vista = vista
 	for y in size.y:
 		for x in size.x:
 			var c := Vector2i(x, y) + offset
@@ -118,6 +121,7 @@ func to_dict() -> Dictionary:
 		"objects": objects.duplicate(true),
 		"cliffs": cliffs.duplicate(true),
 		"spawn": [spawn.x, spawn.y],
+		"vista": vista,
 	}
 
 
@@ -125,6 +129,7 @@ static func from_dict(d: Dictionary) -> MapData:
 	var m := MapData.create(Vector2i(int(d.size[0]), int(d.size[1])))
 	m.name = d.get("name", m.name)
 	m.cell_px = int(d.get("cell_px", 8))
+	m.vista = str(d.get("vista", ""))
 	var n := m.size.x * m.size.y
 	for key in ["ground", "water", "passage"]:
 		var raw := Marshalls.base64_to_raw(d.get(key, ""))
