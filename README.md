@@ -2,6 +2,14 @@
 
 像素风种田 + 动作战斗 + 光魔法法阵的 Demo（茵菲谷篇）。引擎：Godot 4.7。
 
+## 素材来源
+
+仓库是公开的，所以只放两类素材：
+- 自己画的：`tools/art/` 下的脚本按像素程序生成的全部美术，包括地面、草、树、灌木、石头、野花、岩壁、水、建筑、远景等。
+- 明确是 CC0（公有领域）的：只有调色板工具的演示原图，Kenney 的 *Tiny Battle*。
+
+来源不明或许可不允许公开分发的素材包，比如之前上传的 Grassland、Market Square、Mana Seed，已经从仓库和代码里删掉，不再使用。旧地图里引用的 Grassland 野花，打开时会自动换成自己画的野花。
+
 ## 开发环境
 
 | 内容 | 位置 | 作用 |
@@ -35,7 +43,7 @@
 
 ## Godot 演示场景：光影与场景动效
 
-`scenes/farm_demo.tscn`（主场景），用 Godot 4.7 打开即可运行。由 `tools/art/draw/export_demo.py` 生成，素材换成 Mana Seed 等正式素材时替换 `art/demo/` 里的图层即可。
+`scenes/farm_demo.tscn`（主场景），用 Godot 4.7 打开即可运行。由 `tools/art/draw/export_demo.py` 生成，换素材时替换 `art/demo/` 里的图层即可。
 
 - `shaders/grade.gdshader`：全屏调色，包括降对比、提亮暗部、暖色、泛光、漂移的云影和暗角。参数都能在检查器里实时调
 - `shaders/sway.gdshader`：树、灌木、作物随风摇摆，相邻植物相位不同
@@ -45,14 +53,6 @@
 - 效果录像：`docs/art/farm-demo-daycycle.mp4` / `.gif`，四个时段截图：`docs/art/farm-demo-times.png`
 
 素材本身也能离线柔化：`python3 tools/art/pixeltool.py soften in.png out.png --contrast 0.85 --lift 0.04 --chroma 0.9`。按颜色逐个处理，像素保持清晰。
-
-## Mana Seed 试用素材演示
-
-`scenes/manaseed_demo.tscn` 用 Mana Seed 夏季森林的免费样本拼成，加上和上面相同的光影与动效。洞口夜里会透出紫光。
-
-Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材原图和由它合成的图层都放在被 git 忽略的 `art/vendor/` 里，不提交。新环境里要先把素材放回 `art/vendor/manaseed/`，再运行：
-
-    python3 tools/art/draw/manaseed_demo.py --soften   # 降对比后拼图，生成 art/vendor/demo/ 和场景文件
 
 ## 世界系统（主场景 `scenes/vale_demo.tscn`）
 
@@ -69,7 +69,7 @@ Mana Seed 的许可禁止二次分发，而本仓库是公开的，所以素材�
 
 素材库由 `tools/art/vale/library.py` 生成（`flora.py` 是树、灌木、石头的生成器），输出到 `art/library/`：46 棵树、20 丛灌木、8 块石头、53 种草丛。改了生成器后重新运行这个脚本即可。
 
-第三方素材：`art/third_party/grassland/` 来自上传的 *Grassland Top Down Tileset Pixel Art*。用 `tools/art/vale/grassland.py <解压目录>` 导入，导入时会把绿色微调到草地色调。演示场景用到了里面的遗迹、石堆、开花灌木、树桩和花。
+野花由 `tools/art/vale/wildflowers.py` 画出，输出到 `art/library/flowers/`：雏菊、毛茛、风铃草、三叶草、虞美人、勿忘我、薰衣草、蒲公英，共 8 种。地图编辑器的「野花」、随机地图和演示场景都用它们。
 
 旧版的一次性烘焙演示（`art/vale`、`scripts/vale`）已经被这套系统取代并删除。
 

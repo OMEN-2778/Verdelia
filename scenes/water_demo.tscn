@@ -133,7 +133,7 @@ y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(0, 140, 960, 340)
 items = PackedStringArray("tree:oak", "tree:birch", "tree:pine", "tree:blossom", "tree:sapling", "bush:green", "bush:flower", "bush:violet", "rock", "prop:res://art/library/flowers/clover.png@skirt=0@shadow=0", "prop:res://art/library/flowers/forgetmenot.png@skirt=0@shadow=0")
-weights = PackedFloat32Array(4, 2, 2, 1, 2, 3, 2, 1, 2, 2, 3, 3)
+weights = PackedFloat32Array(4, 2, 2, 1, 2, 3, 4, 1, 2, 3, 3)
 count = 44
 min_distance = 30.0
 seed = 13
