@@ -8,6 +8,12 @@ extends RefCounted
 const VERSION := 1
 
 enum Ground { GRASS, DIRT, SAND, TILLED, WATERED, PAVED }
+## Flowers in older maps pointed at a third-party pack that is no longer in the project; they
+## load as the project's own wild flowers instead.
+const OLD_FLOWERS := "res://art/third_party/"
+const OLD_FLOWER_IDS := {"Flower1": "daisy", "Flower2": "buttercup", "Flower3": "clover", "Flower5": "bluebell",
+	"Flower6": "poppy", "Flower9": "forgetmenot"}
+
 enum Passage { AUTO, BLOCKED, OPEN }  ## OPEN lets you walk on water (bridges, stepping stones)
 
 var name := "未命名地图"
@@ -136,6 +142,9 @@ static func from_dict(d: Dictionary) -> MapData:
 		if raw.size() == n:
 			m.set(key, raw)
 	m.objects = (d.get("objects", []) as Array).duplicate(true)
+	for o in m.objects:  # maps from before the wild flowers were redrawn
+		if o.get("kind") == "flower" and str(o.id).begins_with(OLD_FLOWERS):
+			o.id = "res://art/library/flowers/%s.png" % OLD_FLOWER_IDS.get(str(o.id).get_file().get_basename(), "daisy")
 	m.cliffs = (d.get("cliffs", []) as Array).duplicate(true)
 	var sp: Array = d.get("spawn", [])
 	if sp.size() == 2:

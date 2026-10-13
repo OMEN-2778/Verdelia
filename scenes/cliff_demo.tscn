@@ -89,7 +89,7 @@ clearance = 14.0
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(0, 236, 720, 176)
-items = PackedStringArray("tree:oak", "tree:birch", "tree:sapling", "tree:blossom", "bush:green", "bush:flower", "bush:violet", "rock", "prop:res://art/third_party/grassland/Flower3.png@skirt=0@shadow=0")
+items = PackedStringArray("tree:oak", "tree:birch", "tree:sapling", "tree:blossom", "bush:green", "bush:flower", "bush:violet", "rock", "prop:res://art/library/flowers/clover.png@skirt=0@shadow=0")
 weights = PackedFloat32Array(3, 2, 2, 1, 3, 2, 1, 3, 3)
 count = 22
 min_distance = 34.0

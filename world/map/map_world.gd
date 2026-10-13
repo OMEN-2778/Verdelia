@@ -13,9 +13,10 @@ extends Node2D
 signal rebuilt
 
 const FLOWERS := [
-	"res://art/third_party/grassland/Flower1.png", "res://art/third_party/grassland/Flower2.png",
-	"res://art/third_party/grassland/Flower3.png", "res://art/third_party/grassland/Flower5.png",
-	"res://art/third_party/grassland/Flower6.png", "res://art/third_party/grassland/Flower9.png",
+	"res://art/library/flowers/daisy.png", "res://art/library/flowers/buttercup.png",
+	"res://art/library/flowers/bluebell.png", "res://art/library/flowers/clover.png",
+	"res://art/library/flowers/poppy.png", "res://art/library/flowers/forgetmenot.png",
+	"res://art/library/flowers/lavender.png", "res://art/library/flowers/dandelion.png",
 ]
 const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED, Terrain.Kind.PAVED]
 const SHORE_INSET := 3.0  ## px of shallow water along the shore you can still wade in

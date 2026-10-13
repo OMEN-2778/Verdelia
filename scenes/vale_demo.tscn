@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
 [ext_resource type="Texture2D" path="res://art/demo_world/terrain_mask.png" id="mask"]
@@ -18,14 +18,8 @@
 [ext_resource type="Texture2D" path="res://art/library/fx/shaft.png" id="shaft"]
 [ext_resource type="Texture2D" path="res://art/demo/fx/petal.png" id="petal"]
 [ext_resource type="Texture2D" path="res://art/library/props/pillar_0.png" id="pillar0"]
+[ext_resource type="Texture2D" path="res://art/library/props/pillar_1.png" id="pillar1"]
 [ext_resource type="Texture2D" path="res://art/library/props/pillar_2.png" id="pillar2"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Rpck_grass2.png" id="g_Rpck_grass2"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin1_grass_shadow.png" id="g_Ruin1_grass_shadow"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin2_grass_shadow.png" id="g_Ruin2_grass_shadow"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin3_grass_shadow.png" id="g_Ruin3_grass_shadow"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin4_grass_shadow.png" id="g_Ruin4_grass_shadow"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Ruin5_grass_shadow.png" id="g_Ruin5_grass_shadow"]
-[ext_resource type="Texture2D" path="res://art/third_party/grassland/Stone1_grass_shadow.png" id="g_Stone1_grass_shadow"]
 
 [ext_resource type="Script" path="res://world/fx/day_night.gd" id="daynight"]
 
@@ -94,34 +88,31 @@ y_sort_enabled = true
 [node name="Tower" type="Node2D" parent="Props/Ruins"]
 position = Vector2(66, 214)
 script = ExtResource("prop")
-texture = ExtResource("g_Ruin1_grass_shadow")
-shadow = false
-footprint = Vector2(30, 9)
+texture = ExtResource("pillar1")
+base_offset = 4
 
 [node name="Wall" type="Node2D" parent="Props/Ruins"]
 position = Vector2(292, 140)
 script = ExtResource("prop")
-texture = ExtResource("g_Ruin2_grass_shadow")
-shadow = false
-footprint = Vector2(26, 8)
+texture = ExtResource("pillar0")
+base_offset = 4
 
 [node name="PillarRuin" type="Node2D" parent="Props/Ruins"]
 position = Vector2(222, 112)
 script = ExtResource("prop")
-texture = ExtResource("g_Ruin3_grass_shadow")
-shadow = false
+texture = ExtResource("pillar2")
+base_offset = 4
 
 [node name="PillarRuin2" type="Node2D" parent="Props/Ruins"]
 position = Vector2(120, 290)
 script = ExtResource("prop")
-texture = ExtResource("g_Ruin4_grass_shadow")
-shadow = false
+texture = ExtResource("pillar1")
+base_offset = 4
 
 [node name="Rubble" type="Node2D" parent="Props/Ruins"]
 position = Vector2(248, 236)
 script = ExtResource("prop")
-texture = ExtResource("g_Ruin5_grass_shadow")
-shadow = false
+library_item = "rock"
 
 [node name="Marble" type="Node2D" parent="Props/Ruins"]
 position = Vector2(112, 118)
@@ -138,20 +129,18 @@ base_offset = 4
 [node name="Boulders" type="Node2D" parent="Props/Ruins"]
 position = Vector2(352, 360)
 script = ExtResource("prop")
-texture = ExtResource("g_Rpck_grass2")
-shadow = false
+library_item = "rock"
 
 [node name="Stone" type="Node2D" parent="Props/Ruins"]
 position = Vector2(30, 330)
 script = ExtResource("prop")
-texture = ExtResource("g_Stone1_grass_shadow")
-shadow = false
+library_item = "rock"
 
 [node name="Woods" type="Node2D" parent="Props" node_paths=PackedStringArray("terrain")]
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(0, 300, 230, 180)
-items = PackedStringArray("tree:oak", "tree:birch", "tree:sapling", "bush:green", "bush:berry", "rock", "prop:res://art/third_party/grassland/Broken_tree4.png")
+items = PackedStringArray("tree:oak", "tree:birch", "tree:sapling", "bush:green", "bush:berry", "rock")
 weights = PackedFloat32Array(5, 2, 2, 3, 1, 2, 1)
 count = 16
 min_distance = 30.0
@@ -162,7 +151,7 @@ terrain = NodePath("../../Terrain")
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(330, 92, 300, 90)
-items = PackedStringArray("tree:blossom", "tree:oak", "bush:pink", "bush:flower", "rock", "prop:res://art/third_party/grassland/Bush5.png@sway=0.5", "prop:res://art/third_party/grassland/Flower3.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Flower7.png@skirt=0@shadow=0")
+items = PackedStringArray("tree:blossom", "tree:oak", "bush:pink", "bush:flower", "rock", "prop:res://art/library/flowers/clover.png@skirt=0@shadow=0", "prop:res://art/library/flowers/lavender.png@skirt=0@shadow=0")
 weights = PackedFloat32Array(2, 2, 2, 2, 1, 2, 3, 3)
 count = 16
 min_distance = 24.0
@@ -173,7 +162,7 @@ terrain = NodePath("../../Terrain")
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(640, 92, 320, 388)
-items = PackedStringArray("tree:oak", "tree:pine", "tree:blossom", "tree:birch", "bush:green", "bush:violet", "rock", "prop:res://art/third_party/grassland/Bush6.png@sway=0.5", "prop:res://art/third_party/grassland/Bush14.png@sway=0.5", "prop:res://art/third_party/grassland/Broken_tree1.png", "prop:res://art/third_party/grassland/Rpck_grass4.png@shadow=0", "prop:res://art/third_party/grassland/Flower1.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Flower9.png@skirt=0@shadow=0")
+items = PackedStringArray("tree:oak", "tree:pine", "tree:blossom", "tree:birch", "bush:green", "bush:violet", "rock", "bush:flower", "prop:res://art/library/flowers/daisy.png@skirt=0@shadow=0", "prop:res://art/library/flowers/forgetmenot.png@skirt=0@shadow=0")
 weights = PackedFloat32Array(4, 3, 2, 2, 3, 2, 2, 2, 2, 1, 1, 3, 3)
 count = 40
 min_distance = 26.0
@@ -184,7 +173,7 @@ terrain = NodePath("../../Terrain")
 y_sort_enabled = true
 script = ExtResource("scatter")
 area = Rect2(240, 310, 400, 170)
-items = PackedStringArray("tree:oak", "tree:sapling", "bush:green", "bush:flower", "rock", "prop:res://art/third_party/grassland/Bush7.png@sway=0.5", "prop:res://art/third_party/grassland/Flower5.png@skirt=0@shadow=0", "prop:res://art/third_party/grassland/Rock_grass_element13.png@shadow=0")
+items = PackedStringArray("tree:oak", "tree:sapling", "bush:green", "bush:flower", "rock", "bush:berry", "prop:res://art/library/flowers/bluebell.png@skirt=0@shadow=0")
 weights = PackedFloat32Array(2, 2, 3, 2, 2, 2, 3, 1)
 count = 22
 min_distance = 26.0
