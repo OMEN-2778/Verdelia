@@ -12,6 +12,7 @@ Writes art/library/:
 
 Re-run after changing flora.py or the building scripts:  python3 tools/art/vale/library.py
 """
+import importlib
 import json
 import math
 import random
@@ -42,6 +43,17 @@ ROCKS = 8
 # town buildings, workshops, market stalls and street props, modelled in 3D (town3d.py,
 # market3d.py); "name" and "group" are what the map editor shows
 DESIGNS = {**town3d.DESIGNS, **market3d.DESIGNS, "armour": market.prop_armour, "banner": market.prop_banner}
+# the farm, the wilds and ruins, the waterside, public buildings, street furniture and interiors:
+# each module lists its own entries (and designs) in the same form as BUILDINGS below
+MODULES = []
+for _name in ("farm3d", "wild3d", "water3d", "civic3d", "street3d", "interior3d"):
+    try:
+        MODULES.append(importlib.import_module(_name))
+    except ModuleNotFoundError as e:
+        if e.name != _name:
+            raise
+for _m in MODULES:
+    DESIGNS.update(_m.DESIGNS)
 HOMES, SHOPS, MARKET, PROPS = "住宅", "商店与工坊", "集市", "道具"
 BUILDINGS = [
     {"id": "player_home", "name": "主角小屋", "group": HOMES, "type": "home", "seed": 1},
@@ -91,6 +103,8 @@ BUILDINGS = [
     {"id": "rug", "name": "地毯", "group": PROPS, "type": "rug", "cloth": "red"},
     {"id": "well", "name": "水井", "group": PROPS, "type": "well"},
 ]
+for _m in MODULES:
+    BUILDINGS += _m.ENTRIES
 TUFT_COLOURS = ["#357a36", "#5fae4a", "#a6de72", "#e4f7a8"]
 CROP_COLOURS = ["#5fae4a", "#a6de72", "#d6f39a", "#f0fbd0"]
 FLOWERS = ["#ffffff", "#ffe066", "#ffc4e1"]
@@ -147,10 +161,8 @@ def build_tufts(rnd):
 
 
 # ---------------------------------------------------------------- ported from the first vale demo
-# marble ruin pillars, the placeholder mage and the soft sky-light textures
+# the placeholder mage and the soft sky-light textures
 
-TH = {"tuft": TUFT_COLOURS, "trunk": ["#6b4a2e", "#8c6440"],
-      "marble": ["#4b5160", "#aab2c4", "#d6dce8", "#eef1f7", "#ffffff"]}
 rnd = random.Random(2778)
 
 
@@ -214,52 +226,6 @@ class Canvas:
         sx, sy = max(0, -x), max(0, -y)
         crop = im.crop((sx, sy, im.width, im.height))
         self.im.alpha_composite(crop, (x + sx, y + sy))
-
-
-def build_pillar(variant):
-    """0: whole column, 1: with vines, 2: broken stump. 16x40, bottom-centre anchored."""
-    w, h, M = 16, 40, TH["marble"]
-    cv = Canvas(w, h)
-    cv.rect(0, 0, w, 7, rgb(M[0]))
-    cv.rect(1, 1, w - 2, 5, rgb(M[3]))
-    cv.rect(1, 1, w - 2, 1, rgb(M[4]))
-    cv.rect(1, 5, w - 2, 1, rgb(M[2]))
-    cv.rect(3, 3, w - 6, 1, rgb(M[2]))
-    cv.rect(2, 7, w - 4, h - 12, rgb(M[0]))
-    for i in range(3, w - 3):
-        t = (i - 3) / (w - 7)
-        cv.rect(i, 7, 1, h - 13, rgb(M[4] if t < 0.2 else M[3] if t < 0.45 else M[2] if t < 0.75 else M[1]))
-    for fx in (5, 8, 11):
-        cv.rect(fx, 8, 1, h - 15, rgb(M[1], 115))
-    for _ in range(3):  # marble veins
-        vx, vy = rnd.randint(4, 11), rnd.randint(10, 28)
-        for _ in range(6):
-            cv.put(vx, vy, rgb(M[2]))
-            vx += rnd.randint(-1, 1)
-            vy += 1
-            if vx < 3 or vx > w - 4:
-                break
-    cv.rect(0, h - 6, w, 6, rgb(M[0]))
-    cv.rect(1, h - 5, w - 2, 4, rgb(M[2]))
-    cv.rect(1, h - 5, w - 2, 1, rgb(M[3]))
-    cv.rect(1, h - 2, w - 2, 1, rgb(M[1]))
-    if variant == 1:
-        for _ in range(26):
-            vy = rnd.randint(6, h - 4)
-            vx = 3 + round((math.sin(vy * 0.5) + 1) * 4.5)
-            col = rgb(TH["tuft"][2] if rnd.random() < 0.3 else TH["tuft"][0])
-            cv.put(vx, vy, col)
-            if rnd.random() < 0.3:
-                cv.put(vx + 1, vy, col)
-    if variant == 2:
-        for i in range(w):
-            cut = 14 + ((i * 7) % 5) + (2 if i > 8 else 0)
-            for y in range(cut):
-                cv.px[i, y] = (0, 0, 0, 0)
-            if 2 <= i < w - 2:
-                cv.put(i, cut, rgb(M[0]))
-                cv.put(i, cut + 1, rgb(M[4]))
-    return cv.im
 
 
 def build_mage():
@@ -372,13 +338,11 @@ def main():
         for part, img in (out[3] if len(out) > 3 else {}).items():  # extra sprites (windmill sails)
             img.save(OUT / "buildings" / f"{bid}_{part}.png")
             entry[part + "_file"] = f"buildings/{bid}_{part}.png"
-        if info["kind"] == "rug":
-            entry["solid"] = False
+        if info["kind"] == "rug" or info.get("place") == "deck":
+            entry["solid"] = False  # walked on
         manifest["buildings"].append(entry)
     manifest["tufts"] = build_tufts(rnd)
     (OUT / "props").mkdir(exist_ok=True)
-    for v in (0, 1, 2):
-        build_pillar(v).save(OUT / "props" / f"pillar_{v}.png")
     build_mage().save(OUT / "props" / "mage.png")
     save_fx()
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=1))
