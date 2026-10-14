@@ -11,6 +11,9 @@ extends Node2D
 ## bridge); a deck building (a pier, a stone bridge) makes the water under it walkable.
 
 signal rebuilt
+## A building linked to another map ({..., "to": "res://maps/x.json", "at": [x, y]}) was walked
+## into at its door: `to` is the map, `at` where to arrive in it (spawn if (-1, -1)).
+signal door_used(to: String, at: Vector2)
 
 const FLOWERS := [
 	"res://art/library/flowers/daisy.png", "res://art/library/flowers/buttercup.png",
@@ -19,7 +22,7 @@ const FLOWERS := [
 	"res://art/library/flowers/lavender.png", "res://art/library/flowers/dandelion.png",
 ]
 const GROUND_KIND := [Terrain.Kind.GRASS, Terrain.Kind.DIRT, Terrain.Kind.SAND, Terrain.Kind.TILLED, Terrain.Kind.WATERED, Terrain.Kind.PAVED,
-	Terrain.Kind.WOOD_FLOOR, Terrain.Kind.STONE_FLOOR]
+	Terrain.Kind.WOOD_FLOOR, Terrain.Kind.STONE_FLOOR, Terrain.Kind.VOID]
 const SHORE_INSET := 3.0  ## px of shallow water along the shore you can still wade in
 
 var data: MapData
@@ -305,7 +308,7 @@ func cliff_nodes() -> Array:
 func _ground_image() -> Image:
 	var img := Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
 	var cols := [Color(0, 0, 0, 1), Color(1, 0, 0, 1), Color(1, 0, 1, 1), Color(1, 1, 0, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 0),
-		Color(1, 0, 0, 0), Color(0, 1, 0, 0)]
+		Color(1, 0, 0, 0), Color(0, 1, 0, 0), Color(1, 1, 0, 0)]
 	for y in data.size.y:
 		for x in data.size.x:
 			img.set_pixel(x, y, cols[data.ground[y * data.size.x + x]])
@@ -341,6 +344,12 @@ func _make_object(o: Dictionary) -> Node2D:
 		"building":
 			var h := WorldBuilding.new()
 			h.building = o.id
+			if o.has("to"):
+				h.interior = o.to
+				var at := Vector2(o.at[0], o.at[1]) if o.has("at") else Vector2(-1, -1)
+				h.door_entered.connect(func(b: Node2D) -> void:
+					if b is CharacterBody2D:
+						door_used.emit(o.to, at))
 			n = h
 		_:
 			var f := WorldProp.new()
@@ -422,10 +431,10 @@ func _rebuild_blockers() -> void:
 				blockers.add_child(shape)
 
 
-## 0 = walkable, 1 = water, 2 = blocked by hand.
+## 0 = walkable, 1 = water, 2 = blocked by hand or outside the rooms (VOID ground).
 func _block_kind(c: Vector2i) -> int:
 	var p := data.passage_at(c)
-	if p == MapData.Passage.BLOCKED:
+	if p == MapData.Passage.BLOCKED or (p == MapData.Passage.AUTO and data.ground_at(c) == MapData.Ground.VOID):
 		return 2
 	if p == MapData.Passage.OPEN or _decks.has(c):
 		return 0

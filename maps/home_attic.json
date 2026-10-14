@@ -1,0 +1,212 @@
+{
+	"cell_px": 8,
+	"cliffs": [],
+	"ground": "CAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBggIBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGCAgGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA==",
+	"indoor": true,
+	"name": "阁楼",
+	"objects": [
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 32.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 64.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic_window",
+			"kind": "building",
+			"x": 96.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 128.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 160.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 192.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_attic",
+			"kind": "building",
+			"x": 224.0,
+			"y": 47.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 32.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 64.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 96.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 128.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 160.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 192.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_front",
+			"kind": "building",
+			"x": 224.0,
+			"y": 143.0
+		},
+		{
+			"id": "wall_side",
+			"kind": "building",
+			"x": 12.0,
+			"y": 74.0
+		},
+		{
+			"id": "wall_side_r",
+			"kind": "building",
+			"x": 244.0,
+			"y": 74.0
+		},
+		{
+			"id": "wall_side",
+			"kind": "building",
+			"x": 12.0,
+			"y": 106.0
+		},
+		{
+			"id": "wall_side_r",
+			"kind": "building",
+			"x": 244.0,
+			"y": 106.0
+		},
+		{
+			"id": "wall_side",
+			"kind": "building",
+			"x": 12.0,
+			"y": 138.0
+		},
+		{
+			"id": "wall_side_r",
+			"kind": "building",
+			"x": 244.0,
+			"y": 138.0
+		},
+		{
+			"id": "wall_corner",
+			"kind": "building",
+			"x": 12.0,
+			"y": 50.0
+		},
+		{
+			"id": "wall_corner",
+			"kind": "building",
+			"x": 244.0,
+			"y": 50.0
+		},
+		{
+			"id": "reading_nook",
+			"kind": "building",
+			"x": 96.0,
+			"y": 80.0
+		},
+		{
+			"id": "attic_post",
+			"kind": "building",
+			"x": 138.0,
+			"y": 108.0
+		},
+		{
+			"id": "trunk_old",
+			"kind": "building",
+			"x": 38.0,
+			"y": 64.0
+		},
+		{
+			"id": "covered_chair",
+			"kind": "building",
+			"x": 168.0,
+			"y": 68.0
+		},
+		{
+			"id": "bookshelf",
+			"kind": "building",
+			"x": 200.0,
+			"y": 57.0
+		},
+		{
+			"id": "chest",
+			"kind": "building",
+			"x": 30.0,
+			"y": 136.0
+		},
+		{
+			"id": "crates",
+			"kind": "building",
+			"x": 62.0,
+			"y": 136.0
+		},
+		{
+			"id": "boxes_packed",
+			"kind": "building",
+			"x": 112.0,
+			"y": 136.0
+		},
+		{
+			"at": [
+				266,
+				214
+			],
+			"id": "attic_hatch",
+			"kind": "building",
+			"to": "res://maps/home.json",
+			"x": 226.0,
+			"y": 110.0
+		}
+	],
+	"passage": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+	"size": [
+		32,
+		20
+	],
+	"spawn": [
+		200.0,
+		126.0
+	],
+	"version": 1,
+	"vista": "",
+	"water": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+}

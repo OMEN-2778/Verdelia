@@ -7,7 +7,7 @@ extends RefCounted
 
 const VERSION := 1
 
-enum Ground { GRASS, DIRT, SAND, TILLED, WATERED, PAVED, WOOD_FLOOR, STONE_FLOOR }
+enum Ground { GRASS, DIRT, SAND, TILLED, WATERED, PAVED, WOOD_FLOOR, STONE_FLOOR, VOID }  ## VOID: outside a house's rooms
 ## Flowers in older maps pointed at a third-party pack that is no longer in the project; they
 ## load as the project's own wild flowers instead.
 const OLD_FLOWERS := "res://art/third_party/"

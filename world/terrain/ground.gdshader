@@ -1,7 +1,8 @@
 // Procedural ground for the whole map, ported from stardust-vale's arena painter.
 // The sprite's TEXTURE is the terrain data (one texel per cell, linear filtered):
 //   R = bare dirt / path, G = tilled soil, B = watered, A = 0 where the ground is paved
-//   (A = 0 with R = 1: wooden floorboards, with G = 1: stone flags; floors keep hard cell edges).
+//   (A = 0 with R = 1: wooden floorboards, with G = 1: stone flags, with both: outside the rooms,
+//   black; floors keep hard cell edges).
 // Grass is two value-noise octaves + 4x4 Bayer dithering; dirt and tilled soil get organic,
 // dithered edges from noise, paths are lighter where worn, tilled soil is drawn as mounded rows.
 // Paving is a brick road laid by hand: rows that wander a little, bricks of uneven length with
@@ -66,6 +67,7 @@ uniform vec4 joint_moss : source_color = vec4(0.275, 0.420, 0.216, 1.0);
 
 group_uniforms floors;
 uniform float board_h = 4.0;  // px per floorboard
+uniform vec4 void_colour : source_color = vec4(0.055, 0.047, 0.067, 1.0);
 uniform vec4 board0 : source_color = vec4(0.478, 0.341, 0.227, 1.0);  // gaps between boards
 uniform vec4 board1 : source_color = vec4(0.635, 0.478, 0.329, 1.0);
 uniform vec4 board2 : source_color = vec4(0.682, 0.525, 0.369, 1.0);
@@ -215,7 +217,9 @@ void fragment() {
 	}
 	// indoor floors: whole cells, straight edges
 	bool indoor = cell.a < 0.5 && (cell.r > 0.5 || cell.g > 0.5);
-	if (cell.a < 0.5 && cell.r > 0.5) {
+	if (cell.a < 0.5 && cell.r > 0.5 && cell.g > 0.5) {
+		col = void_colour;  // outside the rooms of a house
+	} else if (cell.a < 0.5 && cell.r > 0.5) {
 		// floorboards running across, of uneven length, staggered row to row
 		float row = floor(pix.y / board_h);
 		float ly = pix.y - row * board_h;

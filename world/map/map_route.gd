@@ -17,7 +17,7 @@ static func grid(world: MapWorld) -> AStarGrid2D:
 		for x in d.size.x:
 			var c := Vector2i(x, y)
 			var p := (Vector2(c) + Vector2(0.5, 0.5)) * cp
-			var solid := d.passage_at(c) == MapData.Passage.BLOCKED
+			var solid := d.passage_at(c) == MapData.Passage.BLOCKED or (d.passage_at(c) == MapData.Passage.AUTO and d.ground_at(c) == MapData.Ground.VOID)
 			if d.water_at(c) and d.passage_at(c) != MapData.Passage.OPEN and not decks.has(c):
 				solid = true
 			if not solid:

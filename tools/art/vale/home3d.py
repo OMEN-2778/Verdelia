@@ -427,11 +427,263 @@ def doormat(spec):
     return done(S, cv, "rug", fp(-10, 10, 9), solid=False)
 
 
+# ================================================================ the house's outline and the attic
+
+def _front_mat():
+    """The front wall seen as a low strip: its cut top and a band of the outside planks."""
+    def f(u, v, kind, light, P, s):
+        if kind == "top":
+            return I._cap(math.floor(P[0]) % SEG, P[1] - s.bbox[2], s.bbox[3] - s.bbox[2], light)
+        if v < 1:
+            return DARKWOOD[1]
+        return I._t(WOOD, light - 0.05) if math.floor(v) % 3 else I._st(WOOD, light, -1)
+    return Mat(f)
+
+
+def wall_front(spec):
+    """The room's front wall, cut low so the room stays in view: a strip of its top and outside
+    boards, 32 px long; rows of them join end to end."""
+    S = Scene(pad=0, pad_top=2, pad_bottom=2)
+    S.add(box(-SEG / 2, SEG / 2, 0, WALL_T, 0, 6, _front_mat()))
+    cv = S.render()
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T))
+
+
+def wall_front_door(spec):
+    """The front wall strip with the front door's opening: worn threshold boards between two
+    jambs; its opening is walkable."""
+    S = Scene(pad=0, pad_top=2, pad_bottom=2)
+    fm = _front_mat()
+    S.add(box(-SEG / 2, -9, 0, WALL_T, 0, 6, fm))
+    S.add(box(9, SEG / 2, 0, WALL_T, 0, 6, fm))
+    fw = M.wood(DARKWOOD, bias=0.15)
+    S.add(box(-10, -8, -0.5, WALL_T + 0.5, 0, 9, fw))
+    S.add(box(8, 10, -0.5, WALL_T + 0.5, 0, 9, fw))
+    S.add(box(-8, 8, 0, WALL_T, 0, 0.8, M.planks(WOOD, h=3, seed=4, bias=0.2)))  # threshold
+    cv = S.render()
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T), passage=[-8, 8])
+
+
+def stairs(spec):
+    """Wooden stairs up to the attic, rising straight towards the back: ten treads, each a bright
+    lit board with a pale nosing over a dark riser, so they read as steps from the front; a
+    closed string on the open (left) side with a newel post and a handrail on spindles, a plain
+    board string against the wall on the right. The top steps go up into the dark under the
+    ceiling. A door trigger at the foot leads up."""
+    n, run, rise, w = 10, 4.5, 4.5, 11
+
+    def tread(u, v, kind, light, P, s):
+        k = s.bbox[2] / run  # which step
+        dim = max(0, k - 6) * 0.09  # the last steps fade into the dark of the stairwell
+        if kind == "top":
+            if P[1] > s.bbox[3] - 1.2:
+                return I._t(WOOD, light + 0.05 - dim)  # the back edge, under the next riser
+            if P[1] < s.bbox[2] + 1.1:
+                return I._t(WOOD, light + 0.45 - dim)  # the lit nosing
+            g = 0.08 if math.floor(P[0] + 11) % 7 == 0 else 0
+            return I._t(WOOD, light + 0.3 - g - dim)
+        if P[2] > s.bbox[5] - 1.1:
+            return I._t(WOOD, light + 0.1 - dim)  # the nosing's front lip
+        return I._t(DARKWOOD, light - 0.05 - dim)  # the riser
+    tm = Mat(tread)
+    S = Scene(pad_top=4)
+    for k in range(n):
+        S.add(box(-w, w, k * run, (k + 1) * run, k * rise, (k + 1) * rise, tm))
+        S.add(box(-w, w, k * run, (k + 1) * run, 0, k * rise, M.flat(DARKWOOD, -0.25)))  # the space under it
+    sw = M.wood(DARKWOOD, bias=0.12)
+    for k in range(n):  # the strings, stepping up with the treads
+        S.add(box(-w - 2.5, -w, k * run, (k + 1) * run, 0, (k + 1) * rise + 2, sw))
+        S.add(box(w, w + 2, k * run, (k + 1) * run, 0, (k + 1) * rise + 2, sw))
+    nw = M.wood(DARKWOOD, bias=0.2)
+    S.add(box(-w - 3, -w + 0.5, 0, 3, 0, rise + 15, nw))  # the newel
+    S.add(prism(-w - 1.25, 1.5, 1.9, rise + 15, rise + 17.5, nw, sides=8))
+    for k in range(1, n):  # spindles and the handrail, a step at a time
+        y = k * run
+        S.add(box(-w - 1.7, -w - 0.9, y + 1, y + 2, (k + 1) * rise + 2, (k + 1) * rise + 12, sw))
+        S.add(box(-w - 2.4, -w - 0.4, y - 1.5, y + run, (k + 1) * rise + 11.5, (k + 1) * rise + 13.5,
+                  M.wood(DARKWOOD, bias=0.3)))
+    cv = S.render()
+    S.finish(cv)
+    return I._result(cv, "prop", (S.ox, S.base), fp(-w - 3, w + 2, n * run), S.sx(0), 14)
+
+
+def _attic_face(X, Z, light):
+    """Under the roof: a low knee wall of upright boards, a plate along its top, then the
+    underside of the roof: boards running across, getting darker towards the ridge, between big
+    rafters (one a segment, so they line up from piece to piece)."""
+    if Z < 11:
+        if X % 6 == 0:
+            return I._st(WOOD, light, -1)
+        return I._t(WOOD, light + 0.08)
+    if Z < 13:
+        return I._t(DARKWOOD, light + (0.25 if Z == 12 else 0.0))  # the wall plate
+    dark = (Z - 13) / (WALL_H - 13) * 0.32
+    r = (X + 3) % SEG
+    if r < 5:  # a rafter: lit on its left face, shaded on its right
+        return I._t(DARKWOOD, light + (0.3 if r == 0 else 0.12 if r < 3 else -0.05) - dark * 0.6)
+    if r == 5:
+        return DARKWOOD[0]  # its shadow on the boards
+    if (Z - 13) % 5 == 4:
+        return I._st(WOOD, light - 0.2 - dark, -1)
+    return I._t(WOOD, light - 0.06 - dark + (hsh(X // 9, (Z - 13) // 5, 13) - 0.5) * 0.08)
+
+
+def _attic_mat():
+    def f(u, v, kind, light, P, s):
+        if kind == "top":
+            return I._cap(math.floor(P[0]) % SEG, P[1] - s.bbox[2], s.bbox[3] - s.bbox[2], light)
+        return _attic_face(math.floor(u) % SEG, math.floor(v), light)
+    return Mat(f)
+
+
+def wall_attic(spec):
+    """An attic back-wall segment: knee wall and the underside of the roof."""
+    S = Scene(pad=0, pad_top=2, pad_bottom=2)
+    S.add(box(-SEG / 2, SEG / 2, 0, WALL_T, 0, WALL_H, _attic_mat()))
+    cv = S.render()
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T))
+
+
+def wall_attic_window(spec):
+    """The attic wall with the dormer: a little window at the back of a boxed-in alcove, a cushion
+    on its deep sill; daylight through the glass."""
+    ox0, ox1, oz0, oz1 = -8, 8, 14, 32
+    S = Scene(pad=0, pad_top=2, pad_bottom=2)
+    am = _attic_mat()
+    h = SEG / 2
+    S.add(box(-h, ox0, 0, WALL_T, 0, WALL_H, am))
+    S.add(box(ox1, h, 0, WALL_T, 0, WALL_H, am))
+    S.add(box(ox0, ox1, 0, WALL_T, 0, oz0, am))
+    S.add(box(ox0, ox1, 0, WALL_T, oz1, WALL_H, am))
+    S.add(box(ox0, ox1, WALL_T, WALL_T + 8, oz0 - 1, oz0, M.planks(WOOD, h=3, seed=9, bias=0.2)))  # deep sill
+    glass = S.add(box(ox0 + 2, ox1 - 2, WALL_T + 8, WALL_T + 9, oz0, oz1 - 2, M.flat(["#5b8fb0", "#5b8fb0", "#6fa0bf", "#93c6dd", "#b6dbe9", "#d9f1f8"])))
+    for x0, x1 in ((ox0, ox0 + 2), (ox1 - 2, ox1)):
+        S.add(box(x0, x1, WALL_T, WALL_T + 9, oz0, oz1, M.planks(WOOD, h=3, seed=10, bias=0.0)))
+    S.add(box(ox0, ox1, WALL_T, WALL_T + 9, oz1 - 2, oz1, M.planks(WOOD, h=3, seed=11, bias=-0.1)))
+    S.add(box(ox0 + 2.5, ox1 - 2.5, WALL_T + 1.5, WALL_T + 7.5, oz0, oz0 + 2, _fabric(ROSE, 0.2, 3)))  # cushion
+    cv = S.render()
+    gi = S.solids.index(glass)
+    for y in range(cv.h):
+        for x in range(cv.w):
+            if S.sid[y, x] == gi:
+                gx = x - S.sx(ox0 + 2)
+                gy = y - S.sy(WALL_T + 8, oz1 - 2)
+                if gx == (ox1 - ox0 - 4) // 2 or gy == 6:
+                    cv.set(x, y, "#efe9dc")  # glazing bars
+                elif gy > 9:
+                    cv.set(x, y, "#86b38e")  # treetops far off
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T))
+
+
+def attic_hatch(spec):
+    """Where the stairs come up into the attic: an opening in the floorboards with the top treads
+    going down into the dark, a trimmed edge, and a low railing along the sides on turned posts. A door trigger at its front leads down."""
+    S = Scene(pad_top=4)
+    hole = S.add(box(-10, 10, 2, 26, 0, 0.3, M.flat(["#120e16"] * 7)))
+    tm = M.wood(DARKWOOD, bias=0.1)
+    for x0, x1, y0, y1 in ((-12, -10, 0, 28), (10, 12, 0, 28), (-12, 12, 0, 2), (-12, 12, 26, 28)):
+        S.add(box(x0, x1, y0, y1, 0, 0.6, tm))  # the trim round the opening
+    rw = M.wood(DARKWOOD, bias=0.2)
+    for x, y in ((-12, 26), (10, 26), (-12, 2), (10, 2)):
+        S.add(box(x, x + 2, y, y + 2, 0, 11, rw))
+        S.add(prism(x + 1, y + 1, 1.3, 11, 12.5, rw, sides=8))
+    for x in (-12, 10):  # railings along the sides only: the way down is open at the front
+        S.add(box(x, x + 2, 2, 28, 9, 10.5, M.wood(DARKWOOD, bias=0.3)))
+        for y in (8, 14, 20):
+            S.add(box(x + 0.5, x + 1.5, y, y + 1, 0.6, 9, rw))
+    cv = S.render()
+    hi = S.solids.index(hole)
+    y0 = S.sy(2, 0.3)  # the front edge of the opening, on screen
+    for y in range(cv.h):
+        for x in range(cv.w):
+            if S.sid[y, x] != hi:
+                continue
+            d = y0 - y  # px back from the front edge
+            k, r = divmod(d, 5)
+            if k > 3:
+                continue  # deeper down: dark
+            if r == 4:
+                c = WOOD[max(1, 6 - k)]  # a lit nosing
+            elif r > 1:
+                c = WOOD[max(0, 4 - k)]
+            else:
+                c = DARKWOOD[max(0, 2 - k)]  # the riser down to the next tread
+            cv.set(x, y, c)
+    S.finish(cv)
+    return I._result(cv, "prop", (S.ox, S.base), fp(-12, 12, 28), S.sx(0), 14)
+
+
+def attic_post(spec):
+    """A roof post standing in the attic: a squared timber on a block, with two knee braces
+    reaching out along the purlin it holds up, its end cut square at the top."""
+    S = Scene(pad=2, pad_top=2)
+    pw = M.wood(DARKWOOD, bias=0.15)
+    S.add(box(-3.5, 3.5, 0, 6, 0, 2.5, M.wood(DARKWOOD, bias=-0.05)))
+    S.add(box(-2.5, 2.5, 1, 5, 2.5, 58, pw))
+    S.add(box(-16, 16, 1, 5, 58, 62, M.wood(DARKWOOD, bias=0.25)))  # the purlin, cut off at the ends
+    for s in (-1, 1):
+        for k in range(10):
+            x = s * (2.5 + k)
+            S.add(box(min(x, x + s), max(x, x + s), 1.5, 4.5, 47 + k, 49 + k, pw))
+    cv = S.render()
+    return done(S, cv, "prop", fp(-3, 3, 6))
+
+
+LEATHER = ["#3a2620", "#4f3329", "#664234", "#7c5240", "#93654f", "#a97b63", "#bf937a"]
+
+
+def trunk_old(spec):
+    """Grandmother's old travelling trunk, put away up here: long and low, covered in worn
+    leather, with a flat lid, wooden battens, two leather straps and brass corners and catch."""
+    S = Scene(pad_top=2)
+    lm = _fabric(LEATHER, 0.1, 5)
+    bm = M.wood(DARKWOOD, bias=0.1)
+    S.add(box(-14, 14, 0, 12, 0, 10, lm))
+    S.add(box(-14.5, 14.5, -0.5, 12.5, 10, 12, M.wood(DARKWOOD, bias=0.2)))  # the lid's rim
+    S.add(box(-14, 14, 0, 12, 12, 12.5, lm))
+    for x in (-9, 9):
+        S.add(box(x - 1.5, x + 1.5, -0.6, 12.6, 0, 12.8, _fabric(["#2a1a14", "#3a2620", "#4f3329", "#664234", "#7c5240", "#93654f", "#a97b63"], 0.15, 7)))
+    for x in (-3, 3):
+        S.add(box(x - 0.5, x + 0.5, -0.3, 0, 1, 9, bm))
+    cv = S.render()
+    for xx, d in ((S.sx(-14), 1), (S.sx(14) - 1, -1)):  # brass corners
+        for k in range(2):
+            for z in (0.5, 9.5):
+                cv.set(xx + d * k, S.sy(0, z), BRASSR[4] if k == 0 else BRASSR[2])
+    x, y = S.sx(0), S.sy(0, 10)
+    for j in range(3):
+        for i in (-1, 0):
+            cv.set(x + i, y + j, BRASSR[5] if i < 0 else BRASSR[3])
+    return done(S, cv, "prop", fp(-15, 15, 13))
+
+
+def reading_nook(spec):
+    """The hero's hideaway under the dormer: two big floor cushions, a folded blanket, a stack of
+    books and a jar lantern (lit at night)."""
+    S = Scene(pad_top=6)
+    S.add(box(-14, 0, 2, 14, 0, 4, _fabric(SAGE, 0.2, 4)))
+    S.add(box(-1, 12, 4, 15, 0, 5, _fabric(ROSE, 0.18, 6)))
+    S.add(box(-12, -2, 4, 12, 4, 5.5, _quilt_mat("patch", 7)))
+    S.add(box(4, 10, 0, 4, 0, 2, M.flat(_r7(CLOTH["blue"]), 0.05)))
+    S.add(box(4.5, 9.5, 0.5, 3.5, 2, 3.5, M.flat(_r7(CLOTH["ochre"]), 0.05)))
+    S.add(box(4, 10, 0, 4, 3.5, 5, M.flat(_r7(CLOTH["red"]), 0.05)))
+    jar = S.add(prism(14, 2, 2.2, 0, 5, M.flat(["#c9b07e", "#c9b07e", "#d8c49a", "#e8d8b4", "#f4ecd4"], 0.2), sides=10))
+    cv = S.render()
+    ji = S.solids.index(jar)
+    for y in range(cv.h):
+        for x in range(cv.w):
+            if S.sid[y, x] == ji:
+                cv.lit(x, y, LIT[3] if (x + y) % 3 else LIT[2])
+    return done(S, cv, "prop", fp(-14, 16, 15))
+
+
 DESIGNS = {
     "bed_side": bed_side, "wall_door": wall_door, "wall_portrait": wall_portrait, "sofa": sofa, "armchair": armchair,
     "coffee_table": coffee_table, "fireplace_cold": fireplace_cold, "desk": desk, "boxes_packed": boxes_packed,
     "covered_chair": covered_chair, "covered_cabinet": covered_cabinet, "bed_bare": bed_bare, "table_small": table_small,
-    "doormat": doormat,
+    "doormat": doormat, "wall_front": wall_front, "wall_front_door": wall_front_door, "stairs": stairs,
+    "wall_attic": wall_attic, "wall_attic_window": wall_attic_window, "attic_hatch": attic_hatch,
+    "reading_nook": reading_nook, "attic_post": attic_post, "trunk_old": trunk_old,
 }
 ENTRIES = [
     {"id": "bed_side", "name": "横放双人床", "group": GROUP, "type": "bed_side", "seed": 1, "quilt": "blue"},
@@ -448,4 +700,13 @@ ENTRIES = [
     {"id": "bed_bare", "name": "空床", "group": GROUP, "type": "bed_bare", "seed": 1},
     {"id": "table_small", "name": "小餐桌", "group": GROUP, "type": "table_small", "seed": 1},
     {"id": "doormat", "name": "门垫", "group": GROUP, "type": "doormat", "seed": 1},
+    {"id": "wall_front", "name": "前墙（矮）", "group": GROUP, "type": "wall_front", "seed": 1},
+    {"id": "wall_front_door", "name": "前墙大门", "group": GROUP, "type": "wall_front_door", "seed": 1},
+    {"id": "stairs", "name": "楼梯", "group": GROUP, "type": "stairs", "seed": 1},
+    {"id": "wall_attic", "name": "阁楼墙", "group": GROUP, "type": "wall_attic", "seed": 1},
+    {"id": "wall_attic_window", "name": "阁楼天窗墙", "group": GROUP, "type": "wall_attic_window", "seed": 1},
+    {"id": "attic_hatch", "name": "阁楼楼梯口", "group": GROUP, "type": "attic_hatch", "seed": 1},
+    {"id": "reading_nook", "name": "读书角", "group": GROUP, "type": "reading_nook", "seed": 1},
+    {"id": "attic_post", "name": "阁楼立柱", "group": GROUP, "type": "attic_post", "seed": 1},
+    {"id": "trunk_old", "name": "旧箱子", "group": GROUP, "type": "trunk_old", "seed": 2},
 ]

@@ -22,7 +22,7 @@ const ANIM_FPS := 5.0  ## frames per second of an animated part that names no ra
 	set(v):
 		building = v
 		_rebuild()
-@export var interior := ""  ## map or scene the door leads to (for later)
+@export var interior := ""  ## map the door leads to (set from the map object's "to")
 @export var smoke := true
 
 var _entry := {}

@@ -10,7 +10,7 @@ const LAYERS := ["地面", "水体", "植被", "岩壁", "通行", "建筑"]
 enum Layer { GROUND, WATER, PLANTS, CLIFF, PASSAGE, BUILDING }
 
 const TOOLS := {
-	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4], ["砖路", 5], ["木地板", 6], ["石板地", 7]],
+	Layer.GROUND: [["草地", 0], ["土路", 1], ["沙地", 2], ["耕地", 3], ["湿耕地", 4], ["砖路", 5], ["木地板", 6], ["石板地", 7], ["屋外", 8]],
 	Layer.WATER: [["水", 1]],
 	Layer.PLANTS: [
 		["混合树林", "mix_forest"], ["阔叶树", "tree:oak"], ["白桦", "tree:birch"], ["松树", "tree:pine"],
