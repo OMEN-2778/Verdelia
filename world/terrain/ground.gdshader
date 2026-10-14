@@ -66,13 +66,13 @@ uniform vec4 joint_moss : source_color = vec4(0.275, 0.420, 0.216, 1.0);
 
 group_uniforms floors;
 uniform float board_h = 4.0;  // px per floorboard
-uniform vec4 board0 : source_color = vec4(0.290, 0.184, 0.118, 1.0);  // gaps between boards
-uniform vec4 board1 : source_color = vec4(0.471, 0.314, 0.192, 1.0);
-uniform vec4 board2 : source_color = vec4(0.561, 0.380, 0.231, 1.0);
-uniform vec4 board3 : source_color = vec4(0.643, 0.443, 0.271, 1.0);
-uniform vec4 board4 : source_color = vec4(0.722, 0.522, 0.329, 1.0);
+uniform vec4 board0 : source_color = vec4(0.478, 0.341, 0.227, 1.0);  // gaps between boards
+uniform vec4 board1 : source_color = vec4(0.635, 0.478, 0.329, 1.0);
+uniform vec4 board2 : source_color = vec4(0.682, 0.525, 0.369, 1.0);
+uniform vec4 board3 : source_color = vec4(0.725, 0.573, 0.408, 1.0);
+uniform vec4 board4 : source_color = vec4(0.769, 0.624, 0.455, 1.0);
 uniform float flag_row = 7.0;  // px per row of stone flags
-uniform vec4 flag_joint : source_color = vec4(0.267, 0.247, 0.243, 1.0);
+uniform vec4 flag_joint : source_color = vec4(0.471, 0.443, 0.420, 1.0);
 
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
@@ -219,14 +219,14 @@ void fragment() {
 		// floorboards running across, of uneven length, staggered row to row
 		float row = floor(pix.y / board_h);
 		float ly = pix.y - row * board_h;
-		float len = 18.0 + floor(hash(vec2(row, 1.3)) * 14.0);
+		float len = 26.0 + floor(hash(vec2(row, 1.3)) * 22.0);
 		float bx = pix.x + floor(hash(vec2(row, 7.9)) * len);
 		float k = floor(bx / len);
 		float lx = bx - k * len;
 		vec2 bid = vec2(k, row);
 		float hb = hash(bid * 1.91 + 4.2);
-		float v = 0.5 + (hb - 0.5) * 0.45 + (vnoise(pix + 400.0, 36.0) - 0.5) * 0.25;
-		v += (vnoise(vec2(pix.x * 0.25, pix.y * 2.0) + bid * 17.0, 3.0) - 0.5) * 0.45;  // grain along the board
+		float v = 0.5 + (hb - 0.5) * 0.3 + (vnoise(pix + 400.0, 36.0) - 0.5) * 0.15;
+		v += (vnoise(vec2(pix.x * 0.25, pix.y * 2.0) + bid * 17.0, 3.0) - 0.5) * 0.25;  // grain along the board
 		if (ly < 1.0) v += 0.25;  // the lit near edge of each board
 		vec4 B[4] = vec4[4](board1, board2, board3, board4);
 		col = B[clamp(int((v + bay * 0.18) * 4.0), 0, 3)];
@@ -243,8 +243,8 @@ void fragment() {
 		float lx = fx - k * len;
 		vec2 fid = vec2(k, row);
 		float h1 = hash(fid * 1.37 + 2.5), h2 = hash(fid * 2.71 + 8.1);
-		int fam = h1 < 0.55 ? 3 : h1 < 0.9 ? 0 : 1;  // cool grey mostly, some warm grey, a little beige
-		float v = 0.5 + (h2 - 0.5) * 0.35 + (vnoise(pix + fid * 9.0, 2.0) - 0.5) * 0.3 + bay * 0.12;
+		int fam = h1 < 0.7 ? 1 : 0;  // pale beige flags, some warm grey
+		float v = 0.62 + (h2 - 0.5) * 0.2 + (vnoise(pix + fid * 9.0, 2.0) - 0.5) * 0.15 + bay * 0.08;
 		if (ly < 1.0 || lx < 1.0) col = flag_joint;
 		else {
 			if (ly < 2.0 || lx < 2.0) v += 0.22;

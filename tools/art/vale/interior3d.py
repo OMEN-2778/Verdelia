@@ -30,13 +30,26 @@ from buildings import BRASS, C, DARKWOOD, FIELDSTONE, IRON, LEAF, LIT, STONE, TR
 from market import CLOTH, GOLD, WHITE, candle, jug
 from oblique import K, Mat, Scene, box, frustum, hsh, prism, prism_x
 
+# Indoors everything is lighter and calmer than out in the street: pale oak furniture, softer
+# walnut for frames and trim, and muted, dusty textiles in place of the market's bright cloth.
+WOOD = ["#4a3322", "#76563b", "#9c7752", "#b48f66", "#c9a87d", "#dcc099", "#ead5b5"]
+DARKWOOD = ["#3b2a1f", "#5a4231", "#785a43", "#8f6f55", "#a68768", "#ba9e7f", "#cdb597"]
+CLOTH = {**CLOTH,
+         "red": ["#6a3c3c", "#8f5652", "#b07570", "#c99690", "#e0bcb4"],  # dusty rose
+         "blue": ["#3e4c5e", "#5a6c82", "#7a8ea4", "#9fb0c2", "#c6d2dd"],  # faded slate blue
+         "teal": ["#425448", "#5d7262", "#7b917e", "#9db09d", "#c3d0bf"],  # sage
+         "green": ["#425448", "#5d7262", "#7b917e", "#9db09d", "#c3d0bf"],
+         "ochre": ["#6b5430", "#8f7348", "#b09465", "#cbb185", "#e3d0ab"]}  # oat
+STONE = ["#4f4740", "#71685e", "#8f857a", "#a99f92", "#c0b7a9", "#d4ccbf", "#e5dfd4"]  # pale limestone
+FIELDSTONE = STONE
+
 GROUP = "室内"
 WALL_H = 40  # room wall height
 WALL_T = 6  # back wall thickness (world y)
 SEG = 32  # segment length; every wall pattern repeats with this period
 SIDE_D = 40  # side wall segment depth in world y: 32 px on the map
 
-IRONK = ["#0e0d11", "#19171d", "#25232a", "#34313b", "#46424f", "#5d5967", "#7d7988"]  # blackened iron
+IRONK = ["#26252b", "#34333b", "#45434d", "#57555f", "#6b6974", "#83818c", "#a19fa9"]  # soft grey iron
 BRASSR = ["#3a2608", "#5e3f0e", "#8f6418", "#bb8a2c", "#ddb04a", "#f1d27a", "#fff0b8"]
 COPPERR = ["#2e170c", "#5a2e16", "#8a4a26", "#b4683a", "#d68a52", "#eeb07c", "#f8d3ac"]
 CLAY = ["#3a1a10", "#6a2e1a", "#94442a", "#b85e3a", "#d07c50", "#e49c70", "#f0c09a"]
@@ -46,13 +59,14 @@ BARK = ["#24170f", "#3b261a", "#553723", "#6f4a2e", "#8a5f3b", "#a6794f", "#c49a
 HONEY = ["#2c1a0c", "#4f2f16", "#7a4a22", "#9c6430", "#bb8044", "#d39f62", "#e8c08a"]  # pale polished wood
 LEAVES = ["#1a3320", "#24482a", "#2f5f33", "#3f7a3b", "#57974a", "#78b35c", "#a3d07a"]
 PAPERS = {  # wallpaper ramp, (flower, leaf) of its sprig
+    "linen": (["#6f6555", "#9c917e", "#c4b9a3", "#d6ccb6", "#e3dbc8", "#ece6d7", "#f5f1e7"], ("#dcc3b4", "#c3c9ad")),
     "sage": (["#22302a", "#34473c", "#4b6252", "#5f7a66", "#759079", "#8fa98f", "#b3c8ad"], ("#efe3bd", "#3d5544")),
     "rose": (["#3a2226", "#5c3639", "#7e4f50", "#9a6865", "#b4837d", "#cca29a", "#e3c6bd"], ("#f6ead6", "#6f8a5e")),
     "cream": (["#4a3b2c", "#7d6a52", "#a99475", "#c4b08e", "#d8c7a6", "#e8dbc0", "#f4ecd9"], ("#b0503a", "#6f8a5a")),
     "blue": (["#1c2636", "#2e3d55", "#435673", "#5a6f8f", "#7489a8", "#94a8c2", "#bccbdc"], ("#f1e8d0", "#d9b45a")),
 }
-PATCH = [["#5e2426", "#9c4040", "#c4635c"], ["#7a5c26", "#bf9a4c", "#dfc07c"], ["#8f8674", "#ddd3bd", "#f3ecdc"],
-         ["#344c62", "#56789a", "#86a6c0"], ["#43573a", "#6b8656", "#97b082"], ["#8f8674", "#ddd3bd", "#f3ecdc"]]
+PATCH = [["#8f5652", "#b07570", "#c99690"], ["#8f7348", "#b09465", "#cbb185"], ["#a39a8c", "#d6cfc2", "#ece7dc"],
+         ["#5a6c82", "#7a8ea4", "#9fb0c2"], ["#5d7262", "#7b917e", "#9db09d"], ["#a39a8c", "#d6cfc2", "#ece7dc"]]
 JARS = {  # contents of a preserving jar: dark, mid, light
     "jam": ("#4a1020", "#9e2a3a", "#d0505a"), "honey": ("#6a3a08", "#c98a1e", "#f0c050"),
     "pickle": ("#24401a", "#5a8a2e", "#9ac060"), "plum": ("#2c1a3a", "#5a3a72", "#8a6aa8"),
@@ -156,7 +170,7 @@ def _wall_scene(spec, opening=None):
     """A back wall segment from x=-16 to 16 (no side padding, so rows of them tile), optionally
     built round an opening (x0, x1, z0, z1)."""
     S = Scene(pad=0, pad_top=2, pad_bottom=2)
-    wm = wall_mat(spec.get("paper", "sage"))
+    wm = wall_mat(spec.get("paper", "linen"))
     h = SEG / 2
     if opening is None:
         S.add(box(-h, h, 0, WALL_T, 0, WALL_H, wm))
@@ -414,7 +428,7 @@ def wall_side(spec):
     face (spec side: "left" wall, room on its right; "right" wall, room on its left). Stacked,
     the segments join into one continuous wall; the front one shows the wall's end."""
     left = spec.get("side", "left") == "left"
-    paper = spec.get("paper", "sage")
+    paper = spec.get("paper", "linen")
     ramp = PAPERS[paper][0]
     x0, x1 = (-4, 2) if left else (-2, 4)
     S = Scene(pad=2, pad_top=1, pad_bottom=2)
@@ -1073,8 +1087,8 @@ def wardrobe(spec):
     return done(S, cv, "prop", fp(-12.5, 12.5, 12.5))
 
 
-BOOKS = ["#7a2629", "#a8383a", "#2b4372", "#3d5f9c", "#2b5233", "#3f7447", "#7e5719", "#ad7d26", "#3d2862",
-         "#5a3b8c", "#5a3d26", "#8a5f3b", "#1d4f53", "#e9e1cf"]
+BOOKS = ["#8f5652", "#a86d66", "#5a6c82", "#76889d", "#5d7262", "#7b917e", "#8f7348", "#ad9265", "#6e5d72",
+         "#8a7a8c", "#7d5e44", "#9a7a5c", "#5b7472", "#e3dccb"]
 
 
 def _books(cv, rnd, x0, x1, bottom, hmax):
@@ -1400,10 +1414,10 @@ def _rag_mat(cols, R):
 
 def rug_round(spec):
     """A round braided rag rug lying flat (walked over)."""
-    cols = [["#4a1619", "#8c2f30", "#b9443e"], ["#7e5719", "#ad7d26", "#d4a340"], ["#9a8c80", "#cfc3b4", "#ece4d6"],
-            ["#1d2c4c", "#2d4777", "#3f63a0"], ["#2b5233", "#3f7447", "#5a965c"]]
+    cols = [["#8f6f60", "#ad8a7a", "#c6a698"], ["#8f7348", "#b09465", "#cbb185"], ["#a39a8c", "#d6cfc2", "#ece7dc"],
+            ["#6f7f92", "#8a9bad", "#a9b7c5"], ["#7b917e", "#9db09d", "#bccab9"]]
     R = spec.get("radius", 16)
-    S = Scene(pad=2, pad_top=2, pad_bottom=2, outline="#3a1418")
+    S = Scene(pad=2, pad_top=2, pad_bottom=2, outline="#5a4436")
     S.add(prism(0, R, R, 0, 0.6, _rag_mat(cols, R), sides=36))
     cv = S.render()
     return done(S, cv, "rug", fp(-R, R, 2 * R), solid=False)
@@ -1437,7 +1451,7 @@ def rug_runner(spec):
     """A long woven runner with a border, a row of diamonds down the middle and fringed ends."""
     field = CLOTH[spec.get("cloth", "red")]
     border = CLOTH[spec.get("border", "blue")]
-    S = Scene(pad=4, pad_top=2, pad_bottom=2, outline="#2a1418")
+    S = Scene(pad=4, pad_top=2, pad_bottom=2, outline="#5a4436")
     L = spec.get("length", 26)
     S.add(box(-L, L, 0, 14, 0, 0.6, _runner_mat(field, border)))
     cv = S.render()
@@ -1464,12 +1478,12 @@ DESIGNS = {
 }
 
 ENTRIES = [
-    {"id": "wall_back", "name": "墙面", "group": GROUP, "type": "wall_back", "seed": 1, "paper": "sage"},
-    {"id": "wall_window", "name": "窗户墙", "group": GROUP, "type": "wall_window", "seed": 1, "paper": "sage", "curtain": "red"},
-    {"id": "wall_picture", "name": "挂画墙", "group": GROUP, "type": "wall_picture", "seed": 1, "paper": "sage"},
-    {"id": "wall_shelf", "name": "壁架墙", "group": GROUP, "type": "wall_shelf", "seed": 2, "paper": "sage"},
-    {"id": "wall_side", "name": "左侧墙", "group": GROUP, "type": "wall_side", "seed": 1, "paper": "sage", "side": "left"},
-    {"id": "wall_side_r", "name": "右侧墙", "group": GROUP, "type": "wall_side", "seed": 1, "paper": "sage", "side": "right"},
+    {"id": "wall_back", "name": "墙面", "group": GROUP, "type": "wall_back", "seed": 1, "paper": "linen"},
+    {"id": "wall_window", "name": "窗户墙", "group": GROUP, "type": "wall_window", "seed": 1, "paper": "linen", "curtain": "red"},
+    {"id": "wall_picture", "name": "挂画墙", "group": GROUP, "type": "wall_picture", "seed": 1, "paper": "linen"},
+    {"id": "wall_shelf", "name": "壁架墙", "group": GROUP, "type": "wall_shelf", "seed": 2, "paper": "linen"},
+    {"id": "wall_side", "name": "左侧墙", "group": GROUP, "type": "wall_side", "seed": 1, "paper": "linen", "side": "left"},
+    {"id": "wall_side_r", "name": "右侧墙", "group": GROUP, "type": "wall_side", "seed": 1, "paper": "linen", "side": "right"},
     {"id": "wall_corner", "name": "墙角柱", "group": GROUP, "type": "wall_corner", "seed": 1},
     {"id": "bed", "name": "单人床", "group": GROUP, "type": "bed", "seed": 3, "quilt": "patch"},
     {"id": "bed_double", "name": "双人床", "group": GROUP, "type": "bed", "seed": 4, "double": True, "quilt": "blue", "dark": True},
