@@ -209,6 +209,7 @@
 - 全部建筑：`docs/art/buildings.png`（住宅、商店、集市、道具）、`docs/art/buildings-country.png`（农场、野外、水边）、`docs/art/buildings-village.png`（公共建筑、街道、室内）
 - 乡间：`docs/art/country-farm.png`、`country-ruins.png`、`country-mill.png`、`country-square.png`、`country-square-night.png`、`country-lake.png`、`country-camp-night.png`、`country-overview.png`
 - 室内白天和夜晚：`docs/art/interior.png`、`docs/art/interior-night.png`
+- 修理匠 NPC（`tools/art/vale/fixer.py`）：`docs/art/fixer-sheet.png`（走路、干活、表情动作）、`docs/art/fixer-portraits.png`（对话头像）、`docs/art/fixer.gif`、`docs/art/fixer-in-game.png`
 - 主角候选造型（`tools/art/vale/hero.py`）：`docs/art/hero-candidates.png`、`docs/art/hero-candidates-scale.png`（放在客厅里看大小）
 - 主角的家：`docs/art/home.png`（整个家）、`docs/art/home-night.png`、`docs/art/home-night-living.png`、`docs/art/home-night-kitchen.png`（夜里，主角在哪个房间哪个房间亮灯）、`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-attic.png`、`docs/art/home-attic-night.png`（阁楼）、`docs/art/home-monster.gif`（床下的小怪物，先白天后夜里）、`docs/art/home-monster-day.png`、`docs/art/home-monster-night.png`
 - 小镇西半边白天和夜晚：`docs/art/town-day.png`、`docs/art/town-night.png`
