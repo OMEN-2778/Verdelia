@@ -503,6 +503,9 @@ def stairs(spec):
         S.add(box(-w - 2.4, -w - 0.4, y - 1.5, y + run, (k + 1) * rise + 11.5, (k + 1) * rise + 13.5,
                   M.wood(DARKWOOD, bias=0.3)))
     cv = S.render()
+    for y in range(min(cv.h, S.base - 81)):  # the ceiling: nothing shows above the top step, so a
+        for x in range(cv.w):  # wall the stairs stand against hides the stairwell beyond it
+            cv.clear(x, y)
     S.finish(cv)
     return I._result(cv, "prop", (S.ox, S.base), fp(-w - 3, w + 2, n * run), S.sx(0), 14)
 

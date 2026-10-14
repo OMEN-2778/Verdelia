@@ -6,19 +6,19 @@
 	"name": "主角的家",
 	"objects": [
 		{
-			"id": "wall_shelf",
+			"id": "wall_back",
 			"kind": "building",
 			"x": 96.0,
 			"y": 47.0
 		},
 		{
-			"id": "wall_window",
+			"id": "wall_picture",
 			"kind": "building",
 			"x": 128.0,
 			"y": 47.0
 		},
 		{
-			"id": "wall_picture",
+			"id": "wall_window",
 			"kind": "building",
 			"x": 160.0,
 			"y": 47.0
@@ -276,6 +276,12 @@
 			"y": 138.0
 		},
 		{
+			"id": "wall_side",
+			"kind": "building",
+			"x": 208.0,
+			"y": 161.0
+		},
+		{
 			"id": "wall_corner",
 			"kind": "building",
 			"x": 76.0,
@@ -303,10 +309,10 @@
 			"id": "bed_side",
 			"kind": "building",
 			"x": 109.0,
-			"y": 120.0
+			"y": 104.0
 		},
 		{
-			"id": "chest",
+			"id": "wardrobe",
 			"kind": "building",
 			"x": 94.0,
 			"y": 60.0
@@ -314,38 +320,32 @@
 		{
 			"id": "desk",
 			"kind": "building",
-			"x": 128.0,
+			"x": 150.0,
 			"y": 64.0
 		},
 		{
 			"id": "bookshelf",
 			"kind": "building",
-			"x": 162.0,
+			"x": 188.0,
 			"y": 57.0
 		},
 		{
-			"id": "wardrobe",
+			"id": "chest",
 			"kind": "building",
-			"x": 190.0,
-			"y": 60.0
+			"x": 150.0,
+			"y": 104.0
 		},
 		{
 			"id": "rug_round",
 			"kind": "building",
-			"x": 164.0,
-			"y": 112.0
+			"x": 178.0,
+			"y": 116.0
 		},
 		{
 			"id": "floor_lamp",
 			"kind": "building",
-			"x": 198.0,
+			"x": 200.0,
 			"y": 100.0
-		},
-		{
-			"id": "pot_plant",
-			"kind": "building",
-			"x": 150.0,
-			"y": 92.0
 		},
 		{
 			"id": "covered_cabinet",
@@ -427,7 +427,7 @@
 		{
 			"id": "pot_plant",
 			"kind": "building",
-			"x": 62.0,
+			"x": 57.0,
 			"y": 123.0
 		},
 		{

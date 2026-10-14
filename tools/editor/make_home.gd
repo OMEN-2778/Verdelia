@@ -3,7 +3,7 @@ extends SceneTree
 ## left (the kitchen) joined to the larger main block on the right, whose front door is right of
 ## the middle; stairs in the sitting room go up to the attic (maps/home_attic.json).
 ##   - The hero's room (main block, back left): full of things but tidy. A desk under the window, a
-##     bookshelf, the wardrobe, a chest, plants, a rug, and the double bed turned sideways against
+##     bookshelf, the wardrobe, a chest, a lamp, a rug, and the double bed turned sideways against
 ##     the wall, with the secret little monster peeping out from the dark under it.
 ##   - Grandmother's room (main block, back right), cleared since she died: the bed stripped, her
 ##     things packed in tied boxes, her armchair and cabinet under dust sheets, her portrait.
@@ -48,7 +48,7 @@ func _init() -> void:
 				g = MapData.Ground.VOID
 			m.ground[m.idx(c)] = g
 	# the main block: its back wall over both bedrooms, the middle wall with their doors, the front
-	_row(MAIN_L, BACK, ["wall_shelf", "wall_window", "wall_picture", "wall_back",
+	_row(MAIN_L, BACK, ["wall_back", "wall_picture", "wall_window", "wall_back",
 		"wall_back", "wall_portrait", "wall_window"])
 	_row(MAIN_L, MID, ["wall_back", "wall_door", "wall_picture", "wall_back", "wall_back", "wall_door", "wall_back"])
 	var fronts: Array = []
@@ -69,21 +69,23 @@ func _init() -> void:
 	while y <= WING_FRONT:
 		_put("wall_side", WING_L - 4, y)
 		y += 32
-	for yy in [BACK - 5 + 32, BACK - 5 + 64, BACK - 5 + 96]:  # (its end is hidden behind MID)
+	# the wall between the bedrooms runs right up to the back of MID (its end hidden behind it), so
+	# the rooms are closed off from each other, even along the strip behind MID
+	for yy in [BACK - 5 + 32, BACK - 5 + 64, BACK - 5 + 96, MID - 5]:
 		_put("wall_side", SPLIT, yy)
 	_put("wall_corner", MAIN_L - 4, BACK + 3)
 	_put("wall_corner", RIGHT + 4, BACK + 3)
 	_put("wall_corner", WING_L - 4, WING_BACK + 3)
 	_put("wall_corner", MAIN_L - 4, WING_BACK + 3)
-	# the hero's room: small and full, everything in its place
-	_put("bed_side", MAIN_L + 29, 120)
-	_put("chest", MAIN_L + 14, 60)
-	_put("desk", 128, 64)
-	_put("bookshelf", 162, 57)
-	_put("wardrobe", 190, 60)
-	_put("rug_round", 164, 112)
-	_put("floor_lamp", 198, 100)
-	_put("pot_plant", 150, 92)
+	# the hero's room: small and full, everything in its place. The tall wardrobe stands behind the
+	# bed's head (the bed hides only its foot), the desk under the window, the chest at the bed's foot
+	_put("bed_side", MAIN_L + 29, 104)
+	_put("wardrobe", MAIN_L + 14, 60)
+	_put("desk", 150, 64)
+	_put("bookshelf", 188, 57)
+	_put("chest", 150, 104)
+	_put("rug_round", 178, 116)
+	_put("floor_lamp", 200, 100)
 	# grandmother's room
 	_put("covered_cabinet", 227, 62)
 	_put("boxes_packed", 256, 70)
@@ -99,7 +101,7 @@ func _init() -> void:
 	_put("doormat", DOOR_X, 266)
 	# the kitchen
 	_put("stove", 32, WING_BACK + 18)
-	_put("pot_plant", 62, WING_BACK + 12)
+	_put("pot_plant", 57, WING_BACK + 12)
 	_put("table_small", 44, 196)
 	_check()
 	m.spawn = Vector2(DOOR_X, 252)
