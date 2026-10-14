@@ -24,6 +24,9 @@ const ANIM_FPS := 5.0  ## frames per second of an animated part that names no ra
 		_rebuild()
 @export var interior := ""  ## map the door leads to (set from the map object's "to")
 @export var smoke := true
+## Its lamps light at night only while this is on: indoors, RoomLights turns off the lamps of the
+## rooms you are not in.
+var lamps_on := true
 
 var _entry := {}
 var _sprite: Sprite2D
@@ -146,7 +149,9 @@ func _rebuild() -> void:
 
 
 ## Animated parts: every "<name>_frames" entry has its sheet in "<name>_file", the middle of a
-## frame at "<name>", maybe a rate in "<name>_fps", and "<name>_night" if it only shows at night.
+## frame at "<name>", maybe a rate in "<name>_fps", and "<name>_night" if it only shows at night
+## (a lamp's glow) or "<name>_nightfade" if it fades in at dusk and out at dawn (the night outside
+## a window).
 func _add_anims(z: int) -> void:
 	for key: String in _entry:
 		if not key.ends_with("_frames"):
@@ -163,6 +168,9 @@ func _add_anims(z: int) -> void:
 		if _entry.get(part + "_night", false):  # a glow shown only from dusk to dawn, like the lamps
 			a.visible = false
 			a.add_to_group("night_lamps")
+		if _entry.get(part + "_nightfade", false):
+			a.self_modulate.a = 0.0  # DayNight fades it (group "night_fade")
+			a.add_to_group("night_fade")
 		add_child(a)
 		_anims.append([a, float(_entry.get(part + "_fps", ANIM_FPS))])
 
@@ -200,7 +208,7 @@ func _process(delta: float) -> void:
 	_sprite.modulate.a = _fade
 	for a: Array in _anims:
 		a[0].modulate.a = _fade
-	_lamps.modulate.a = 1.0 if _fade >= 1.0 else 0.0  # the lamp mark needs the exact colours
+	_lamps.modulate.a = 1.0 if _fade >= 1.0 and lamps_on else 0.0  # the lamp mark needs the exact colours
 
 
 func grass_excludes(world: Vector2) -> bool:

@@ -549,7 +549,7 @@ def wall_attic(spec):
 
 def wall_attic_window(spec):
     """The attic wall with the dormer: a little window at the back of a boxed-in alcove, a cushion
-    on its deep sill; daylight through the glass."""
+    on its deep sill; daylight through the glass, and the night sky after dark (the part "view")."""
     ox0, ox1, oz0, oz1 = -8, 8, 14, 32
     S = Scene(pad=0, pad_top=2, pad_bottom=2)
     am = _attic_mat()
@@ -566,16 +566,21 @@ def wall_attic_window(spec):
     S.add(box(ox0 + 2.5, ox1 - 2.5, WALL_T + 1.5, WALL_T + 7.5, oz0, oz0 + 2, _fabric(ROSE, 0.2, 3)))  # cushion
     cv = S.render()
     gi = S.solids.index(glass)
+    gw, gh = ox1 - ox0 - 4, 12
+    view = []
     for y in range(cv.h):
         for x in range(cv.w):
             if S.sid[y, x] == gi:
                 gx = x - S.sx(ox0 + 2)
                 gy = y - S.sy(WALL_T + 8, oz1 - 2)
-                if gx == (ox1 - ox0 - 4) // 2 or gy == 6:
+                if gx == gw // 2 or gy == 6:
                     cv.set(x, y, "#efe9dc")  # glazing bars
-                elif gy > 9:
+                    continue
+                if gy > 9:
                     cv.set(x, y, "#86b38e")  # treetops far off
-    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T))
+                view.append((x, y, "#121a28" if gy > 9 else I.night_sky(gx, gy, gw, gh, seed=3)))
+    img, flags = I.night_view_part(S, view)
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T), {"view": img}, **flags)
 
 
 def attic_hatch(spec):

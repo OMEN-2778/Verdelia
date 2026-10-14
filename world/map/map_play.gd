@@ -3,7 +3,8 @@ extends Node2D
 ## character at the spawn point with a following camera, and runs the day. Walking up to the
 ## north edge of a map with a vista eases the camera up to take in the view.
 ## The map comes from `map_path`, or from the command line: `-- --map=/path/to/map.json`.
-## Doors linked to other maps (the stairs up to the attic and back) fade over to that map.
+## Doors linked to other maps (the stairs up to the attic and back) fade over to that map. Indoors at
+## night, the room you are in has its lights on and the others are dark (RoomLights).
 
 @export_file("*.json") var map_path := "res://maps/sample.json"
 @export var start_hour := 9.0
@@ -12,6 +13,7 @@ var world: MapWorld
 var player: CharacterBody2D
 var cam: Camera2D
 var day: DayNight
+var rooms: RoomLights
 var _fade: ColorRect
 var _moving := false
 
@@ -59,6 +61,12 @@ func _ready() -> void:
 	m.set_shader_parameter("cloud_strength", 0.0)
 	screen.material = m
 	layer.add_child(screen)
+	rooms = RoomLights.new()  # indoors at night, the lights of the room you are in
+	rooms.world = world
+	rooms.player = player
+	rooms.grade = m
+	add_child(rooms)
+	rooms.reset()
 	day = DayNight.new()
 	day.start_hour = start_hour
 	day.fireflies = not world.data.indoor
@@ -106,6 +114,7 @@ func _use_door(to: String, at: Vector2) -> void:
 		_arrive(at)
 		if day:
 			day.fireflies = not world.data.indoor
+		rooms.reset()
 	await get_tree().create_timer(0.1).timeout
 	player.set_physics_process(true)
 	t = create_tween()

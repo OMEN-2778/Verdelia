@@ -33,6 +33,10 @@ var spawn := Vector2(-1, -1)
 var vista := ""
 ## Indoors (a house, a shop): no fireflies or other outdoor night life.
 var indoor := false
+## The rooms of a house, for lights that come on where you are at night (RoomLights):
+## {name: String, area: [[x, y, w, h], ...] (the floor you stand on in it),
+##  light: [[x, y, w, h], ...] (what it lights on screen: its floor and walls)}, in map px.
+var rooms: Array = []
 
 
 static func create(cells: Vector2i) -> MapData:
@@ -86,6 +90,13 @@ func resized(cells: Vector2i, offset: Vector2i) -> MapData:
 			inside = inside or bound.has_point(Vector2(pts[k], pts[k + 1]))
 		if inside:
 			m.cliffs.append(c2)
+	for r in rooms:
+		var r2: Dictionary = r.duplicate(true)
+		for key in ["area", "light"]:
+			for q: Array in r2.get(key, []):
+				q[0] += shift.x
+				q[1] += shift.y
+		m.rooms.append(r2)
 	m.spawn = (spawn + shift).clamp(Vector2.ZERO, m.size_px() - Vector2.ONE)
 	return m
 
@@ -132,6 +143,7 @@ func to_dict() -> Dictionary:
 		"spawn": [spawn.x, spawn.y],
 		"vista": vista,
 		"indoor": indoor,
+		"rooms": rooms.duplicate(true),
 	}
 
 
@@ -151,6 +163,7 @@ static func from_dict(d: Dictionary) -> MapData:
 		if o.get("kind") == "flower" and str(o.id).begins_with(OLD_FLOWERS):
 			o.id = "res://art/library/flowers/%s.png" % OLD_FLOWER_IDS.get(str(o.id).get_file().get_basename(), "daisy")
 	m.cliffs = (d.get("cliffs", []) as Array).duplicate(true)
+	m.rooms = (d.get("rooms", []) as Array).duplicate(true)
 	var sp: Array = d.get("spawn", [])
 	if sp.size() == 2:
 		m.spawn = Vector2(sp[0], sp[1])

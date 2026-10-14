@@ -12,7 +12,7 @@ extends Node
 ## Put one in a scene and point it at the scene's full-screen grade (`grade`), and optionally the
 ## cloud and shaft layers. Nodes in the group "daytime_only" (butterflies...) fade out at night;
 ## nodes in "night_lamps" (lit house windows) are shown from dusk to dawn, and the grade keeps them
-## bright (lamp_glow).
+## bright (lamp_glow); nodes in "night_fade" (the night seen through a window) fade in and out.
 
 @export var cycle_minutes := 12.0  ## real minutes for a whole day
 @export_range(0.0, 24.0) var start_hour := 6.0  ## used when the clock has not started yet
@@ -130,6 +130,8 @@ func _apply(delta: float) -> void:
 		(n as CanvasItem).modulate.a = smoothstep(0.35, 0.75, day)
 	for n in get_tree().get_nodes_in_group("night_lamps"):
 		(n as CanvasItem).visible = lamps > 0.01
+	for n in get_tree().get_nodes_in_group("night_fade"):  # the night through a window
+		(n as CanvasItem).self_modulate.a = 1.0 - smoothstep(0.2, 0.6, day)
 	_shadow_tick -= delta
 	if _shadow_tick <= 0.0:
 		_shadow_tick = 0.1

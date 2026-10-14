@@ -38,6 +38,16 @@ bool is_lamp(vec3 s) {
 	return abs(s.b * 255.0 - 3.0) < 0.5 && s.r > 0.4;
 }
 
+group_uniforms rooms;
+// Indoors at night, the room you are in has its lights on (RoomLights): up to 8 screen rects
+// (x0, y0, x1, y1 in screen UV), each with how far its light is on (0..1). Inside, the scene is
+// lit warm instead of left in the night's blue dark, a little dimmer towards the rect's edges.
+uniform int room_count = 0;
+uniform vec4 room_rect[8];
+uniform float room_level[8];
+uniform vec3 room_light : source_color = vec3(1.0, 0.86, 0.66);
+uniform float room_strength : hint_range(0.0, 1.0) = 0.88;
+
 group_uniforms clouds;
 uniform float cloud_strength : hint_range(0.0, 0.5) = 0.13;
 uniform float cloud_scale = 0.55;
@@ -78,6 +88,27 @@ void fragment() {
 	c = mix(vec3(luma), c, saturation);
 	c = (c - 0.5) * contrast + 0.5 + lift;
 	c *= tint;
+	if (lamp_glow > 0.0 && room_count > 0) {
+		vec2 e = SCREEN_PIXEL_SIZE * 4.0;  // soft edges
+		float lit = 0.0;
+		float fall = 0.0;
+		for (int i = 0; i < 8; i++) {
+			if (i >= room_count) {
+				break;
+			}
+			vec4 r = room_rect[i];
+			float f = smoothstep(r.x - e.x, r.x + e.x, SCREEN_UV.x) * (1.0 - smoothstep(r.z - e.x, r.z + e.x, SCREEN_UV.x))
+				* smoothstep(r.y - e.y, r.y + e.y, SCREEN_UV.y) * (1.0 - smoothstep(r.w - e.y, r.w + e.y, SCREEN_UV.y));
+			f *= room_level[i];
+			if (f > lit) {
+				lit = f;
+				vec2 q = (SCREEN_UV - (r.xy + r.zw) * 0.5) / max(r.zw - r.xy, vec2(0.001));
+				fall = dot(q, q) * 2.0;  // 0 in the middle .. 1 at the corners
+			}
+		}
+		vec3 warm_lit = ((raw - 0.5) * 0.92 + 0.5 + 0.02) * room_light * (1.0 - 0.22 * fall);
+		c = mix(c, warm_lit, lit * lamp_glow * room_strength);
+	}
 	if (lamp_glow > 0.0) {
 		if (is_lamp(raw)) {
 			c = mix(c, vec3(raw.r, raw.g, raw.g * 0.42 + 0.06), lamp_glow);

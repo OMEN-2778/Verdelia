@@ -103,11 +103,26 @@ func _init() -> void:
 	_put("stove", 32, WING_BACK + 18)
 	_put("pot_plant", 57, WING_BACK + 12)
 	_put("table_small", 44, 196)
+	# the rooms, for the lights at night: the floor you stand on in each (the strip hidden behind
+	# MID belongs to the bedroom above it) and what its light covers on screen (its floor and its
+	# walls, up to the top of its back wall, 45 px above the wall's foot)
+	m.rooms = [
+		_room("主角的卧室", [MAIN_L, BACK, SPLIT - MAIN_L, MID - 5 - BACK], [MAIN_L - 4, 0, SPLIT - MAIN_L + 4, MID - 45]),
+		_room("奶奶的房间", [SPLIT, BACK, RIGHT - SPLIT, MID - 5 - BACK], [SPLIT, 0, RIGHT - SPLIT + 4, MID - 45]),
+		_room("客厅", [MAIN_L - 4, MID - 5, RIGHT - MAIN_L + 4, FRONT - MID + 5],
+			[MAIN_L - 4, MID - 45, RIGHT - MAIN_L + 8, FRONT - MID + 46]),
+		_room("厨房", [WING_L, WING_BACK, MAIN_L - 4 - WING_L, WING_FRONT - WING_BACK],
+			[WING_L - 4, WING_BACK - 45, MAIN_L - WING_L, WING_FRONT - WING_BACK + 46]),
+	]
 	_check()
 	m.spawn = Vector2(DOOR_X, 252)
 	var err := m.save("res://maps/home.json")
 	print("maps/home.json: ", error_string(err), ", ", m.objects.size(), " objects")
 	quit()
+
+
+func _room(room_name: String, area: Array, light: Array) -> Dictionary:
+	return {"name": room_name, "area": [area], "light": [light]}
 
 
 func _row(x0: int, y: int, ids: Array) -> void:

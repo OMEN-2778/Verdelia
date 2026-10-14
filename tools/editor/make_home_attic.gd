@@ -51,6 +51,8 @@ func _init() -> void:
 	_put("crates", 62, 136)
 	_put("boxes_packed", 112, 136)
 	_put("attic_hatch", HATCH.x, HATCH.y, {"to": "res://maps/home.json", "at": [266, 214]})
+	m.rooms = [{"name": "阁楼", "area": [[LEFT, BACK, RIGHT - LEFT, FRONT - BACK]],
+		"light": [[LEFT - 4, 0, RIGHT - LEFT + 8, FRONT + 1]]}]  # one room, lit whenever you are up here
 	_check()
 	m.spawn = Vector2(200, 126)
 	var err := m.save("res://maps/home_attic.json")

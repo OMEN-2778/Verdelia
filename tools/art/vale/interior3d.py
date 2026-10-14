@@ -194,10 +194,44 @@ def wall_back(spec):
     return _wall_done(S, cv)
 
 
+NIGHT_SKY = ["#24335c", "#2b3d6b", "#334878", "#3b5285"]  # top .. down to the horizon
+
+
+def night_sky(lx, ly, gw, gh, hill=None, near=None, seed=1):
+    """The night through a window at glass pixel (lx, ly) of a gw x gh pane: deep blue sky,
+    lighter towards the hills, a few stars, a small moon high on the right, the hills dark."""
+    if near is not None and ly >= near[lx]:
+        return "#121a28"
+    if hill is not None and ly >= hill[lx]:
+        return "#1a2536" if ly > hill[lx] else "#24314a"
+    c = NIGHT_SKY[min(3, ly * 4 // max(1, gh))]
+    mx, my = gw - 4, 2  # the moon
+    if (lx - mx) ** 2 + (ly - my) ** 2 <= 2:
+        return "#f1e9c9" if lx - mx + ly - my < 1 else "#d6cda8"
+    if hsh(lx, ly, seed) < 0.06 and ly < gh * 0.6:
+        return "#eef0f6" if hsh(lx, ly, seed + 7) < 0.5 else "#a9b6d6"
+    return c
+
+
+def night_view_part(S, pts):
+    """The night outside a window as a part of its own that fades in at dusk: pts are
+    (x, y, colour) on the canvas (the glass between the glazing bars). Returns (image, flags)."""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, y0 = min(xs), min(ys)
+    w, h = max(xs) - x0 + 1, max(ys) - y0 + 1
+    w, h = w + w % 2, h + h % 2  # even, so the centred sprite sits on whole pixels
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for x, y, c in pts:
+        img.putpixel((x - x0, y - y0), C(c))
+    return img, {"view": [x0 + w // 2 - S.ox, y0 + h // 2 - S.base], "view_frames": 1, "view_nightfade": True}
+
+
 def wall_window(spec):
     """A back-wall segment with a window: a deep reveal with a wooden sill, white glazing bars,
     daylight and a far hillside through the glass, curtains tied back on a rod, a pot of
-    geraniums on the sill. The glass stays as it is at night (no lamp glow)."""
+    geraniums on the sill. At night the glass shows the night outside (a part, "view", that fades
+    in at dusk): dark sky, stars, the moon, the hills in shadow."""
     rnd = random.Random(spec.get("seed", 1))
     ox0, ox1, oz0, oz1 = -6, 6, 18, 33
     S = _wall_scene(spec, (ox0, ox1, oz0, oz1))
@@ -209,6 +243,7 @@ def wall_window(spec):
     gw, gh = ox1 - ox0, oz1 - oz0
     hill = [round(9 + 1.6 * math.sin(i * 0.55 + 1.0)) for i in range(gw)]
     near = [round(11.5 + 1.2 * math.sin(i * 0.8 + 2.5)) for i in range(gw)]
+    view = []
     for y in range(gy0, gy0 + gh):
         for x in range(gx0, gx0 + gw):
             if not cv.inb(x, y) or S.sid[y, x] != gi:
@@ -225,8 +260,10 @@ def wall_window(spec):
                 c = "#3f7a37" if lx + ly < 18 else "#2f5f33"
             if lx in (5, 6) or ly == 7 or lx in (0, gw - 1) or ly == gh - 1:  # glazing bars and frame
                 c = "#efe9dc" if lx != 6 and ly != gh - 1 else "#c9c0ad"
-            elif ly < 7 and (lx + ly) % 8 == 3:
-                c = "#eef9fc"  # glint
+            else:
+                if ly < 7 and (lx + ly) % 8 == 3:
+                    c = "#eef9fc"  # glint
+                view.append((x, y, night_sky(lx, ly, gw, gh, hill, near, spec.get("seed", 1)), C(c)))
             cv.px[x, y] = C(c)
     # curtains on a rod, tied back either side
     curtain = CLOTH[spec.get("curtain", "red")]
@@ -272,7 +309,10 @@ def wall_window(spec):
                         (2, -8, "#d8333a"), (3, -7, "#f0605a"), (1, -8, "#ff8a7a"), (3, -8, "#d8333a")):
         cv.set(px + dx, pb + dy, c)
     _ = rnd
-    return _wall_done(S, cv)
+    # the night shows only where the glass is still to be seen (not behind the curtains or the pot)
+    view = [(x, y, n) for x, y, n, d in view if cv.px[x, y] == d]
+    img, flags = night_view_part(S, view)
+    return done(S, cv, "wall", fp(-SEG / 2 + 1, SEG / 2 - 1, WALL_T), {"view": img}, **flags)
 
 
 def wall_picture(spec):

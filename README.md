@@ -120,11 +120,12 @@
 
 | 文件 | 作用 |
 |---|---|
-| `world/map/map_data.gd` | 地图文件格式：地面、水、通行三张格子图，植物和石头的列表，岩壁和坡道，出生点 |
+| `world/map/map_data.gd` | 地图文件格式：地面、水、通行三张格子图，植物和石头的列表，岩壁和坡道，出生点，室内的房间 |
 | `world/map/map_world.gd` | 按地图数据生成地面、水、草、树木、岩壁、木桥和碰撞；编辑器通过它实时修改 |
 | `world/map/passability_overlay.gd` | 显示通行范围 |
 | `world/buildings/world_building.gd` | 一座建筑：图片、碰撞、门口、夜里亮灯、烟囱冒烟、走到后面时变半透明 |
 | `world/map/bridge_layer.gd` | 画木桥 |
+| `world/map/room_lights.gd` | 室内夜里的房间灯光：主角所在的房间亮灯，其他房间关灯 |
 | `world/fx/vista.gd` | 地图北边外的远景 |
 | `world/editor/map_editor.gd` | 编辑器界面和笔刷 |
 
@@ -194,6 +195,8 @@
 - 厨房（侧屋）：很小，铺石板地，有灶台、墙上的碗碟架和一张两人用的小餐桌，侧墙上有门洞通到客厅。
 - 阁楼 `maps/home_attic.json`（`tools/editor/make_home_attic.gd`）：在主屋的屋顶下，矮墙上是屋顶木板和椽子，中间一根立柱撑着屋顶。老虎窗和外观一样在左边，窗下是主角的读书角（坐垫、毯子、一摞书、夜里亮的玻璃罐灯），四周堆着奶奶的旧箱子、纸箱、木箱和盖布的椅子。
 - 走到楼梯脚下就上到阁楼，走进阁楼的楼梯口就回到客厅（画面淡出再淡入）。地图里的建筑加上 `"to": 地图路径` 和 `"at": [x, y]` 就能这样连到别的地图。
+- 夜里各个房间单独开灯关灯：主角走进哪个房间，哪个房间就亮起暖黄的灯，书桌台灯、落地灯、灶火、阁楼的玻璃罐灯这些灯也跟着亮；别的房间关着灯，暗着，灯也灭了（床下小怪物的眼睛照样在黑暗里发光）。换房间时，新房间的灯渐渐亮起，身后的渐渐暗下去。房间的范围写在地图文件的 `rooms` 里：`area` 是房间里能站的地面，`light` 是灯光照到的画面范围（地板加墙），由 `world/map/room_lights.gd` 和 `grade.gdshader` 处理。
+- 窗户外面跟着天色变：天黑后玻璃里是夜空、星星、月亮和黑下去的山，天亮再变回白天的景色。
 - 两间卧室的门开在中间那道墙上，前墙只画矮矮一条，免得挡住房间。两间卧室之间的隔墙一直通到中间那道墙的背面（墙头藏在它后面），两个房间完全隔开。画室内时注意：中间这类横墙会挡住它上方大约 45 像素，那一条只留作走路的地板，不要放家具。
 
 地图有「室内」开关（编辑器顶栏的「室内」勾选框，地图文件里的 `indoor`），室内地图夜里没有萤火虫。
@@ -206,7 +209,7 @@
 - 全部建筑：`docs/art/buildings.png`（住宅、商店、集市、道具）、`docs/art/buildings-country.png`（农场、野外、水边）、`docs/art/buildings-village.png`（公共建筑、街道、室内）
 - 乡间：`docs/art/country-farm.png`、`country-ruins.png`、`country-mill.png`、`country-square.png`、`country-square-night.png`、`country-lake.png`、`country-camp-night.png`、`country-overview.png`
 - 室内白天和夜晚：`docs/art/interior.png`、`docs/art/interior-night.png`
-- 主角的家：`docs/art/home.png`（整个家）、`docs/art/home-night.png`（夜里）、`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-attic.png`、`docs/art/home-attic-night.png`（阁楼）、`docs/art/home-monster.gif`（床下的小怪物，先白天后夜里）、`docs/art/home-monster-day.png`、`docs/art/home-monster-night.png`
+- 主角的家：`docs/art/home.png`（整个家）、`docs/art/home-night.png`、`docs/art/home-night-living.png`、`docs/art/home-night-kitchen.png`（夜里，主角在哪个房间哪个房间亮灯）、`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-attic.png`、`docs/art/home-attic-night.png`（阁楼）、`docs/art/home-monster.gif`（床下的小怪物，先白天后夜里）、`docs/art/home-monster-day.png`、`docs/art/home-monster-night.png`
 - 小镇西半边白天和夜晚：`docs/art/town-day.png`、`docs/art/town-night.png`
 - 小镇东半边：`docs/art/town-east.png`
 - 集市：`docs/art/town-market.png`

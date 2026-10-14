@@ -4426,7 +4426,14 @@
    "size": [
     32,
     49
-   ]
+   ],
+   "view": [
+    0,
+    -27
+   ],
+   "view_frames": 1,
+   "view_nightfade": true,
+   "view_file": "buildings/wall_window_view.png"
   },
   {
    "id": "wall_picture",
@@ -5440,7 +5447,14 @@
    "size": [
     32,
     49
-   ]
+   ],
+   "view": [
+    0,
+    -29
+   ],
+   "view_frames": 1,
+   "view_nightfade": true,
+   "view_file": "buildings/wall_attic_window_view.png"
   },
   {
    "id": "attic_hatch",
