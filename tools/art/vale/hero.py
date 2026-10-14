@@ -1,295 +1,211 @@
 #!/usr/bin/env python3
-"""Candidates for the hero (a young man), drawn pixel by pixel from the text grids below: each
-letter is one pixel in a colour from the candidate's palette ("." is transparent). Light comes
-from the top left like everywhere else, with a dark warm outline round the whole figure.
+"""Candidates for the hero, a young man of about twenty, drawn pixel by pixel from the text grids
+below: each letter is one pixel in a colour from the candidate's palette ("." is transparent).
+Light comes from the top left like everywhere else, with a dark outline round the whole figure.
 
-A figure is 20 x 31 px (about 16 wide and 30 tall inside), half as big again as the old mage, to
-match the rooms and buildings (a door is 16 px wide, a wall 40 px tall). The grids are split into
-a head (rows 0-14) and a body (rows 15-30), so heads and outfits can be mixed; each comes in a
-front and a back view.
+Grown-up proportions (the head about a third of his height, a narrow jaw, small eyes under real
+brows, long legs), about 16 x 32 px inside a 24 x 33 frame, a little taller than the doors
+indoors. Each one stands with some attitude and a cheeky look on his face, and has a look of his
+own that reads at a glance:
 
-Writes docs/art/hero-candidates.png (all candidates, front and back, at 1x and 4x) and
-art/hero/candidates/<id>.png (front and back side by side).
+  1 守夜人    silver hair falling over one eye, a long navy coat, a teal scarf; hands in his coat
+              pockets, elbows out, one eyebrow up, half-lidded eyes and a smirk
+  2 红马尾    auburn hair in a ponytail over his shoulder, a headband, a leather vest and tool
+              pouches; hands on his hips, a wink and a toothy grin
+  3 斗篷学徒  black hair, round glasses catching the light, a short green cape; one hand at his
+              chin and a knowing little smile, and the secret little monster sitting on his
+              shoulder, its eyes glowing
+  4 修理匠    spiky fair hair with goggles pushed up, an orange work jacket, a plaster on his
+              cheek; a big wrench over his shoulder, a sideways look and a crooked grin
+
+Only the front view for now, to choose from; the chosen one gets his back and side views and
+walking frames.
+
+Writes art/hero/candidates/<n>.png and the comparison sheet docs/art/hero-candidates.png (needs
+the WenQuanYi font for the labels).
 
     python3 tools/art/vale/hero.py
 """
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[3]
-W, H = 20, 31
+W, H = 24, 33
+FONT = "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"
+SKIN = {"S": "#efc4a0", "s": "#d39d7f", "k": "#b07462", "E": "#231a24", "o": "#231a24", "w": "#f6f1e8"}
 
-# ------------------------------------------------------------------ heads (rows 0-14)
-# shared lower face for the open-faced styles (rows 9-14; col 3 and 16 are side hair)
-FACE = [
-    "..ohSSSSSSSSSSSsho..",
-    "..ohSSwESSSSwESsho..",
-    "..ohSSEESSSSEESsho..",
-    "..ohSmSSSSSSSSmsho..",
-    "...oSSSSSkkSSSSso...",
-    "....osSSSSSSSSso....",
-]
-HEADS = {
-    # messy brown hair, light catching the top left, short strands falling over the forehead
-    "messy": {
-        "front": [
-            "....................",
-            ".......oooooo.......",
-            ".....ooHHLLHHoo.....",
-            "....oHHLLHHHHHho....",
-            "...oHLLHHHHHHHHho...",
-            "...oHLHHHHHHHHHho...",
-            "..oHHHHHHHHHHHHHho..",
-            "..oHHHhHHHHhHHHhho..",
-            "..oHHSHhSSHhSSHhho..",
-        ] + FACE,
-        "back": [
-            "....................",
-            ".......oooooo.......",
-            ".....ooHHLLHHoo.....",
-            "....oHHLLHHHHHho....",
-            "...oHLLHHHHHHHHho...",
-            "...oHLHHHHHHHHHho...",
-            "..oHHHHHHHHHHHHHho..",
-            "..oHHHhHHHHhHHHhho..",
-            "..oHHHhHHHhHHHhhho..",
-            "..oHHHhHHHhHHHhhho..",
-            "..ohHHhHHHhHHHhhho..",
-            "..ohHHhHHHhHHhhhho..",
-            "..ohhHhHHhhHHhhhho..",
-            "...ohhhHhhhHhhhho...",
-            "....okkkkkkkkkko....",
-        ],
-    },
-    # neat dark hair with a side parting, the fringe swept across, a tuft sticking up at the crown
-    "tuft": {
-        "front": [
-            "..........oo........",
-            ".......oooHLooo.....",
-            ".....ooHHHHHHoo.....",
-            "....oLLHHHHHHHho....",
-            "...oLLHHHHHHHHHho...",
-            "...oLHHHHHHHHHHho...",
-            "..oHHHHHHHHHHHHHho..",
-            "..oHHHHHHHHHHhhhho..",
-            "..oHHHHHHHhhSSSSho..",
-        ] + FACE,
-        "back": [
-            "..........oo........",
-            ".......oooHLooo.....",
-            ".....ooHHHHHHoo.....",
-            "....oLLHHHHHHHho....",
-            "...oLLHHHHHHHHHho...",
-            "...oLHHHHHHHHHHho...",
-            "..oHHHHHHHHHHHHHho..",
-            "..oHHHHHHHHHHHHhho..",
-            "..oHHHHHHHHHHHHhho..",
-            "..oHHHHHHHHHHHhhho..",
-            "..ohHHHHHHHHHHhhho..",
-            "..ohHHHHHHHHHhhhho..",
-            "..ohhHHHHHHHHhhhho..",
-            "...ohhhhhhhhhhhho...",
-            "....okkkkkkkkkko....",
-        ],
-    },
-    # a straw hat with a red band over sandy hair, the brim's shade across the brow
-    "straw": {
-        "front": [
-            "....................",
-            "......oooooooo......",
-            ".....oYZZYYYYyo.....",
-            ".....oYZYYYYYyo.....",
-            ".....oRRRRRRRro.....",
-            ".ooYYYZZYYYYYYyyoo..",
-            "oYYYYYYYYYYYYYYYYyyo",
-            ".oyyyyyyyyyyyyyyyyo.",
-            "..oHhsssssssssshho..",
-        ] + FACE,
-        "back": [
-            "....................",
-            "......oooooooo......",
-            ".....oYZZYYYYyo.....",
-            ".....oYZYYYYYyo.....",
-            ".....oRRRRRRRro.....",
-            ".ooYYYZZYYYYYYyyoo..",
-            "oYYYYYYYYYYYYYYYYyyo",
-            ".oyyyyyyyyyyyyyyyyo.",
-            "..ohhhhhhhhhhhhhho..",
-            "..oHHHhHHHhHHHhhho..",
-            "..ohHHhHHHhHHHhhho..",
-            "..ohHHhHHHhHHhhhho..",
-            "..ohhHhHHhhHHhhhho..",
-            "...ohhhHhhhHhhhho...",
-            "....okkkkkkkkkko....",
-        ],
-    },
-    # a teal hood with two little round ears (like his secret friend's), ginger fringe peeking out
-    "hood": {
-        "front": [
-            "....oo........oo....",
-            "...oDCo......oCco...",
-            "...oDCooooooooCco...",
-            "...oDCCDDCCCCCCco...",
-            "..oDDCCCCCCCCCCcco..",
-            "..oDCCCCCCCCCCCcco..",
-            "..oDCQQQQQQQQQQcco..",
-            "..oDQHLLHHHHHHhQco..",
-            "..oDQHSHhSSHhShQco..",
-            "..oDQSSSSSSSSSsQco..",
-            "..oDQSwESSSSwEsQco..",
-            "..oDQSEESSSSEEsQco..",
-            "..oDQmSSSSSSSSmQco..",
-            "..oDQSSSSkkSSSsQco..",
-            "...oDQQssssssQQco...",
-        ],
-        "back": [
-            "....oo........oo....",
-            "...oDCo......oCco...",
-            "...oDCooooooooCco...",
-            "...oDCCDDCCCCCCco...",
-            "..oDDCCCCCCCCCCcco..",
-            "..oDCCCCCCcCCCCcco..",
-            "..oDCCCCCCcCCCCcco..",
-            "..oDCCCCCCcCCCCcco..",
-            "..oDCCCCCCcCCCCcco..",
-            "..oDCCCCCCcCCCccco..",
-            "..oDCCCCCCcCCCccco..",
-            "..oDCCCCCCcCCCccco..",
-            "..ocCCCCCCcCCcccco..",
-            "...occCCCCcCCccco...",
-            "....occcccccccco....",
-        ],
-    },
-}
+# 1 守夜人: hands in his coat pockets, elbows out, a raised brow, half-lidded eyes and a smirk
+C1 = """
+..........oooo..........
+........ooLLLHoo........
+.......oLLLHHHHHo.......
+......oLLHHHHHHHHo......
+......oLHHHHHHHHHo......
+......oHHhhSSHHHHo......
+......oHSSSSShHHho......
+......oHSEESSEhHho......
+......oHSSeSSeShho......
+......ohSSSSSSksho......
+.......oSSSkkkSso.......
+........osSSSSso........
+.......oAAAAAAaao.......
+....oDDCAAAAAaaCCcco....
+...oDDCcADWWWWCCcCCco...
+..oDCo.oAaDWWDCCo.oCco..
+..oDCo.oAaCDWDCco.oCco..
+...oDCooaCCDWCCcooCco...
+....oDCcTTTTYTTTcCco....
+....oDcCCCCcCCCCCcco....
+....oDcCccCCcCCccCco....
+....ocCCCCCCcCCCCcco....
+....ooCCCCCCcCCCCcoo....
+...oDCCCCCCCcCCCCCcco...
+...oooooooooooooooooo...
+.......oPPpoPPpo........
+.......oPPpoPPpo........
+......oPPpooPPpo........
+......oPPpooPPpo........
+.....oPPpo.oPPpo........
+.....oBBbo.oBBbo........
+....oBBBbo.oBBBbo.......
+....oooooo.oooooo.......
+"""
+P1 = {"H": "#c3c8d8", "h": "#7d8299", "L": "#e6e9f2", "e": "#3f9a96",
+      "C": "#2e3550", "c": "#222839", "D": "#454f72", "A": "#4f9c9a", "a": "#3a7a78", "W": "#e8e2d4",
+      "T": "#4a3528", "Y": "#c9a24a", "P": "#3a3a44", "p": "#2b2b33", "B": "#4a3528", "b": "#35261d"}
 
-# ------------------------------------------------------------------ bodies (rows 15-30)
-LEGS = [
-    "...oooPPPpPPPpooo...",
-    ".....oPPPpPPPpo.....",
-    ".....oPPPpPPPpo.....",
-    ".....oPPPpPPPpo.....",
-    ".....oPPPpPPPpo.....",
-    ".....oBBBbBBBbo.....",
-    "....oBBBbbBBBbbo....",
-    "....oooooooooooo....",
-]
-BODIES = {
-    # a green work shirt with a cream collar and placket, a leather belt with a brass buckle
-    "shirt": {
-        "front": [
-            "....oAAAkkkkAAAo....",
-            "..oDDCCCAAAACCCcco..",
-            "..oDCcCCCAACCCcCco..",
-            "..oDCcCCCAACCCcCco..",
-            "..oDCcCCCAACCCcCco..",
-            "..oDCcCCCAACCcccco..",
-            "..oSScTTTYYTTTcSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-        "back": [
-            "....oAAAAAAAAAAo....",
-            "..oDDCCCCCCCCCCcco..",
-            "..oDCcCCCCCCCCcCco..",
-            "..oDCcCCCCCCCCcCco..",
-            "..oDCcCCCCCCCcccco..",
-            "..oDCcCCCCCCccccco..",
-            "..oSScTTTTTTTTcSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-    },
-    # a chunky knitted sweater (grandmother's), a red scarf with its end hanging down the front
-    "sweater": {
-        "front": [
-            "....oRRRRRRRRrro....",
-            "..oDDCRRRRRRRCCcco..",
-            "..oDCcRRCCCCCCcCco..",
-            "..oDCcRrCCDCCCcCco..",
-            "..oDCcrRCCCCCCcCco..",
-            "..oDCcCCDCCDCccCco..",
-            "..oSScCcCcCcCccSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-        "back": [
-            "....oRRRRRRRRrro....",
-            "..oDDCCCCCCCCCCcco..",
-            "..oDCcCDCCDCCCcCco..",
-            "..oDCcCCCCCCCCcCco..",
-            "..oDCcCCDCCDCccCco..",
-            "..oDCcCCCCCCCccCco..",
-            "..oSScCcCcCcCccSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-    },
-    # a white shirt with the sleeves rolled up under blue dungarees, two brass buttons on the bib
-    "overalls": {
-        "front": [
-            "....oCCCkkkkCCCo....",
-            "..oDDCPCCCCCCPCcco..",
-            "..oDCcPCCCCCCPcCco..",
-            "..oSScPPPPPPPPpSso..",
-            "..oSScPUPppPUPpSso..",
-            "..oSscPPPppPPPpsso..",
-            "..oSSpPPPPPPPPpSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-        "back": [
-            "....oCCCCCCCCCCo....",
-            "..oDDCPCCCCCCPCcco..",
-            "..oDCcCPCCCCPCcCco..",
-            "..oSScCCPPPPCCcSso..",
-            "..oSScPPPPPPPPpSso..",
-            "..oSscPPPPPPPPpsso..",
-            "..oSSpPPPPPPPPpSso..",
-            "..oSsoPPPPPPPpoSso..",
-        ] + LEGS,
-    },
-    # a teal hoodie (the hood is up) with its drawstrings, a satchel strap across the chest
-    "hoodie": {
-        "front": [
-            "....oCCcQCCQcCCo....",
-            "..oDDGCCQCCQCCCcco..",
-            "..oDCcGGCCCCCCcCco..",
-            "..oDCcCCGGCCCCcCco..",
-            "..oDCccccccGGccCco..",
-            "..oDCcCCCCCCCGGcco..",
-            "..oSScccccccccWWWo..",
-            "..oSsoPPPPPPPpoWWo..",
-        ] + LEGS,
-        "back": [
-            "....oCCCCCCCCCCo....",
-            "..oDDCCCCCCCCGGcco..",
-            "..oDCcCCCCCCGGcCco..",
-            "..oDCcCCCCGGCCcCco..",
-            "..oDCcCCGGCCCccCco..",
-            "..oDCcGGCCCCCccCco..",
-            "..oSWWWcccccccccSso.",
-            "..oWWoPPPPPPPpoSso..",
-        ] + LEGS,
-    },
-}
+# 2 红马尾: a wink and a toothy grin; hand on hip, the other thumb hooked in his belt, weight on one leg
+C2 = """
+..........oooo..........
+........ooLLHHoo........
+.......oLLHHHHHHo.......
+......oLHHHHHHHHHo......
+......oKKKKKKKKKko......
+......oHhHSSShHhHo......
+......oHShhSShhSHo......
+......oHSSESSSSSHo......
+......oHSSeSSEESHo......
+......ohSSSSsSkSho......
+.......oSSkwwkSso.......
+......oHosSSSSso........
+.....oHhoWkkkkWo........
+....oWHhVVvWWVVvWo......
+...oWWhHVVvWWVVvWWo.....
+..oWWoHhVVvWWVVvoWWo....
+.oSSo.hHVVvWWVVvoWWo....
+.oSSo.ohVVvWWVVvoSSo....
+..oSSoUTTTTYTTTUoSso....
+...oSSUUPPPPPPUUSSo.....
+....ooUoPPPpPPPoUo......
+.....oPPPPPpPPPPo.......
+......oPPPpoPPPpo.......
+......oPPPpoPPPpo.......
+......oPpPpooPPpPo......
+......oPPPpooPPPpo......
+.....oPPPpo.oPPPpo......
+.....oBBBbo.oBBBbo......
+.....oBBBbo.oBBBbo......
+....oBBBBbo.oBBBBbo.....
+....oZZZZZo.oZZZZZo.....
+....ooooooo.ooooooo.....
+........................
+"""
+P2 = {"H": "#b5512f", "h": "#7e3322", "L": "#d77a4a", "K": "#33303a", "e": "#b8862e",
+      "W": "#e9e1cc", "c": "#c9bea6", "V": "#7a4e2f", "v": "#5a3822",
+      "T": "#4e3524", "U": "#8e6a44", "Y": "#d4ac4a",
+      "P": "#6b6b45", "p": "#525234", "B": "#5a3d2a", "b": "#42291c", "Z": "#2f231c"}
 
-# ------------------------------------------------------------------ the candidates
-SKIN = {"S": "#f2c9a0", "s": "#d9a27e", "k": "#c08566", "m": "#e8978a", "E": "#2b1e26", "w": "#ffffff",
-        "o": "#2b1e26"}
+# 3 斗篷学徒: a hand at his chin, glasses catching the light, a knowing little smile; the monster
+# sits on his other shoulder, its eyes glowing
+C3 = """
+..........oooo..........
+........ooHHLHoo........
+.......oHLLHHHHHo.......
+......oHLHHHHHHHho......
+......oHHHhHHhHHho......
+......oHhSHhSShHho......
+......oHShhSShhSho......
+......ohGGGgSGGGho......
+......ohGEGSSGEGho......
+.oooo.ohGwGSSGGGho......
+oNNNNo.oSSSSkSso........
+oENENo..osSSSSoSo.......
+oNNNNFFFFFFJjFoSSo......
+.oNNFFFFFFFXXFoSXo......
+..oFFfFFFFXXXFoXXo......
+..oFffFFFXXXXXoXFo......
+.oFFffFFXXXXXXFFfo......
+.ooooooooXXXXooooo......
+..oXRoXXXXXXXXoXRo......
+..oXRoTTTTYTTToXRo......
+..oSSoXXXXXXXXoSso......
+..oSsoXXXXRXXXosso......
+...oooXXXXRXXXooo.......
+.....oPPpooPPpo.........
+.....oPPpooPPpo.........
+.....oPPpooPPpo.........
+.....oPPpooPPpo.........
+.....oPPpo.oPPpo........
+.....oPPpo.oPPpo........
+.....oBBbo.oBBbo........
+.....oBBbo.oBBbo........
+....oBBBbo.oBBBbo.......
+....oooooo.oooooo.......
+"""
+P3 = {"H": "#2c2c3a", "h": "#1d1d27", "L": "#4a4a62", "G": "#b89a52", "g": "#8a7038",
+      "F": "#3f6b47", "f": "#2e5136", "J": "#d4ac4a", "j": "#a8812e",
+      "N": "#16131c", "X": "#8a7f70", "R": "#6e655a", "T": "#4e3524", "Y": "#d4ac4a",
+      "P": "#3b3640", "p": "#2b2730", "B": "#4a3528", "b": "#35261d"}
+
+# 4 修理匠: a wrench over his shoulder, the other hand in his pocket, a sideways look and a crooked grin
+C4 = """
+.......o..o.o........oo.
+......oLoLoHo.o.....oMMo
+.....oLLHLHHHoHo....oMmo
+....oLLHHHHHHHHHo...oMo.
+....oGGGGHHGGGGHo..oMo..
+....GQqGGGGGQqGGo..oMo..
+....oGGGgHHgGGGgo.oMo...
+....oHhSHhSShHhHo.oMo...
+....oHShhSSShhSHooMo....
+....oHSSEESSSEESoMo.....
+....ohSSSSSSSSShoMo.....
+.....oSSSSsSZZooMo......
+......osSkwwkoSSo.......
+....ooOONNNNNNSSo.......
+..oOOOOONNNNNOSSOo......
+..oOrrOONNNNNOOrOo......
+..oOrrOONNNNNOrOOo......
+..oOrrOONNNNNOrOOo......
+...oOrrONNNNNOrOOo......
+...oSsOTTTYTTOrOOo......
+...ooOOPPPPPPOrSso......
+.....oOPPpPPPPosso......
+.....oPPPpPPPPpoo.......
+.....oPPPpooPPPpo.......
+.....oPPPpooPPPpo.......
+.....oPPPpooPPPpo.......
+.....oPPPpooPPPpo.......
+.....oDDDdooDDDdo.......
+.....oBBBbooBBBbo.......
+....oBBBBbooBBBBbo......
+....oBBBBbooBBBBbo......
+....oWWWWWooWWWWWo......
+....oooooooooooooo......
+"""
+P4 = {"H": "#e3c27a", "h": "#b8924a", "L": "#f5e0a8", "G": "#8a6a3a", "g": "#5e4626",
+      "Q": "#7fc8e0", "q": "#4f93b0", "e": "#4a7a4a", "Z": "#f2e6cc",
+      "O": "#d9752e", "r": "#a8541f", "N": "#34303a", "T": "#4e3524", "Y": "#a8b0b8",
+      "M": "#9aa3ad", "m": "#6b737c",
+      "P": "#4a5468", "p": "#384050", "D": "#6a7488", "d": "#525a6c",
+      "B": "#6e4a32", "b": "#4e3322", "W": "#e8e2d4"}
+
 CANDIDATES = [
-    ("forest", "林间少年", "messy", "shirt", {
-        "H": "#7a4a2c", "h": "#5a3320", "L": "#a26a3d",
-        "C": "#5f8f4e", "c": "#456e3c", "D": "#7fae5f", "A": "#efe2c4",
-        "T": "#5a3b2a", "Y": "#d9a93a", "P": "#6a5240", "p": "#4e3b2e", "B": "#3b2a22", "b": "#2e211b"}),
-    ("sweater", "奶奶织的毛衣", "tuft", "sweater", {
-        "H": "#3a3a52", "h": "#2a2a3c", "L": "#5c5c80",
-        "C": "#d9a43c", "c": "#b5822a", "D": "#ecc265", "R": "#c8454a", "r": "#9c3036",
-        "P": "#4a5e8a", "p": "#38476b", "B": "#6a4530", "b": "#4b3022"}),
-    ("farmer", "草帽农夫", "straw", "overalls", {
-        "H": "#d8b06a", "h": "#b08a4a", "L": "#ecca8a",
-        "Y": "#e8cf8a", "y": "#c4a45e", "Z": "#f6e4b0", "R": "#b5443c", "r": "#8c3029",
-        "C": "#f1ece0", "c": "#cfc6b3", "D": "#ffffff", "U": "#e8c060",
-        "P": "#5577a8", "p": "#3f5b86", "B": "#6a4a32", "b": "#4d3424"}),
-    ("hood", "兜帽少年", "hood", "hoodie", {
-        "H": "#d0703a", "h": "#a8532a", "L": "#ea9a5a",
-        "C": "#4f8c88", "c": "#3b6c69", "D": "#6eaba5", "Q": "#9bcfc6", "G": "#7a5236", "W": "#9a6a44",
-        "P": "#5e5f6b", "p": "#46474f", "B": "#8a3b35", "b": "#652a27"}),
+    ("watch", "守夜人", C1, P1, None),
+    ("pony", "红马尾", C2, P2, None),
+    ("cape", "斗篷学徒", C3, P3, {"E": "#ffd23f"}),  # the monster's eyes, in its dark body ("N"), glow
+    ("fix", "修理匠", C4, P4, None),
 ]
 
 
@@ -298,32 +214,50 @@ def rgba(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
 
 
-def figure(head, body, view, pal):
-    rows = HEADS[head][view] + BODIES[body][view]
-    assert len(rows) == H, (head, body, view, len(rows))
+def figure(text, pal, glow=None):
+    rows = text.strip("\n").split("\n")
+    assert len(rows) == H, len(rows)
+    for y, r in enumerate(rows):
+        assert len(r) == W, (y, len(r), r)
+    pal = dict(SKIN, **pal)
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     for y, r in enumerate(rows):
-        assert len(r) == W, (head, body, view, y, len(r), r)
         for x, ch in enumerate(r):
-            if ch != ".":
-                im.putpixel((x, y), rgba(pal.get(ch) or SKIN[ch]))
+            if ch == ".":
+                continue
+            c = pal[ch]
+            if glow and ch in glow and any(0 <= x + d < W and r[x + d] == "N" for d in (-1, 1)):
+                c = glow[ch]
+            im.putpixel((x, y), rgba(c))
     return im
+
+
+def sheet(figs, path, scale=8):
+    font = ImageFont.truetype(FONT, 28)
+    cw = W * scale + 70
+    im = Image.new("RGBA", (cw * len(figs) + 50, H * scale + 110), (126, 158, 96, 255))
+    d = ImageDraw.Draw(im)
+    for i, (cid, name, f) in enumerate(figs):
+        x = 50 + i * cw
+        im.alpha_composite(f.resize((W * scale, H * scale), Image.NEAREST), (x, 24))
+        label = f"{i + 1}. {name}"
+        tw = d.textlength(label, font=font)
+        d.text((x + W * scale / 2 - tw / 2, H * scale + 45), label, font=font, fill=(255, 255, 255, 255),
+               stroke_width=3, stroke_fill=(35, 26, 36, 255))
+    im.convert("RGB").save(path)
 
 
 def main():
     out = ROOT / "art/hero/candidates"
     out.mkdir(parents=True, exist_ok=True)
     figs = []
-    for cid, name, head, body, colours in CANDIDATES:
-        pal = dict(SKIN, **colours)
-        f, b = figure(head, body, "front", pal), figure(head, body, "back", pal)
-        pair = Image.new("RGBA", (W * 2, H), (0, 0, 0, 0))
-        pair.alpha_composite(f, (0, 0))
-        pair.alpha_composite(b, (W, 0))
-        pair.save(out / f"{cid}.png")
-        figs.append((cid, name, f, b))
+    for cid, name, grid, pal, glow in CANDIDATES:
+        f = figure(grid, pal, glow)
+        f.save(out / f"{cid}.png")
+        figs.append((cid, name, f))
+    if Path(FONT).exists():
+        sheet(figs, ROOT / "docs/art/hero-candidates.png")
     print("hero candidates ->", out.relative_to(ROOT), [c[0] for c in CANDIDATES])
-    return figs
 
 
 if __name__ == "__main__":

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvkpappy7cdp8"
-path="res://.godot/imported/farmer.png-edb73eaa6b5f8e538c02ea34b2e2cef9.ctex"
+uid="uid://dm32x0tpxh7m2"
+path="res://.godot/imported/watch.png-0b556a197d0e0719551adc5c007cdf32.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/hero/candidates/farmer.png"
-dest_files=["res://.godot/imported/farmer.png-edb73eaa6b5f8e538c02ea34b2e2cef9.ctex"]
+source_file="res://art/hero/candidates/watch.png"
+dest_files=["res://.godot/imported/watch.png-0b556a197d0e0719551adc5c007cdf32.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnyhi2n8ahokh"
-path="res://.godot/imported/sweater.png-d8531f11f9a71c4c51644323566e4784.ctex"
+uid="uid://k84drik4dikj"
+path="res://.godot/imported/fix.png-dfa4a1496b410ab5182c6abb24d6d97f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/hero/candidates/sweater.png"
-dest_files=["res://.godot/imported/sweater.png-d8531f11f9a71c4c51644323566e4784.ctex"]
+source_file="res://art/hero/candidates/fix.png"
+dest_files=["res://.godot/imported/fix.png-dfa4a1496b410ab5182c6abb24d6d97f.ctex"]
 
 [params]
 

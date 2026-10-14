@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tg5rt20k3kjf"
-path="res://.godot/imported/hood.png-1424e20445f58f3016f5cee5bb7c11cf.ctex"
+uid="uid://ci3xbr7fbxu0p"
+path="res://.godot/imported/pony.png-c8d5bd2c9fedac4c0bd6d88f10d514bc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/hero/candidates/hood.png"
-dest_files=["res://.godot/imported/hood.png-1424e20445f58f3016f5cee5bb7c11cf.ctex"]
+source_file="res://art/hero/candidates/pony.png"
+dest_files=["res://.godot/imported/pony.png-c8d5bd2c9fedac4c0bd6d88f10d514bc.ctex"]
 
 [params]
 
