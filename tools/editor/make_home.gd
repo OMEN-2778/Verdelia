@@ -104,15 +104,18 @@ func _init() -> void:
 	_put("pot_plant", 57, WING_BACK + 12)
 	_put("table_small", 44, 196)
 	# the rooms, for the lights at night: the floor you stand on in each (the strip hidden behind
-	# MID belongs to the bedroom above it) and what its light covers on screen (its floor and its
-	# walls, up to the top of its back wall, 45 px above the wall's foot)
+	# MID belongs to the bedroom above it), and what its light covers on screen, edge to edge
+	# x0, y0, x1, y1: from the inner faces of its side walls (a left wall's face is 2 px right of
+	# where it is put, a right wall's 2 px left of it; a split wall's faces 4 px left and 2 px right),
+	# and from the foot of its back wall's face (40 px above the wall's base; its cut top is left
+	# dark) down to the cut top of the wall in front (MID's at 45 px above its base, a low front
+	# wall's 11 px above its base).
 	m.rooms = [
-		_room("主角的卧室", [MAIN_L, BACK, SPLIT - MAIN_L, MID - 5 - BACK], [MAIN_L - 4, 0, SPLIT - MAIN_L + 4, MID - 45]),
-		_room("奶奶的房间", [SPLIT, BACK, RIGHT - SPLIT, MID - 5 - BACK], [SPLIT, 0, RIGHT - SPLIT + 4, MID - 45]),
-		_room("客厅", [MAIN_L - 4, MID - 5, RIGHT - MAIN_L + 4, FRONT - MID + 5],
-			[MAIN_L - 4, MID - 45, RIGHT - MAIN_L + 8, FRONT - MID + 46]),
+		_room("主角的卧室", [MAIN_L, BACK, SPLIT - MAIN_L, MID - 5 - BACK], [MAIN_L - 2, BACK - 40, SPLIT - 4, MID - 45]),
+		_room("奶奶的房间", [SPLIT, BACK, RIGHT - SPLIT, MID - 5 - BACK], [SPLIT + 2, BACK - 40, RIGHT + 2, MID - 45]),
+		_room("客厅", [MAIN_L - 4, MID - 5, RIGHT - MAIN_L + 4, FRONT - MID + 5], [MAIN_L - 2, MID - 40, RIGHT + 2, FRONT - 11]),
 		_room("厨房", [WING_L, WING_BACK, MAIN_L - 4 - WING_L, WING_FRONT - WING_BACK],
-			[WING_L - 4, WING_BACK - 45, MAIN_L - WING_L, WING_FRONT - WING_BACK + 46]),
+			[WING_L - 2, WING_BACK - 40, MAIN_L - 8, WING_FRONT - 11]),
 	]
 	_check()
 	m.spawn = Vector2(DOOR_X, 252)
@@ -121,8 +124,9 @@ func _init() -> void:
 	quit()
 
 
+## A room: its floor as [x, y, w, h], its light as edges [x0, y0, x1, y1].
 func _room(room_name: String, area: Array, light: Array) -> Dictionary:
-	return {"name": room_name, "area": [area], "light": [light]}
+	return {"name": room_name, "area": [area], "light": [[light[0], light[1], light[2] - light[0], light[3] - light[1]]]}
 
 
 func _row(x0: int, y: int, ids: Array) -> void:

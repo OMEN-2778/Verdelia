@@ -52,7 +52,8 @@ func _init() -> void:
 	_put("boxes_packed", 112, 136)
 	_put("attic_hatch", HATCH.x, HATCH.y, {"to": "res://maps/home.json", "at": [266, 214]})
 	m.rooms = [{"name": "阁楼", "area": [[LEFT, BACK, RIGHT - LEFT, FRONT - BACK]],
-		"light": [[LEFT - 4, 0, RIGHT - LEFT + 8, FRONT + 1]]}]  # one room, lit whenever you are up here
+		"light": [[LEFT - 2, BACK - 40, RIGHT - LEFT + 4, FRONT - 11 - (BACK - 40)]]}]  # one room, lit whenever
+	# you are up here: between the inner faces of its walls (as in make_home.gd)
 	_check()
 	m.spawn = Vector2(200, 126)
 	var err := m.save("res://maps/home_attic.json")

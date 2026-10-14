@@ -18,6 +18,16 @@ var _current := -1
 var _buildings: Array = []  # [WorldBuilding, room index]
 
 
+func _ready() -> void:
+	# the rects go to the shader just before each frame is drawn, after the camera has moved, so
+	# the light stays on its room while the view scrolls
+	RenderingServer.frame_pre_draw.connect(_apply)
+
+
+func _exit_tree() -> void:
+	RenderingServer.frame_pre_draw.disconnect(_apply)
+
+
 ## Call after a map is loaded: the room you are in starts lit, the others dark.
 func reset() -> void:
 	var rooms := world.data.rooms
@@ -56,11 +66,10 @@ func _process(delta: float) -> void:
 		_current = here  # (between rooms, in a doorway, the last one stays lit)
 	for i in _levels.size():
 		_levels[i] = move_toward(_levels[i], 1.0 if i == _current else 0.0, delta * FADE)
-	_apply()
 
 
 func _apply() -> void:
-	if grade == null:
+	if grade == null or world == null or world.data == null or _levels.size() != world.data.rooms.size():
 		return
 	var rects := PackedVector4Array()
 	var levels := PackedFloat32Array()

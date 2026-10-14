@@ -42,6 +42,7 @@ group_uniforms rooms;
 // Indoors at night, the room you are in has its lights on (RoomLights): up to 8 screen rects
 // (x0, y0, x1, y1 in screen UV), each with how far its light is on (0..1). Inside, the scene is
 // lit warm instead of left in the night's blue dark, a little dimmer towards the rect's edges.
+// The rects run along the inner faces of the room's walls, so the walls' cut tops stay dark.
 uniform int room_count = 0;
 uniform vec4 room_rect[8];
 uniform float room_level[8];
@@ -89,7 +90,7 @@ void fragment() {
 	c = (c - 0.5) * contrast + 0.5 + lift;
 	c *= tint;
 	if (lamp_glow > 0.0 && room_count > 0) {
-		vec2 e = SCREEN_PIXEL_SIZE * 4.0;  // soft edges
+		vec2 e = SCREEN_PIXEL_SIZE * 0.5;  // crisp edges, on the walls' faces
 		float lit = 0.0;
 		float fall = 0.0;
 		for (int i = 0; i < 8; i++) {
