@@ -48,19 +48,19 @@
 			"y": 47.0
 		},
 		{
-			"id": "wall_back",
+			"id": "wall_picture",
 			"kind": "building",
 			"x": 96.0,
 			"y": 166.0
 		},
 		{
-			"id": "wall_door",
+			"id": "wall_back",
 			"kind": "building",
 			"x": 128.0,
 			"y": 166.0
 		},
 		{
-			"id": "wall_picture",
+			"id": "wall_door",
 			"kind": "building",
 			"x": 160.0,
 			"y": 166.0
@@ -374,25 +374,25 @@
 		{
 			"id": "fireplace_cold",
 			"kind": "building",
-			"x": 176.0,
+			"x": 208.0,
 			"y": 185.0
 		},
 		{
 			"id": "sofa",
 			"kind": "building",
-			"x": 168.0,
+			"x": 200.0,
 			"y": 228.0
 		},
 		{
 			"id": "coffee_table",
 			"kind": "building",
-			"x": 168.0,
+			"x": 200.0,
 			"y": 254.0
 		},
 		{
 			"id": "armchair",
 			"kind": "building",
-			"x": 226.0,
+			"x": 254.0,
 			"y": 230.0
 		},
 		{

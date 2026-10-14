@@ -50,7 +50,7 @@ func _init() -> void:
 	# the main block: its back wall over both bedrooms, the middle wall with their doors, the front
 	_row(MAIN_L, BACK, ["wall_back", "wall_picture", "wall_window", "wall_back",
 		"wall_back", "wall_portrait", "wall_window"])
-	_row(MAIN_L, MID, ["wall_back", "wall_door", "wall_picture", "wall_back", "wall_back", "wall_door", "wall_back"])
+	_row(MAIN_L, MID, ["wall_picture", "wall_back", "wall_door", "wall_back", "wall_back", "wall_door", "wall_back"])
 	var fronts: Array = []
 	for k in 7:
 		fronts.append("wall_front_door" if MAIN_L + 16 + 32 * k == DOOR_X else "wall_front")
@@ -92,10 +92,10 @@ func _init() -> void:
 	_put("bed_bare", 288, 96)
 	_put("covered_chair", 232, 112)
 	# the sitting room
-	_put("fireplace_cold", 176, MID + 19)
-	_put("sofa", 168, 228)
-	_put("coffee_table", 168, 254)
-	_put("armchair", 226, 230)
+	_put("fireplace_cold", 208, MID + 19)
+	_put("sofa", 200, 228)
+	_put("coffee_table", 200, 254)
+	_put("armchair", 254, 230)
 	_put("pot_plant", MAIN_L + 14, 262)
 	_put("stairs", STAIRS.x, STAIRS.y, {"to": "res://maps/home_attic.json", "at": [200, 126]})
 	_put("doormat", DOOR_X, 266)
