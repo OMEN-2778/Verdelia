@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://world/terrain/terrain.gd" id="terrain"]
 [ext_resource type="Texture2D" path="res://art/demo_world/terrain_mask.png" id="mask"]
@@ -17,9 +17,7 @@
 [ext_resource type="Texture2D" path="res://art/library/fx/cloud.png" id="cloud"]
 [ext_resource type="Texture2D" path="res://art/library/fx/shaft.png" id="shaft"]
 [ext_resource type="Texture2D" path="res://art/demo/fx/petal.png" id="petal"]
-[ext_resource type="Texture2D" path="res://art/library/props/pillar_0.png" id="pillar0"]
-[ext_resource type="Texture2D" path="res://art/library/props/pillar_1.png" id="pillar1"]
-[ext_resource type="Texture2D" path="res://art/library/props/pillar_2.png" id="pillar2"]
+[ext_resource type="Script" path="res://world/buildings/world_building.gd" id="building"]
 
 [ext_resource type="Script" path="res://world/fx/day_night.gd" id="daynight"]
 
@@ -87,27 +85,23 @@ y_sort_enabled = true
 
 [node name="Tower" type="Node2D" parent="Props/Ruins"]
 position = Vector2(66, 214)
-script = ExtResource("prop")
-texture = ExtResource("pillar1")
-base_offset = 4
+script = ExtResource("building")
+building = "column_vines"
 
 [node name="Wall" type="Node2D" parent="Props/Ruins"]
 position = Vector2(292, 140)
-script = ExtResource("prop")
-texture = ExtResource("pillar0")
-base_offset = 4
+script = ExtResource("building")
+building = "ruin_wall"
 
 [node name="PillarRuin" type="Node2D" parent="Props/Ruins"]
 position = Vector2(222, 112)
-script = ExtResource("prop")
-texture = ExtResource("pillar2")
-base_offset = 4
+script = ExtResource("building")
+building = "column"
 
 [node name="PillarRuin2" type="Node2D" parent="Props/Ruins"]
 position = Vector2(120, 290)
-script = ExtResource("prop")
-texture = ExtResource("pillar1")
-base_offset = 4
+script = ExtResource("building")
+building = "column_fallen"
 
 [node name="Rubble" type="Node2D" parent="Props/Ruins"]
 position = Vector2(248, 236)
@@ -116,15 +110,13 @@ library_item = "rock"
 
 [node name="Marble" type="Node2D" parent="Props/Ruins"]
 position = Vector2(112, 118)
-script = ExtResource("prop")
-texture = ExtResource("pillar0")
-base_offset = 4
+script = ExtResource("building")
+building = "column"
 
 [node name="MarbleBroken" type="Node2D" parent="Props/Ruins"]
 position = Vector2(190, 100)
-script = ExtResource("prop")
-texture = ExtResource("pillar2")
-base_offset = 4
+script = ExtResource("building")
+building = "column_broken"
 
 [node name="Boulders" type="Node2D" parent="Props/Ruins"]
 position = Vector2(352, 360)

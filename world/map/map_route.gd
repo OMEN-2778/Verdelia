@@ -29,11 +29,12 @@ static func grid(world: MapWorld) -> AStarGrid2D:
 		if o.kind == "building":
 			if not WorldBuilding.is_solid(o.id):
 				continue
-			var hr := MapWorld.building_rect(o)
-			for y in range(floori(hr.position.y / cp), ceili(hr.end.y / cp)):
-				for x in range(floori(hr.position.x / cp), ceili(hr.end.x / cp)):
-					if g.is_in_boundsv(Vector2i(x, y)):
-						g.set_point_solid(Vector2i(x, y), true)
+			for part: Rect2 in WorldBuilding.solid_rects_of(o.id):
+				var hr := Rect2(part.position + Vector2(o.x, o.y), part.size)
+				for y in range(floori(hr.position.y / cp), ceili(hr.end.y / cp)):
+					for x in range(floori(hr.position.x / cp), ceili(hr.end.x / cp)):
+						if g.is_in_boundsv(Vector2i(x, y)):
+							g.set_point_solid(Vector2i(x, y), true)
 			continue
 		var base := Vector2(o.x, o.y)
 		var r := 7.0 if o.kind == "tree" else 6.0

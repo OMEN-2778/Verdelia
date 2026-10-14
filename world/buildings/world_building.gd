@@ -59,6 +59,21 @@ static func footprint_of(id: String) -> Rect2:
 	return Rect2(f[0], f[1], f[2], f[3])
 
 
+## The parts of the footprint that block walking: all of it, or for an archway (an entry with a
+## "passage" [x0, x1]) the piers either side of the opening.
+static func solid_rects_of(id: String) -> Array[Rect2]:
+	var fp := footprint_of(id)
+	var gap: Array = FloraLibrary.building(id).get("passage", [])
+	if gap.size() != 2:
+		return [fp]
+	var out: Array[Rect2] = []
+	if gap[0] > fp.position.x:
+		out.append(Rect2(fp.position.x, fp.position.y, gap[0] - fp.position.x, fp.size.y))
+	if gap[1] < fp.end.x:
+		out.append(Rect2(gap[1], fp.position.y, fp.end.x - gap[1], fp.size.y))
+	return out
+
+
 ## The whole picture (roof, chimney, doorstep), relative to its base point.
 static func sprite_rect_of(id: String) -> Rect2:
 	var e := FloraLibrary.building(id)
@@ -109,12 +124,13 @@ func _rebuild() -> void:
 	WaterReflection.attach(self, mirrored)
 	var body := StaticBody2D.new()
 	body.name = "Walls"
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = fp.size
-	shape.shape = rect
-	shape.position = fp.get_center()
-	body.add_child(shape)
+	for r: Rect2 in solid_rects_of(building):
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = r.size
+		shape.shape = rect
+		shape.position = r.get_center()
+		body.add_child(shape)
 	add_child(body)
 	if _entry.get("door") != null:
 		var door := Area2D.new()
