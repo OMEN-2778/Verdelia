@@ -555,7 +555,7 @@ func can_place_building(id: String, p: Vector2) -> bool:
 			if world.cliff_at((Vector2(c) + Vector2(0.5, 0.5)) * cp) >= 0:
 				return false
 	for o in d.objects:
-		if o.kind == "building" and MapWorld.building_rect(o).grow(2.0).intersects(r):
+		if o.kind == "building" and MapWorld.building_rect(o).intersects(r):  # touching is fine (walls, fences in a row)
 			return false
 	return true
 
