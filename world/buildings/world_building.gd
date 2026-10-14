@@ -146,7 +146,7 @@ func _rebuild() -> void:
 
 
 ## Animated parts: every "<name>_frames" entry has its sheet in "<name>_file", the middle of a
-## frame at "<name>" and maybe a rate in "<name>_fps".
+## frame at "<name>", maybe a rate in "<name>_fps", and "<name>_night" if it only shows at night.
 func _add_anims(z: int) -> void:
 	for key: String in _entry:
 		if not key.ends_with("_frames"):
@@ -160,6 +160,9 @@ func _add_anims(z: int) -> void:
 		if z != 0:
 			a.z_as_relative = false
 			a.z_index = z
+		if _entry.get(part + "_night", false):  # a glow shown only from dusk to dawn, like the lamps
+			a.visible = false
+			a.add_to_group("night_lamps")
 		add_child(a)
 		_anims.append([a, float(_entry.get(part + "_fps", ANIM_FPS))])
 

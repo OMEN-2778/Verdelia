@@ -4962,12 +4962,20 @@
     60
    ],
    "eyes": [
-    3,
-    -3
+    4,
+    -6
    ],
    "eyes_frames": 12,
    "eyes_fps": 5,
-   "eyes_file": "buildings/bed_side_eyes.png"
+   "eyes_glow": [
+    4,
+    -6
+   ],
+   "eyes_glow_frames": 12,
+   "eyes_glow_fps": 5,
+   "eyes_glow_night": true,
+   "eyes_file": "buildings/bed_side_eyes.png",
+   "eyes_glow_file": "buildings/bed_side_eyes_glow.png"
   },
   {
    "id": "wall_door",

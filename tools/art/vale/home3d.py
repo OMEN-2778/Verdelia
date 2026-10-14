@@ -56,8 +56,9 @@ EYE_W, EYE_H = 12, 5
 EYE_FRAMES = 12
 
 
-def _eyes_frame(f):
-    """Two round eyes in the dark: open most of the time, a blink, a glance left and right."""
+def _eyes_frame(f, glow=False):
+    """Two round eyes in the dark: open most of the time, a blink, a glance left and right. The
+    glowing set (shown at night) is in lamplight colours, blue exactly 3, so they shine."""
     im = Image.new("RGBA", (EYE_W, EYE_H))
     px = im.load()
     look = {9: -1, 10: 1}.get(f, 0)
@@ -65,22 +66,22 @@ def _eyes_frame(f):
     for cx in (3, 8):
         if lid == 2:
             for dx in (-1, 0, 1):
-                px[cx + dx, 3] = (196, 188, 170, 255)
+                px[cx + dx, 3] = (214, 137, 3, 255) if glow else (120, 112, 104, 255)
             continue
         for dy in range(-1 if lid == 0 else 0, 2):
             for dx in (-1, 0, 1):
                 if dx * dx + dy * dy <= 2:
-                    px[cx + dx, 2 + dy] = (246, 242, 230, 255)
-        px[cx + look, 2] = (24, 18, 30, 255)  # pupil
+                    px[cx + dx, 2 + dy] = (255, 212, 3, 255) if glow else (176, 170, 160, 255)
+        px[cx + look, 2] = (122, 74, 3, 255) if glow else (24, 18, 30, 255)  # pupil
         if lid == 0:
-            px[cx - 1, 1] = (255, 255, 255, 255)  # a glint
+            px[cx - 1, 1] = (255, 240, 3, 255) if glow else (214, 208, 196, 255)  # a glint
     return im
 
 
-def eyes_sheet():
+def eyes_sheet(glow=False):
     sheet = Image.new("RGBA", (EYE_W * EYE_FRAMES, EYE_H))
     for f in range(EYE_FRAMES):
-        sheet.alpha_composite(_eyes_frame(f), (f * EYE_W, 0))
+        sheet.alpha_composite(_eyes_frame(f, glow), (f * EYE_W, 0))
     return sheet
 
 
@@ -113,28 +114,21 @@ def bed_side(spec):
         S.add(box(L - 0.5, L + 3.5, y, y + 3, 0, leg + 11, fw))
         S.add(prism(L + 1.5, y + 1.5, 1.6, leg + 11, leg + 13, fw, sides=8))
     cv = S.render()
-    # the blob: a soft heap of black, a little purple on top, peeping out from under the rail
-    cx, gy = S.sx(3), S.sy(0, 0) + 2  # it sits just out from under the edge
-    for dy in range(0, 9):
-        half = round(9.5 * math.sqrt(max(0.0, 1 - (dy / 9.0) ** 2)))
-        for dx in range(-half, half + 1):
-            x, y = cx + dx, gy - dy
-            if abs(dx) == half or dy == 8 or dy == 0:
-                c = "#0a080d"  # its outline
-            elif dy >= 6 and dx < 0:
-                c = "#3a3046"  # soft light on its crown
-            elif dy >= 5:
-                c = "#2a2234"
-            else:
-                c = "#1c1724"
-            if 0 <= y < cv.h and (cv.get(x, y)[3] == 0 or S.sid[y, x] in (-1, 0)):
-                cv.set(x, y, c)
+    # the little monster stays tucked in the dark under the bed: only the faintest curve of its
+    # back shows round its eyes (the eyes themselves are the animated part)
+    cx, ey = S.sx(4), S.sy(4, 3)
+    for dx in range(-6, 7):
+        y = ey - 3 + round(0.09 * dx * dx)
+        if 0 <= y < cv.h and S.sid[y, cx + dx] == 0:
+            cv.set(cx + dx, y, "#241d2b")
     S.finish(cv)
     im, night, info = I._result(cv, "prop", (S.ox, S.base), fp(-L - 3.5, L + 3.5, D + 0.5))
-    info["eyes"] = [cx - S.ox, gy - 5 - S.base]
-    info["eyes_frames"] = EYE_FRAMES
-    info["eyes_fps"] = 5
-    return im, night, info, {"eyes": eyes_sheet()}
+    for part in ("eyes", "eyes_glow"):  # the same blinking, by day and glowing at night
+        info[part] = [cx - S.ox, ey - S.base]
+        info[part + "_frames"] = EYE_FRAMES
+        info[part + "_fps"] = 5
+    info["eyes_glow_night"] = True
+    return im, night, info, {"eyes": eyes_sheet(), "eyes_glow": eyes_sheet(glow=True)}
 
 
 # ================================================================ walls

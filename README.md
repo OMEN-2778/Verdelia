@@ -188,7 +188,7 @@
 - 东南是湖：码头、小船、灯塔、港口仓库。北边是山脉远景。
 
 主角的家 `maps/home.json`，由 `tools/editor/make_home.gd` 生成，是两室一厅加一个小厨房：
-- 主角的卧室（左上）：东西很多但收拾得整齐，窗下的书桌、书架、衣柜、储物箱、盆栽、地毯、落地灯。双人床横着靠墙放，床底下的黑暗里藏着主角偷偷养的小怪物：一团软软的黑影，眼睛会眨，偶尔左右看看。
+- 主角的卧室（左上）：东西很多但收拾得整齐，窗下的书桌、书架、衣柜、储物箱、盆栽、地毯、落地灯。双人床横着靠墙放，床底下的黑暗里缩着主角偷偷养的小怪物：几乎看不见身子，只露出一双会眨、偶尔左右瞟的眼睛，夜里眼睛发出琥珀色的微光。
 - 奶奶的房间（右上）：奶奶去世后整理过了。床只剩光床垫，被褥叠好放在床尾；遗物装进捆好的箱子；扶手椅和柜子盖着防尘布；墙上挂着奶奶的肖像。
 - 客厅（左下）：不常用。沙发、扶手椅、茶几，壁炉没有生火。
 - 厨房（右下）：很小，铺石板地，有灶台、碗柜和一张两人用的小餐桌。
@@ -204,7 +204,7 @@
 - 全部建筑：`docs/art/buildings.png`（住宅、商店、集市、道具）、`docs/art/buildings-country.png`（农场、野外、水边）、`docs/art/buildings-village.png`（公共建筑、街道、室内）
 - 乡间：`docs/art/country-farm.png`、`country-ruins.png`、`country-mill.png`、`country-square.png`、`country-square-night.png`、`country-lake.png`、`country-camp-night.png`、`country-overview.png`
 - 室内白天和夜晚：`docs/art/interior.png`、`docs/art/interior-night.png`
-- 主角的家：`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-night.png`（夜里）、`docs/art/home-monster.gif`（床下的小怪物）
+- 主角的家：`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-night.png`（夜里）、`docs/art/home-monster.gif`（床下的小怪物，先白天后夜里）、`docs/art/home-monster-day.png`、`docs/art/home-monster-night.png`
 - 小镇西半边白天和夜晚：`docs/art/town-day.png`、`docs/art/town-night.png`
 - 小镇东半边：`docs/art/town-east.png`
 - 集市：`docs/art/town-market.png`
