@@ -4936,6 +4936,368 @@
     16
    ],
    "solid": false
+  },
+  {
+   "id": "bed_side",
+   "name": "\u6a2a\u653e\u53cc\u4eba\u5e8a",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/bed_side.png",
+   "night": "buildings/bed_side_night.png",
+   "kind": "prop",
+   "anchor": [
+    35,
+    53
+   ],
+   "footprint": [
+    -28,
+    -21,
+    57,
+    21
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    69,
+    60
+   ],
+   "eyes": [
+    3,
+    -3
+   ],
+   "eyes_frames": 12,
+   "eyes_fps": 5,
+   "eyes_file": "buildings/bed_side_eyes.png"
+  },
+  {
+   "id": "wall_door",
+   "name": "\u95e8\u6d1e\u5899",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/wall_door.png",
+   "night": "buildings/wall_door_night.png",
+   "kind": "wall",
+   "anchor": [
+    16,
+    47
+   ],
+   "footprint": [
+    -15,
+    -5,
+    30,
+    5
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    32,
+    50
+   ],
+   "passage": [
+    -8,
+    8
+   ]
+  },
+  {
+   "id": "wall_portrait",
+   "name": "\u8096\u50cf\u5899",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/wall_portrait.png",
+   "night": "buildings/wall_portrait_night.png",
+   "kind": "wall",
+   "anchor": [
+    16,
+    47
+   ],
+   "footprint": [
+    -15,
+    -5,
+    30,
+    5
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    32,
+    49
+   ]
+  },
+  {
+   "id": "sofa",
+   "name": "\u6c99\u53d1",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/sofa.png",
+   "night": "buildings/sofa_night.png",
+   "kind": "prop",
+   "anchor": [
+    30,
+    35
+   ],
+   "footprint": [
+    -24,
+    -12,
+    48,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    60,
+    41
+   ]
+  },
+  {
+   "id": "armchair",
+   "name": "\u6276\u624b\u6905",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/armchair.png",
+   "night": "buildings/armchair_night.png",
+   "kind": "prop",
+   "anchor": [
+    18,
+    35
+   ],
+   "footprint": [
+    -12,
+    -12,
+    24,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    37,
+    41
+   ]
+  },
+  {
+   "id": "coffee_table",
+   "name": "\u8336\u51e0",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/coffee_table.png",
+   "night": "buildings/coffee_table_night.png",
+   "kind": "prop",
+   "anchor": [
+    21,
+    30
+   ],
+   "footprint": [
+    -15,
+    -10,
+    30,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    42,
+    36
+   ]
+  },
+  {
+   "id": "fireplace_cold",
+   "name": "\u58c1\u7089\uff08\u672a\u751f\u706b\uff09",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/fireplace_cold.png",
+   "night": "buildings/fireplace_cold_night.png",
+   "kind": "prop",
+   "anchor": [
+    28,
+    55
+   ],
+   "footprint": [
+    -21,
+    -13,
+    42,
+    13
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    56,
+    61
+   ]
+  },
+  {
+   "id": "desk",
+   "name": "\u4e66\u684c",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/desk.png",
+   "night": "buildings/desk_night.png",
+   "kind": "prop",
+   "anchor": [
+    23,
+    46
+   ],
+   "footprint": [
+    -17,
+    -11,
+    34,
+    17
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    46,
+    57
+   ]
+  },
+  {
+   "id": "boxes_packed",
+   "name": "\u6253\u5305\u7684\u7bb1\u5b50",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/boxes_packed.png",
+   "night": "buildings/boxes_packed_night.png",
+   "kind": "prop",
+   "anchor": [
+    21,
+    32
+   ],
+   "footprint": [
+    -15,
+    -10,
+    28,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    40,
+    38
+   ]
+  },
+  {
+   "id": "covered_chair",
+   "name": "\u76d6\u5e03\u7684\u6276\u624b\u6905",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/covered_chair.png",
+   "night": "buildings/covered_chair_night.png",
+   "kind": "prop",
+   "anchor": [
+    18,
+    42
+   ],
+   "footprint": [
+    -12,
+    -12,
+    24,
+    12
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    36,
+    48
+   ]
+  },
+  {
+   "id": "covered_cabinet",
+   "name": "\u76d6\u5e03\u7684\u67dc\u5b50",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/covered_cabinet.png",
+   "night": "buildings/covered_cabinet_night.png",
+   "kind": "prop",
+   "anchor": [
+    18,
+    56
+   ],
+   "footprint": [
+    -12,
+    -10,
+    24,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    36,
+    62
+   ]
+  },
+  {
+   "id": "bed_bare",
+   "name": "\u7a7a\u5e8a",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/bed_bare.png",
+   "night": "buildings/bed_bare_night.png",
+   "kind": "prop",
+   "anchor": [
+    20,
+    55
+   ],
+   "footprint": [
+    -13,
+    -28,
+    26,
+    28
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    39,
+    61
+   ]
+  },
+  {
+   "id": "table_small",
+   "name": "\u5c0f\u9910\u684c",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/table_small.png",
+   "night": "buildings/table_small_night.png",
+   "kind": "prop",
+   "anchor": [
+    25,
+    35
+   ],
+   "footprint": [
+    -19,
+    -10,
+    38,
+    10
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    50,
+    41
+   ]
+  },
+  {
+   "id": "doormat",
+   "name": "\u95e8\u57ab",
+   "group": "\u5ba4\u5185",
+   "file": "buildings/doormat.png",
+   "night": "buildings/doormat_night.png",
+   "kind": "rug",
+   "anchor": [
+    12,
+    10
+   ],
+   "footprint": [
+    -10,
+    -7,
+    20,
+    7
+   ],
+   "door": null,
+   "door_size": null,
+   "chimney": [],
+   "size": [
+    24,
+    12
+   ],
+   "solid": false
   }
  ],
  "tufts": {

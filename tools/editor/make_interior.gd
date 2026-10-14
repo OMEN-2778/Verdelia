@@ -16,6 +16,7 @@ var m: MapData
 func _init() -> void:
 	m = MapData.create(Vector2i(32, 28))
 	m.name = "室内样例"
+	m.indoor = true
 	for i in m.ground.size():
 		m.ground[i] = MapData.Ground.WOOD_FLOOR
 	for c in _cells(Rect2(176, 40, 64, 72)):  # stone flags in the kitchen corner

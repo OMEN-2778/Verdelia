@@ -61,6 +61,7 @@ func _ready() -> void:
 	layer.add_child(screen)
 	var day := DayNight.new()
 	day.start_hour = start_hour
+	day.fireflies = not world.data.indoor
 	day.grade = screen
 	add_child(day)
 

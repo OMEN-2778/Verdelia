@@ -66,6 +66,7 @@ var _face_row: Control
 var _overlay_btn: CheckButton
 var _play_btn: Button
 var _vista_opt: OptionButton
+var _indoor_btn: CheckBox
 var _layer_buttons: Array = []
 var _new_dialog: ConfirmationDialog
 var _size_dialog: ConfirmationDialog
@@ -99,7 +100,9 @@ func _ready() -> void:
 	add_child(camera)
 	camera.make_current()
 	_build_ui()
-	world.rebuilt.connect(func(): _vista_opt.select(Vista.KINDS.keys().find(world.data.vista)))
+	world.rebuilt.connect(func():
+		_vista_opt.select(Vista.KINDS.keys().find(world.data.vista))
+		_indoor_btn.set_pressed_no_signal(world.data.indoor))
 	new_map(Vector2i(120, 68))
 
 
@@ -747,6 +750,11 @@ func _build_ui() -> void:
 		_vista_opt.add_item(Vista.KINDS[k])
 	_vista_opt.item_selected.connect(_on_vista)
 	bar.add_child(_vista_opt)
+	_indoor_btn = CheckBox.new()
+	_indoor_btn.text = "室内"
+	_indoor_btn.tooltip_text = "室内地图（房屋、店铺里）：夜里没有萤火虫"
+	_indoor_btn.toggled.connect(_on_indoor)
+	bar.add_child(_indoor_btn)
 	_play_btn = _button(bar, "▶ 试玩", func(): stop_play() if player else start_play())
 	_status = Label.new()
 	_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -873,6 +881,13 @@ func select_layer(i: int) -> void:
 	_face_row.visible = i == Layer.CLIFF
 	_refresh_hint()
 	cursor.queue_redraw()
+
+
+func _on_indoor(on: bool) -> void:
+	if on == world.data.indoor:
+		return
+	_snapshot()
+	world.data.indoor = on
 
 
 func _on_vista(i: int) -> void:

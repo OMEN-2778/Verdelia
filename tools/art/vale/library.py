@@ -46,7 +46,7 @@ DESIGNS = {**town3d.DESIGNS, **market3d.DESIGNS, "armour": market.prop_armour, "
 # the farm, the wilds and ruins, the waterside, public buildings, street furniture and interiors:
 # each module lists its own entries (and designs) in the same form as BUILDINGS below
 MODULES = []
-for _name in ("farm3d", "wild3d", "water3d", "civic3d", "street3d", "interior3d"):
+for _name in ("farm3d", "wild3d", "water3d", "civic3d", "street3d", "interior3d", "home3d"):
     try:
         MODULES.append(importlib.import_module(_name))
     except ModuleNotFoundError as e:

@@ -31,6 +31,8 @@ var cliffs: Array = []
 var spawn := Vector2(-1, -1)
 ## The far view painted beyond the north edge (Vista.KINDS): "" none, "mountains"...
 var vista := ""
+## Indoors (a house, a shop): no fireflies or other outdoor night life.
+var indoor := false
 
 
 static func create(cells: Vector2i) -> MapData:
@@ -51,6 +53,7 @@ func resized(cells: Vector2i, offset: Vector2i) -> MapData:
 	m.name = name
 	m.cell_px = cell_px
 	m.vista = vista
+	m.indoor = indoor
 	for y in size.y:
 		for x in size.x:
 			var c := Vector2i(x, y) + offset
@@ -128,6 +131,7 @@ func to_dict() -> Dictionary:
 		"cliffs": cliffs.duplicate(true),
 		"spawn": [spawn.x, spawn.y],
 		"vista": vista,
+		"indoor": indoor,
 	}
 
 
@@ -136,6 +140,7 @@ static func from_dict(d: Dictionary) -> MapData:
 	m.name = d.get("name", m.name)
 	m.cell_px = int(d.get("cell_px", 8))
 	m.vista = str(d.get("vista", ""))
+	m.indoor = bool(d.get("indoor", false))
 	var n := m.size.x * m.size.y
 	for key in ["ground", "water", "passage"]:
 		var raw := Marshalls.base64_to_raw(d.get(key, ""))
