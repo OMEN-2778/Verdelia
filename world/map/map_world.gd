@@ -351,6 +351,8 @@ func _make_object(o: Dictionary) -> Node2D:
 					if b is CharacterBody2D:
 						door_used.emit(o.to, at))
 			n = h
+		"npc":
+			n = _make_npc(o)
 		_:
 			var f := WorldProp.new()
 			f.texture = load(o.id)
@@ -361,6 +363,30 @@ func _make_object(o: Dictionary) -> Node2D:
 			n = f
 	n.position = Vector2(o.x, o.y)
 	props.add_child(n)
+	return n
+
+
+## A character standing about (art/characters/<id>): its shadow, the character doing `act`
+## ("idle", "work"...) facing `face`, and a small solid round its feet.
+func _make_npc(o: Dictionary) -> Node2D:
+	var n := Node2D.new()
+	n.name = str(o.id)
+	var shadow := Sprite2D.new()
+	shadow.texture = preload("res://art/library/fx/shadow.png")
+	n.add_child(shadow)
+	var body := CharacterSprite.new()
+	body.name = "Body"
+	body.character = o.id
+	body.action = o.get("act", "idle")
+	body.facing = o.get("face", "down")
+	n.add_child(body)
+	var solid := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var c := CircleShape2D.new()
+	c.radius = 4.0
+	shape.shape = c
+	solid.add_child(shape)
+	n.add_child(solid)
 	return n
 
 

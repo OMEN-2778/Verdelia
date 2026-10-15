@@ -53,11 +53,9 @@ func _add_player(data: MapData) -> void:
 	shadow.name = "Shadow"
 	shadow.texture = preload("res://art/library/fx/shadow.png")
 	player.add_child(shadow)
-	var body := Sprite2D.new()
+	var body := CharacterSprite.new()
 	body.name = "Body"
-	body.texture = preload("res://art/library/props/mage.png")
-	body.hframes = 4
-	body.offset = Vector2(0, -10)
+	body.character = "hero_a"
 	player.add_child(body)
 	var cam := Camera2D.new()
 	cam.position_smoothing_enabled = true

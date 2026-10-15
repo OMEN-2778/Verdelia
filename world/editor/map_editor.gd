@@ -605,11 +605,9 @@ func start_play() -> void:
 	shadow.name = "Shadow"
 	shadow.texture = preload("res://art/library/fx/shadow.png")
 	player.add_child(shadow)
-	var body := Sprite2D.new()
+	var body := CharacterSprite.new()
 	body.name = "Body"
-	body.texture = preload("res://art/library/props/mage.png")
-	body.hframes = 4
-	body.offset = Vector2(0, -10)
+	body.character = "hero_a"
 	player.add_child(body)
 	player.set("autopilot", false)
 	player.set("speed", 60.0)

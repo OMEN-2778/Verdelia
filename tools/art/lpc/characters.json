@@ -1,0 +1,28 @@
+{
+ "fixer": {
+  "name": "修理匠",
+  "iris": "#3a8a50",
+  "hash": "sex=teen&body=Body_Color_light&head=Human_Male_Small_light&nose=Button_nose_light&eyes=Eye_Color_green&eyebrows=Thick_Eyebrows_blonde&hair=Spiked_blonde&clothes=Longsleeve_2_Buttoned_orange&legs=Cuffed_Pants_navy&belt=Leather_Belt_brown&shoes=Basic_Boots_brown&weapon=Hammer_steel&handle=Handle_oak",
+  "extras": [
+   "work"
+  ]
+ },
+ "hero_a": {
+  "name": "主角 A",
+  "iris": "#3f78c0",
+  "hash": "sex=teen&body=Body_Color_light&head=Human_Male_Small_light&nose=Button_nose_light&eyes=Eye_Color_green&eyebrows=Thick_Eyebrows_chestnut&hair=Messy2_chestnut&clothes=Longsleeve_2_white&overalls=Suspenders_brown&legs=Pants_tan&shoes=Basic_Boots_walnut&weapon=Watering_Can_walnut",
+  "extras": [
+   "water"
+  ]
+ },
+ "hero_b": {
+  "name": "主角 B",
+  "iris": "#8a5426",
+  "hash": "sex=teen&body=Body_Color_light&head=Human_Male_Small_light&nose=Button_nose_light&eyes=Eye_Color_green&eyebrows=Thick_Eyebrows_raven&hair=Bedhead_raven&clothes=Longsleeve_2_Buttoned_forest&legs=Long_Pants_charcoal&shoes=Basic_Shoes_brown"
+ },
+ "hero_c": {
+  "name": "主角 C",
+  "iris": "#2a8ea2",
+  "hash": "sex=teen&body=Body_Color_light&head=Human_Male_Small_light&nose=Button_nose_light&eyes=Eye_Color_green&eyebrows=Thick_Eyebrows_platinum&hair=Swoop_platinum&clothes=Longsleeve_2_VNeck_navy&neck=Scarf_teal&legs=Cuffed_Pants_charcoal&shoes=Folded_Rim_Boots_black"
+ }
+}

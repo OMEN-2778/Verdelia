@@ -8,6 +8,8 @@ extends Node2D
 
 @export_file("*.json") var map_path := "res://maps/sample.json"
 @export var start_hour := 9.0
+## Which of the characters in art/characters/ you walk about as (also `-- --hero=hero_b`).
+@export var hero := "hero_a"
 
 var world: MapWorld
 var player: CharacterBody2D
@@ -22,6 +24,8 @@ func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--map="):
 			map_path = a.trim_prefix("--map=")
+		elif a.begins_with("--hero="):
+			hero = a.trim_prefix("--hero=")
 	world = MapWorld.new()
 	add_child(world)
 	if not world.load_map(map_path):
@@ -32,11 +36,9 @@ func _ready() -> void:
 	shadow.name = "Shadow"
 	shadow.texture = preload("res://art/library/fx/shadow.png")
 	player.add_child(shadow)
-	var body := Sprite2D.new()
+	var body := CharacterSprite.new()
 	body.name = "Body"
-	body.texture = preload("res://art/library/props/mage.png")
-	body.hframes = 4
-	body.offset = Vector2(0, -10)
+	body.character = hero
 	player.add_child(body)
 	cam = Camera2D.new()
 	cam.position_smoothing_enabled = true

@@ -2,14 +2,15 @@ extends CharacterBody2D
 ## Demo protagonist that really walks: collides with cliffs (it can only go up and down through
 ## ramps) and is steered with WASD / the arrow keys. Until a key is pressed it walks `waypoints` on
 ## its own (still colliding), skipping a waypoint it cannot reach, which is handy for recordings.
-## Slower on ramps, with a little bounce on stairs.
+## Slower on ramps, with a little bounce on stairs. The body is a CharacterSprite (walking and
+## standing in four directions) or a plain four-frame Sprite2D, mirrored for the left.
 
 @export var waypoints: PackedVector2Array
 @export var speed := 50.0
 @export var pause := 0.8
 @export var autopilot := true
 
-@onready var body: Sprite2D = $Body
+@onready var body: Node2D = $Body
 
 var _i := 0
 var _wait := 0.0
@@ -85,15 +86,25 @@ func _next() -> void:
 
 
 func _animate(dir: Vector2, on_ramp: int) -> void:
-	var h := body.texture.get_height() / 2.0
+	if body is CharacterSprite:
+		var cs := body as CharacterSprite
+		if dir.length() < 0.05:
+			cs.act("idle")
+		else:
+			cs.act("walk", CharacterSprite.dir_of(dir))
+		# up the stairs every other step lifts him a pixel more
+		cs.position.y = -1.0 if on_ramp == 1 and cs.frame % 4 >= 2 else 0.0
+		return
+	var spr := body as Sprite2D
+	var h := spr.texture.get_height() / 2.0
 	if dir.length() < 0.05:
-		body.frame = 0
-		body.offset.y = -h + (1.0 if int(_t / 0.5) % 2 else 0.0)
+		spr.frame = 0
+		spr.offset.y = -h + (1.0 if int(_t / 0.5) % 2 else 0.0)
 		return
 	if absf(dir.x) > 0.2:
-		body.flip_h = dir.x < 0.0
-	body.frame = int(_t * 8.0) % 4
-	var bob := 1.0 if body.frame % 2 else 0.0
+		spr.flip_h = dir.x < 0.0
+	spr.frame = int(_t * 8.0) % 4
+	var bob := 1.0 if spr.frame % 2 else 0.0
 	if on_ramp == 1:
-		bob = 2.0 if body.frame % 2 else 0.0  # stepping up the stairs
-	body.offset.y = -h - bob
+		bob = 2.0 if spr.frame % 2 else 0.0  # stepping up the stairs
+	spr.offset.y = -h - bob

@@ -7,3 +7,6 @@ art/vendor/
 
 # Python
 __pycache__/
+
+# LPC generator checkout and exports (tools/art/lpc/fetch.py, export.mjs)
+tools/art/lpc/.cache/

@@ -22,8 +22,9 @@ var cell_px := 8
 var ground := PackedByteArray()
 var water := PackedByteArray()
 var passage := PackedByteArray()
-## {kind: "tree" | "bush" | "rock" | "flower" | "building", id: String, x: float, y: float}
-## (a building's x, y is the middle of its front wall's base, where the doorstep is)
+## {kind: "tree" | "bush" | "rock" | "flower" | "building" | "npc", id: String, x: float, y: float}
+## (a building's x, y is the middle of its front wall's base, where the doorstep is; an npc's id is
+## a character in art/characters/, with "act" and "face" for what it is doing and which way)
 var objects: Array = []
 ## {points: [x, y, x, y, ...] (top edge, left to right), face: int, seed: int,
 ##  ramps: [x, half width, style, ...]} (style 0 earthen slope, 1 stone stairs, 2 grass slope)

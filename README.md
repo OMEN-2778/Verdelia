@@ -7,6 +7,7 @@
 仓库是公开的，所以只放：
 - 自己画的：`tools/art/` 下的脚本按像素程序生成的全部美术，包括地面、草、树、灌木、石头、野花、岩壁、水、建筑、远景等。
 - 明确是 CC0（公有领域）的：只有调色板工具的演示原图，Kenney 的 *Tiny Battle*。
+- [Universal LPC 角色生成器](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator)的部件：`art/characters/` 下的人物由它们缩小、重画而来。这些部件的许可是 CC-BY-SA 3.0、GPL 3.0、OGA-BY 3.0，使用时要署名作者，改出来的图也按同样的许可发布。每个角色用到的部件、作者和许可写在该角色目录的 `CREDITS.md` 里。
 
 来源不明或许可不允许公开分发的素材包，比如之前上传的 Grassland、Market Square、Mana Seed，已经从仓库和代码里删掉，不再使用。旧地图里引用的 Grassland 野花，打开时会自动换成自己画的野花。
 
@@ -129,6 +130,27 @@
 | `world/fx/vista.gd` | 地图北边外的远景 |
 | `world/editor/map_editor.gd` | 编辑器界面和笔刷 |
 
+## 人物（`art/characters/`，生成工具 `tools/art/lpc/`）
+
+人物用 Universal LPC 角色生成器的部件拼出来，再缩小、重画成这个世界的大小。
+- **体型**：用 LPC 的 teen 身体配小号男性头，身材偏瘦，比例仍是成年人。LPC 原图里的人约 52 像素高，按横 0.60、竖 0.63 缩到约 33 像素，比室内的门略高。每帧 32×40；挥工具的动作宽一些，56×40。脚底中点在帧的底边正中。
+- **缩小方法**：身体、裤子、衣服、头发等部件分开缩小。每个部件的颜色按明暗排成一组色阶，最暗的是描边。新像素取它覆盖的原像素里最多的那个色阶，描边只在占了大半时才保留，再去掉零散的杂点。最后按层次叠起来，沿整个人的外缘重新描一圈边。
+- **眼睛、眉毛、嘴是重画的**：缩小后原来的眼睛会糊成一团，所以先从头部抹掉，缩小后在原位置画上。正面每只眼 2×2：上面一行是眼睑，下面是眼白和瞳孔。侧面只画一只眼，瞳孔朝前。眉毛和眼睛之间隔一行肤色。被头发挡住的地方不画。
+- **动作**：每个角色都有站立（呼吸、偶尔眨眼）、走路（8 帧）、跑步（8 帧），上下左右四个方向。LPC 左右是分开画的，不用翻转。另有 5 种正面表情：开心、得意（屑）、吃惊、生气、难过。修理匠多一个敲锤子（左右两个方向：举锤、挥下、砸中冒火星）。主角 A 多一个浇水（四个方向）。
+- **锤子是自己画的**：LPC 自带的锤子、斧头挥动动作是按成年体型画的，和 teen 体型的手对不上。所以修理匠用 LPC 身体挥臂的帧，锤子另外画在手的位置。
+- **角色**（`tools/art/lpc/characters.json`）：
+  - 修理匠：金色刺头，橙色扣领衬衫，藏青卷边裤，皮带，靴子。
+  - 主角 A：栗色乱发，白衬衫配背带，卡其裤，靴子。
+  - 主角 B：黑色乱发，墨绿扣领衬衫，炭灰长裤。
+  - 主角 C：浅金斜刘海遮住一只眼，藏青 V 领，青色围巾，炭灰卷边裤。
+- **游戏里**：`CharacterSprite`（`world/actors/character_sprite.gd`）读角色的 `frames.json` 播放动作，每帧有自己的时长。主角默认是主角 A，试玩时加 `-- --hero=hero_b` 可以换。地图文件里写 `{"kind": "npc", "id": "fixer", "x": …, "y": …, "act": "work", "face": "right"}` 就能放一个 NPC，脚下有一小块挡路的碰撞。修理匠现在在乡间地图的水车磨坊旁敲东西。
+- **重新生成**：
+  1. `python3 tools/art/lpc/fetch.py`：把生成器（固定在某个提交）下载到 `tools/art/lpc/.cache/`，只取角色用到的素材，然后装好依赖。需要 git 和 npm。
+  2. `node tools/art/lpc/export.mjs`：自动启动生成器，按每个角色的配置导出各部件的图层和署名表。需要 Chromium。
+  3. `python3 tools/art/lpc/build.py`：缩小、合成、画脸，输出 `art/characters/<id>/` 下的 `sheet.png`、`frames.json`、`CREDITS.md`，还有预览图。
+  - 改装扮就改 `characters.json` 里的 `hash`，格式和生成器网页地址里 `#` 后面的一样。
+- 截图：`docs/art/characters.png`（全部动作和表情）、`docs/art/characters.gif`（走路和敲锤子）、`docs/art/characters-home.png`（在客厅里看大小）、`docs/art/characters-moods.png`（夜里，几种表情）、`docs/art/characters-mill.png`（修理匠在磨坊旁干活）。
+
 ## 小镇建筑
 
 一共 132 种，全部是程序生成的原创像素画，可以放心提交进公开仓库。
@@ -209,8 +231,6 @@
 - 全部建筑：`docs/art/buildings.png`（住宅、商店、集市、道具）、`docs/art/buildings-country.png`（农场、野外、水边）、`docs/art/buildings-village.png`（公共建筑、街道、室内）
 - 乡间：`docs/art/country-farm.png`、`country-ruins.png`、`country-mill.png`、`country-square.png`、`country-square-night.png`、`country-lake.png`、`country-camp-night.png`、`country-overview.png`
 - 室内白天和夜晚：`docs/art/interior.png`、`docs/art/interior-night.png`
-- 修理匠 NPC（`tools/art/vale/fixer.py`）：`docs/art/fixer-sheet.png`（走路、干活、表情动作）、`docs/art/fixer-portraits.png`（对话头像）、`docs/art/fixer.gif`、`docs/art/fixer-in-game.png`
-- 主角候选造型（`tools/art/vale/hero.py`）：`docs/art/hero-candidates.png`、`docs/art/hero-candidates-scale.png`（放在客厅里看大小）
 - 主角的家：`docs/art/home.png`（整个家）、`docs/art/home-night.png`、`docs/art/home-night-living.png`、`docs/art/home-night-kitchen.png`（夜里，主角在哪个房间哪个房间亮灯）、`docs/art/home-bedrooms.png`（两间卧室）、`docs/art/home-downstairs.png`（客厅和厨房）、`docs/art/home-attic.png`、`docs/art/home-attic-night.png`（阁楼）、`docs/art/home-monster.gif`（床下的小怪物，先白天后夜里）、`docs/art/home-monster-day.png`、`docs/art/home-monster-night.png`
 - 小镇西半边白天和夜晚：`docs/art/town-day.png`、`docs/art/town-night.png`
 - 小镇东半边：`docs/art/town-east.png`

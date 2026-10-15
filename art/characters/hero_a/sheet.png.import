@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ci3xbr7fbxu0p"
-path="res://.godot/imported/pony.png-c8d5bd2c9fedac4c0bd6d88f10d514bc.ctex"
+uid="uid://b3oy6hqh8bdyn"
+path="res://.godot/imported/sheet.png-176e89a3f4d8dc9fcc80068ebd9094e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/hero/candidates/pony.png"
-dest_files=["res://.godot/imported/pony.png-c8d5bd2c9fedac4c0bd6d88f10d514bc.ctex"]
+source_file="res://art/characters/hero_a/sheet.png"
+dest_files=["res://.godot/imported/sheet.png-176e89a3f4d8dc9fcc80068ebd9094e2.ctex"]
 
 [params]
 

@@ -81,6 +81,8 @@ func _init() -> void:
 			var f: Array = MapWorld.FLOWERS
 			m.objects.append({"kind": "flower", "id": f[rng.randi() % f.size()], "x": roundf(p.x), "y": roundf(p.y)})
 			taken.append(p)
+	# the fixer, at work on the mill
+	m.objects.append({"kind": "npc", "id": "fixer", "x": 806, "y": 500, "act": "work", "face": "right"})
 	m.spawn = Vector2(980, 330)  # at the east end of the stone bridge
 	var err := m.save("res://maps/countryside.json")
 	print("maps/countryside.json: ", error_string(err), ", ", m.objects.size(), " objects")

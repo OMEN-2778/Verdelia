@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5esw7ntdxld8"
-path="res://.godot/imported/cape.png-dbac7363cc31c946fb18ebcde0e0056b.ctex"
+uid="uid://cn30jux4rwebr"
+path="res://.godot/imported/sheet.png-ff300062a6ad5b5e567dfa98dffe6fd9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/hero/candidates/cape.png"
-dest_files=["res://.godot/imported/cape.png-dbac7363cc31c946fb18ebcde0e0056b.ctex"]
+source_file="res://art/characters/hero_b/sheet.png"
+dest_files=["res://.godot/imported/sheet.png-ff300062a6ad5b5e567dfa98dffe6fd9.ctex"]
 
 [params]
 
